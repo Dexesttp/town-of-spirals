@@ -1,0 +1,28 @@
+{
+  "name": "town-of-spirals",
+  "version": "0.2.0",
+  "description": "Discord bot for playing Town Of Salem, adapterd to hypno stuff",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "main": "index.js",
+  "license": "MIT",
+  "engine": {
+    "node": ">= 7.0.0"
+  },
+  "dependencies": {
+    "bufferutil": "^3.0.2",
+    "discord.js": "^11.1.0",
+    "erlpack": "github:hammerandchisel/erlpack",
+    "jsonfile": "^3.0.1",
+    "libsodium-wrappers": "^0.5.4",
+    "moment": "^2.18.1",
+    "node-opus": "^0.2.6",
+    "opusscript": "0.0.3",
+    "sodium": "^2.0.1",
+    "uws": "^0.14.5"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.26"
+  }
+}
