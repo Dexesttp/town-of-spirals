@@ -1,8 +1,9 @@
 import { gameConfig } from "../data/game-config";
 import { CREATE_COMMAND } from "./constants";
 import { gameData } from "../data/game-data";
+import { Message } from "discord.js";
 
-export async function getRole(message) {
+export async function getRole(message: Message) {
 	if(!gameConfig.channel) {
 		message.channel.send(`There's no game started yet ! Start a game with the \`${CREATE_COMMAND}\` command.`);
 		return;

@@ -41,7 +41,7 @@ function handleVote(message, voteTarget) {
                 return;
             }
             message.author.send(`You voted for ${voteTarget}.`);
-            game_data_1.gameData.votes[message.author] = voteTarget;
+            game_data_1.gameData.votes[message.author.id] = voteTarget;
             check_all_1.checkAll();
             return;
         }
@@ -59,7 +59,7 @@ function handleVote(message, voteTarget) {
                 game_config_1.gameConfig.channel.send(`You can't vote for ${voteTarget}, they're not playing or already hypnotized. The available targets are : ${targets.map(t => t.username).join(", ")}`);
                 return;
             }
-            game_data_1.gameData.votes[message.author] = voteTarget;
+            game_data_1.gameData.votes[message.author.id] = voteTarget;
             game_config_1.gameConfig.channel.send(`<@${message.author.id}> voted for ${voteTarget} !`);
             check_all_1.checkAll();
             return;

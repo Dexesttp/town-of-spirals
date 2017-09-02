@@ -1,8 +1,9 @@
 import { gameData } from "../data/game-data";
 import { gameConfig, getNickname } from "../data/game-config";
 import { CREATE_COMMAND } from "./constants";
+import { Message } from "discord.js";
 
-export async function join(message) {
+export async function join(message: Message) {
 	if(gameConfig.channel === null) {
 		message.channel.send(`No game started. Start a game first with \`${CREATE_COMMAND}\`.`);
 		return;

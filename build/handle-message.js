@@ -7,15 +7,16 @@ const start_game_1 = require("./commands/start-game");
 const get_role_1 = require("./commands/get-role");
 const vote_1 = require("./commands/vote");
 const join_1 = require("./commands/join");
-const day_flavours_1 = require("./flavours/day-flavours");
-const VOTE_COMMAND_REGEXPR = /^!s vote (.+)$/ig;
+const dawn_flavours_1 = require("./flavours/dawn-flavours");
+const VOTE_COMMAND_REGEXP = /^!s vote (.+)$/ig;
+const MESSAGE_COMMAND_REGEXP = /^!s message (.+) (.+)$/ig;
 function handleMessage(message) {
     switch (message.content) {
         case "!s help":
             return;
         case constants_1.CREATE_COMMAND:
-            create_game_1.createGame(message);
-            join_1.join(message);
+            if (create_game_1.createGame(message))
+                join_1.join(message);
             return;
         case constants_1.CANCEL_CREATE_COMMAND:
             cancel_create_1.cancelCreate(message);
@@ -29,22 +30,27 @@ function handleMessage(message) {
         case constants_1.ROLE_COMMAND:
             get_role_1.getRole(message);
             return;
-        case "!s test_message0":
-            day_flavours_1.enthrallFlavours[0](message.channel, message.author, message.author);
-            return;
-        case "!s test_message1":
-            day_flavours_1.enthrallFlavours[1](message.channel, message.author, message.author);
-            return;
         default:
             break;
     }
-    const voteData = VOTE_COMMAND_REGEXPR.exec(message.content);
+    const voteData = VOTE_COMMAND_REGEXP.exec(message.content);
     if (voteData) {
         let voteTarget = voteData[1];
-        if (message.mentions.users && message.mentions.users[0]) {
-            voteTarget = message.mentions.users[0].username;
+        if (message.mentions.members && message.mentions.members) {
+            voteTarget = message.mentions.members.first().user.username;
         }
         vote_1.handleVote(message, voteTarget);
+        return;
+    }
+    const messageData = MESSAGE_COMMAND_REGEXP.exec(message.content);
+    if (messageData) {
+        var flavour = dawn_flavours_1.enthrallFlavours[+(messageData[1])];
+        if (!flavour) {
+            message.channel.send(`Invalid flavour : ${messageData[1]}. Choose one less than ${dawn_flavours_1.enthrallFlavours.length}.`);
+            return;
+        }
+        flavour(message.channel, message.author, message.author);
+        return;
     }
 }
 exports.handleMessage = handleMessage;

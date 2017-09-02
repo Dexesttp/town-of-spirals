@@ -6,17 +6,19 @@ import { startGame } from "./commands/start-game";
 import { getRole } from "./commands/get-role";
 import { handleVote } from "./commands/vote";
 import { join } from "./commands/join";
-import { enthrallFlavours } from "./flavours/day-flavours";
+import { enthrallFlavours } from "./flavours/dawn-flavours";
+import * as moment from "moment";
 
-const VOTE_COMMAND_REGEXPR = /^!s vote (.+)$/ig;
+const VOTE_COMMAND_REGEXP = /^!s vote (.+)$/ig;
+const MESSAGE_COMMAND_REGEXP = /^!s message (.+) (.+)$/ig;
 
 export function handleMessage(message: Discord.Message) {
 	switch(message.content) {
 		case "!s help":
 			return;
 		case CREATE_COMMAND:
-			createGame(message);
-			join(message);
+			if(createGame(message))
+				join(message);
 			return;
 		case CANCEL_CREATE_COMMAND: 
 			cancelCreate(message);
@@ -30,21 +32,26 @@ export function handleMessage(message: Discord.Message) {
 		case ROLE_COMMAND:
 			getRole(message);
 			return;
-		case "!s test_message0":
-			enthrallFlavours[0](<Discord.TextChannel> message.channel, message.author, message.author);
-			return;
-		case "!s test_message1":
-			enthrallFlavours[1](<Discord.TextChannel> message.channel, message.author, message.author);
-			return;
 		default:
 			break;
 	}
-	const voteData = VOTE_COMMAND_REGEXPR.exec(message.content);
+	const voteData = VOTE_COMMAND_REGEXP.exec(message.content);
 	if(voteData) {
 		let voteTarget = voteData[1];
-		if(message.mentions.users && message.mentions.users[0]) {
-			voteTarget = message.mentions.users[0].username;
+		if(message.mentions.members && message.mentions.members) {
+			voteTarget = message.mentions.members.first().user.username;
 		}
 		handleVote(message, voteTarget);
+		return;
+	}
+	const messageData = MESSAGE_COMMAND_REGEXP.exec(message.content);
+	if(messageData) {
+		var flavour = enthrallFlavours[+(messageData[1])];
+		if(!flavour) {
+			message.channel.send(`Invalid flavour : ${messageData[1]}. Choose one less than ${enthrallFlavours.length}.`);
+			return;
+		}
+		flavour(<Discord.TextChannel> message.channel, message.author, message.author);
+		return;
 	}
 }

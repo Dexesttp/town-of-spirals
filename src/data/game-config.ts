@@ -1,4 +1,10 @@
-export const gameConfig = {
+import { User, Channel, TextChannel } from "discord.js";
+
+export const gameConfig: {
+	allPlayers: User[],
+	channel: TextChannel | null,
+	gameStarter: User | null ,
+} = {
 	allPlayers: [],
 	channel: null,
 	gameStarter: null,	

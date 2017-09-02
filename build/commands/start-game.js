@@ -36,10 +36,16 @@ function startGame(message) {
             game_data_1.gameData.hypnotists = rand_from_array_1.default(game_config_1.gameConfig.allPlayers, n);
             game_data_1.gameData.badoozledPlayers = [];
             message.delete(500);
-            for (let tist of game_data_1.gameData.hypnotists) {
-                tist.send(`The game has started ! you are a hypnotist, along with ${game_data_1.gameData.hypnotists.map(h => h.username).join(", ")}`);
+            for (let player of game_config_1.gameConfig.allPlayers) {
+                if (game_data_1.gameData.hypnotists.some(h => h === player))
+                    player.send(`The game has started ! you are a hypnotist, along with ${game_data_1.gameData.hypnotists.map(h => h.username).join(", ")}`);
+                else
+                    player.send(`The game has started ! You are a normal citizen.`);
             }
-            game_config_1.gameConfig.channel.send(`${game_config_1.gameConfig.allPlayers.map(p => `<@${p.id}>`).join(" , ")} , the game has started ! There's ${n} hypnotists in the town of spirals.`);
+            game_config_1.gameConfig.channel.send(`
+${game_config_1.gameConfig.allPlayers.map(p => `<@${p.id}>`).join(" , ")} , the game has started !
+There's ${n} hypnotists in the town of spirals.
+		`);
             handle_night_1.handleNight();
         });
     });

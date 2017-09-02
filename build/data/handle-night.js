@@ -20,9 +20,14 @@ function handleNight() {
         game_data_1.gameData.phase = "night";
         game_config_1.gameConfig.channel.send(`A new night falls on the town.`);
         game_data_1.gameData.recentlyBadoozled = [];
+        const aliveVillagers = game_config_1.gameConfig.allPlayers.filter(h => !game_data_1.gameData.badoozledPlayers.some(b => b === h));
         const aliveTists = game_data_1.gameData.hypnotists.filter(h => !game_data_1.gameData.badoozledPlayers.some(b => b === h));
         for (let tist of aliveTists) {
-            tist.send(`The night has fallen. Vote for a new victim with \`${constants_1.VOTE_COMMAND}\`.`);
+            tist.send(`
+The night has fallen. Vote for a new victim with \`${constants_1.VOTE_COMMAND}\`.
+The sleeping villagers with some will left are : ${aliveVillagers.map(v => v.username).join(", ")}.
+As a reminder, your colleagues are : ${aliveTists.map(v => v.username).join(", ")}.
+		`);
         }
         game_data_1.gameData.votes = {};
         check_timer_1.timerA();

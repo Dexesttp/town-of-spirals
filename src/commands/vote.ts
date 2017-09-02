@@ -2,8 +2,9 @@ import { gameConfig } from "../data/game-config";
 import { gameData } from "../data/game-data";
 import { checkAll } from "../data/check-all";
 import { CREATE_COMMAND } from "./constants";
+import { Message } from "discord.js";
 
-export async function handleVote(message, voteTarget) {
+export async function handleVote(message: Message, voteTarget: string) {
 	if(gameConfig.channel === null) {
 		message.channel.send(`There's no game started yet ! Start a game with the \`${CREATE_COMMAND}\` command.`);
 		return;		
@@ -31,7 +32,7 @@ export async function handleVote(message, voteTarget) {
 			return;
 		}
 		message.author.send(`You voted for ${voteTarget}.`)		
-		gameData.votes[message.author] = voteTarget;
+		gameData.votes[message.author.id] = voteTarget;
 		checkAll();
 		return;
 	}
@@ -49,9 +50,9 @@ export async function handleVote(message, voteTarget) {
 			gameConfig.channel.send(`You can't vote for ${voteTarget}, they're not playing or already hypnotized. The available targets are : ${targets.map(t => t.username).join(", ")}`)
 			return;
 		}
-		gameData.votes[message.author] = voteTarget;
+		gameData.votes[message.author.id] = voteTarget;
 		gameConfig.channel.send(`<@${message.author.id}> voted for ${voteTarget} !`);
 		checkAll();
-		return;		
+		return;
 	}
 }

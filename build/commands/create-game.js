@@ -8,20 +8,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const moment = require("moment");
 const game_config_1 = require("../data/game-config");
 const constants_1 = require("./constants");
 function createGame(message) {
     return __awaiter(this, void 0, void 0, function* () {
         if (game_config_1.gameConfig.channel !== null) {
             const authorNickname = yield game_config_1.getNickname(game_config_1.gameConfig.gameStarter);
-            game_config_1.gameConfig.channel.send(`There's already a game created by ${authorNickname}. Type \`${constants_1.JOIN_COMMAND}\` to join the game ! (${game_config_1.gameConfig.allPlayers.length} player[s])`);
-            return;
+            (message.channel.type === "text"
+                ? message.channel
+                : message.author).send(`There's already a game created by ${authorNickname}. Type \`${constants_1.JOIN_COMMAND}\` to join the game ! (${game_config_1.gameConfig.allPlayers.length} player[s])`);
+            return false;
         }
-        console.log("Creating game !");
+        if (message.channel.type !== "text") {
+            message.author.send(`You cannot start a game here. Go to a server channel.`);
+            return false;
+        }
         game_config_1.gameConfig.gameStarter = message.author;
         game_config_1.gameConfig.allPlayers = [];
+        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message.author.username} created a game !`);
         game_config_1.gameConfig.channel = message.channel;
         game_config_1.gameConfig.channel.send(`Game started. Type \`${constants_1.JOIN_COMMAND}\` to join the game !`);
+        return true;
     });
 }
 exports.createGame = createGame;
