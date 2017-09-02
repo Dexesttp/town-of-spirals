@@ -1,0 +1,9 @@
+export const CREATE_COMMAND = "!s create";
+export const JOIN_COMMAND = "!s join";
+export const CANCEL_CREATE_COMMAND = "!s cancelCreate";
+export const START_COMMAND = "!s start";
+export const ROLE_COMMAND = "!s role";
+export const VOTE_COMMAND = "!s vote {playername}";
+export const ENTHRALL_COMMAND = "!s convert {playername}";
+export const NO_FORCE_COMAND = "!s noforce";
+export const FORCE_COMAND = "!s force {person to vote for}";

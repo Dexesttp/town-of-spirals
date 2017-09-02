@@ -1,9 +1,8 @@
-//@ts-check
-const Discord = require("discord.js");
-const moment = require("moment");
-const jsonfile = require("jsonfile");
+import * as Discord from "discord.js";
+import * as moment from "moment";
+import * as jsonfile from "jsonfile";
 
-const handleMessage = require("./handle-message");
+import {handleMessage} from "./handle-message";
 
 const client = new Discord.Client();
 
@@ -21,7 +20,7 @@ client.login(config.token)
 .then((str) => {
 	console.log("Client started.");
 	// console.log("Client started : " + str);
-	// client.user.setUsername("_Town of Spirals_");
+	// client.user.setUsername("Town of Spirals");
 })
 .catch((e) => {
 	moment.now()

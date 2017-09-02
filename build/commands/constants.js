@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.CREATE_COMMAND = "!s create";
+exports.JOIN_COMMAND = "!s join";
+exports.CANCEL_CREATE_COMMAND = "!s cancelCreate";
+exports.START_COMMAND = "!s start";
+exports.ROLE_COMMAND = "!s role";
+exports.VOTE_COMMAND = "!s vote {playername}";
+exports.ENTHRALL_COMMAND = "!s convert {playername}";
+exports.NO_FORCE_COMAND = "!s noforce";
+exports.FORCE_COMAND = "!s force {person to vote for}";

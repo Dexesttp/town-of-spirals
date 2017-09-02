@@ -1,11 +1,11 @@
 {
   "name": "town-of-spirals",
   "version": "0.2.0",
-  "description": "Discord bot for playing Town Of Salem, adapterd to hypno stuff",
+  "description": "Discord bot for playing Town Of Salem, adapted to hypno stuff",
   "scripts": {
-    "start": "node index.js"
+    "start": "node build/index.js"
   },
-  "main": "index.js",
+  "main": "build/index.js",
   "license": "MIT",
   "engine": {
     "node": ">= 7.0.0"
@@ -23,6 +23,7 @@
     "uws": "^0.14.5"
   },
   "devDependencies": {
-    "@types/node": "^8.0.26"
+    "@types/node": "^8.0.26",
+    "typescript": "^2.5.2"
   }
 }
