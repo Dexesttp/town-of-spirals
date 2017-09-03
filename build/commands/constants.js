@@ -2,10 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CREATE_COMMAND = "!s create";
 exports.JOIN_COMMAND = "!s join";
+exports.LEAVE_COMMAND = "!s leave";
 exports.CANCEL_CREATE_COMMAND = "!s cancelCreate";
 exports.START_COMMAND = "!s start";
 exports.ROLE_COMMAND = "!s role";
+exports.NO_VOTE_COMMAND = "!s no-vote";
 exports.VOTE_COMMAND = "!s vote {player name}";
+exports.SPY_COMMAND = "!s spy {player name}";
+exports.BREAK_COMMAND = "!s break {player name}";
+exports.SAVE_COMMAND = "!s save";
+exports.SKIP_COMMAND = "!s skip";
 exports.ENTHRALL_COMMAND = "!s convert {player name}";
 exports.NO_FORCE_COMMAND = "!s no_force";
 exports.FORCE_COMMAND = "!s force {person to vote for}";

@@ -8,7 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const game_data_1 = require("../data/game-data");
 const game_config_1 = require("../data/game-config");
 const constants_1 = require("./constants");
 function join(message) {
@@ -17,7 +16,7 @@ function join(message) {
             message.channel.send(`No game started. Start a game first with \`${constants_1.CREATE_COMMAND}\`.`);
             return;
         }
-        if (game_data_1.gameData.phase) {
+        if (game_config_1.gameConfig.phase) {
             message.channel.send(`The game is in progress, <@${message.author.id}>. Wait for the next one :D`);
             return;
         }

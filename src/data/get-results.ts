@@ -1,11 +1,11 @@
-import { gameData } from "../data/game-data";
+
 import { gameConfig } from "../data/game-config";
 import { User } from "discord.js";
 
 export function getVoteResults() {
 	const results: [User, number][] = [];
-	for(let value in gameData.votes) {
-		const target = gameData.votes[value];
+	for(let value in gameConfig.votes) {
+		const target = gameConfig.votes[value];
 		const targetPlayer = gameConfig.allPlayers.filter(p => p.username === target)[0];
 		const targetValues = results.filter(v => v[0] === targetPlayer);
 		if(targetValues.length > 0)

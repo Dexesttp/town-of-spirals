@@ -14,7 +14,6 @@ client.on("ready", () => {
 	console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Client ready !`);
 	client.user.setUsername("Town of Spirals")
 	.then(c => client.user.setStatus("online"))
-	.then(c => client.user.setGame('Test'))
 	.then(c => {
 		console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Client ready !`);
 	})

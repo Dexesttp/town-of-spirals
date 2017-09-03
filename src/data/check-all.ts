@@ -1,30 +1,20 @@
-import { gameConfig } from "./game-config";
-import { gameData } from "./game-data";
+import { gameConfig, getNickname } from "./game-config";
 import { clearTimer } from "./check-timer";
-import { handleNight } from "./handle-night";
+import { handleNight, handleSpecialRole } from "./handle-night";
 import { handleDay } from "./handle-day";
 import { getVoteResults } from "./get-results";
-import getRandFromArray from "../utils/rand-from-array";
 import { voteFlavours } from "../flavours/vote-flavour";
 import { User } from "discord.js";
+import { revealFlavours } from "../flavours/reveal-flavours";
+import { handleVote } from "./handle-vote";
 
-function dayVoteResult(target: User) {
-	const alivePlayers = gameConfig.allPlayers.filter(p => !gameData.badoozledPlayers.some(b => b === p));
-	const owner = getRandFromArray(alivePlayers, 1)[0];
-	const flavour = getRandFromArray(voteFlavours, 1)[0];
-	flavour(gameConfig.channel, target, owner);
-}
-
-function nightVoteResult(target: User) {
-	for(let tist of gameData.hypnotists)
-		tist.send(`You sneak to <@${target.id}>'s house, where you find your fellow tists. With their help, you break <@${target.id}>'s mind.`);
-}
-
-export function checkAll(forceEnd?: boolean) {
+export async function checkAll(forceEnd?: boolean) {
+	if(!gameConfig.channel)
+		return;
 	forceEnd = forceEnd || false;
-	if(gameData.phase === "day") {
-		const voters = gameConfig.allPlayers.filter(p => !gameData.badoozledPlayers.some(b => b === p));
-		const remaining = voters.filter(t => !gameData.votes[t.id]);
+	if(gameConfig.phase === "day") {
+		const voters = gameConfig.allPlayers.filter(p => !gameConfig.badoozledPlayers.some(b => b === p));
+		const remaining = voters.filter(t => !gameConfig.votes[t.id]);
 		console.log("Remaining votes : " + remaining.length);
 		if(!forceEnd) {
 			if(remaining.length > 0) {
@@ -46,25 +36,25 @@ There's still ${remaining.length} people who have to vote.
 				return;
 			}
 			const target = results[0][0];
-			dayVoteResult(target);
-			gameData.badoozledPlayers.push(target);
+			await handleVote(target);
+			gameConfig.badoozledPlayers.push(target);
 			handleNight();
 			return;
 		}
 		const target = results[0][0];
-		dayVoteResult(target);
-		gameData.badoozledPlayers.push(target);
+		await handleVote(target);
+		gameConfig.badoozledPlayers.push(target);
 		handleNight();
 		return;
 	}
-	if(gameData.phase === "night") {
-		const voters = gameData.hypnotists.filter(p => !gameData.badoozledPlayers.some(b => b === p));
-		const remaining = voters.filter(t => !gameData.votes[t.id]);
+	if(gameConfig.phase === "night") {
+		const voters = gameConfig.hypnotists.filter(p => !gameConfig.badoozledPlayers.some(b => b === p));
+		const remaining = voters.filter(t => !gameConfig.votes[t.id]);
 		console.log("Remaining votes : " + remaining.length);
 		if(!forceEnd) {
 			if(remaining.length > 0) {
 				const results = getVoteResults();
-				for(let tist of gameData.hypnotists)
+				for(let tist of voters)
 					tist.send(`
 Current votes : ${results.map(r => `${r[0].username} (${r[1]})`).join(", ")}
 There's still ${remaining.length} people who have to vote.
@@ -73,28 +63,57 @@ There's still ${remaining.length} people who have to vote.
 			}
 		}
 		clearTimer();
-		for(let tist of gameData.hypnotists)
+		for(let tist of voters)
 			tist.send(`Everybody has voted ! Here's the result.`);
 		const results = getVoteResults();
 		if(results.length > 1) {
 			if(results[0][1] === results[1][1]) {
-				for(let tist of gameData.hypnotists)
+				for(let tist of voters)
 					tist.send("The vote is closed. This was a tie and nobody got mindbroken today.");
-				handleDay();
+				handleSpecialRole();
 				return;
 			}
 			const target = results[0][0];
-			nightVoteResult(target);
-			gameData.badoozledPlayers.push(target);
-			gameData.recentlyBadoozled.push(target);
-			handleDay();
+			await handleTistEnd(target, voters);
+			gameConfig.badoozledPlayers.push(target);
+			gameConfig.recentlyBadoozled.push(target);
+			handleSpecialRole();
 			return;
 		}
 		const target = results[0][0];
-		nightVoteResult(target);
-		gameData.badoozledPlayers.push(target);
-		gameData.recentlyBadoozled.push(target);
-		handleDay();
+		await handleTistEnd(target, voters);
+		gameConfig.badoozledPlayers.push(target);
+		gameConfig.recentlyBadoozled.push(target);
+		handleSpecialRole();
 		return;
 	}
+}
+
+async function handleTistEnd(target:User, voters: User[]) {
+	const targetNickname = await getNickname(target);
+	if(voters.length > 0) {
+		if(target === voters[0]) {
+			for(let tist of voters)
+				tist.send(`You pick a mirror, and look at yourself in the eyes. Carefully, you start the process of breaking your own mind.`);		
+			return;
+		}
+		for(let tist of voters)
+			tist.send(`You sneak to ${targetNickname}'s house. Carefully, without waking them up, you whisper them into trance, where you start the process of breaking their mind.`);		
+		return;
+	}
+	if(voters.some(t => t === target)) {
+		if(voters.length == 2) {
+			const remainingTist = voters.filter(v => v !== target)[0];
+			const tistNick = await getNickname(remainingTist);
+			for(let tist of voters)
+				tist.send(`${tistNick} meets ${targetNickname} at their house, where they trick them into trance. ${targetNickname}'s mind quickly gets melted.`);
+		}
+		for(let tist of voters.filter(v => v !== target))
+			tist.send(`You and the other hypnotists sneak into ${targetNickname}'s house. With the ${voters.length - 1} of you, you restrain ${targetNickname} and begin the process of breaking their mind.`);
+		target.send(`A bit surprised, you get thrown on your bed by an angry-looking team of ${voters.length - 1} hypnotists. Before you can scream, one of them shut your mouth with their hand, and all you can do is listen to their words and feel your mind slipping away.`);
+		return;
+	}
+	for(let tist of voters)
+		tist.send(`You sneak to ${targetNickname}'s house, where you find your fellow tists. With their help, you break ${targetNickname}'s mind.`);
+	return;
 }

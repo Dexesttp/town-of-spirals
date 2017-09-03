@@ -1,6 +1,6 @@
 import * as moment from "moment";
 import { getNickname, gameConfig } from "../data/game-config";
-import { JOIN_COMMAND } from "./constants";
+import { JOIN_COMMAND, START_COMMAND } from "./constants";
 import { Message, TextChannel } from "discord.js";
 
 export async function createGame(message: Message) {
@@ -20,6 +20,6 @@ export async function createGame(message: Message) {
 	gameConfig.allPlayers = [];
 	console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message.author.username} created a game !`);
 	gameConfig.channel = <TextChannel> message.channel;
-	gameConfig.channel.send(`Game started. Type \`${JOIN_COMMAND}\` to join the game !`);
+	gameConfig.channel.send(`Game started. Type \`${JOIN_COMMAND}\` to join the game, and ${START_COMMAND} to create it !`);
 	return true;
 }

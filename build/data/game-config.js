@@ -9,16 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.gameConfig = {
-    allPlayers: [],
-    channel: null,
     gameStarter: null,
+    channel: null,
+    phase: null,
+    allPlayers: [],
+    hypnotists: [],
+    specials: {},
+    badoozledPlayers: [],
+    recentlyBadoozled: [],
+    votes: {},
 };
-function sendChannelMessage(message) {
-    exports.gameConfig.channel.send(message);
-}
-exports.sendChannelMessage = sendChannelMessage;
 function getNickname(author) {
     return __awaiter(this, void 0, void 0, function* () {
+        if (!author || !exports.gameConfig.channel)
+            return "";
         const guildUser = yield exports.gameConfig.channel.guild.fetchMember(author);
         return guildUser.nickname || author.username;
     });

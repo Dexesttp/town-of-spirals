@@ -1,16 +1,20 @@
-import { sendChannelMessage } from "./game-config";
+import { gameConfig } from "./game-config";
 import { checkAll } from "./check-all";
 
-let timer;
+let timer: NodeJS.Timer | null = null;
 export function timerA() {
-	sendChannelMessage("Two minutes remaining !");
+	if(!gameConfig.channel)
+		return;
+	gameConfig.channel.send("Five minutes remaining !");
 	timer = setTimeout(() => {
 		timerB();
-	}, 90000);
+	}, 270000);
 }
 
 export function timerB() {
-	sendChannelMessage("30s remaining !");
+	if(!gameConfig.channel)
+		return;
+	gameConfig.channel.send("30s remaining !");
 	timer = setTimeout(() => {
 		checkAll(true);
 		timer = null;

@@ -2,16 +2,20 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const game_config_1 = require("./game-config");
 const check_all_1 = require("./check-all");
-let timer;
+let timer = null;
 function timerA() {
-    game_config_1.sendChannelMessage("Two minutes remaining !");
+    if (!game_config_1.gameConfig.channel)
+        return;
+    game_config_1.gameConfig.channel.send("Five minutes remaining !");
     timer = setTimeout(() => {
         timerB();
-    }, 90000);
+    }, 270000);
 }
 exports.timerA = timerA;
 function timerB() {
-    game_config_1.sendChannelMessage("30s remaining !");
+    if (!game_config_1.gameConfig.channel)
+        return;
+    game_config_1.gameConfig.channel.send("30s remaining !");
     timer = setTimeout(() => {
         check_all_1.checkAll(true);
         timer = null;

@@ -10,19 +10,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const game_config_1 = require("../data/game-config");
 const constants_1 = require("./constants");
-function getRole(message) {
+function leave(message) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (!game_config_1.gameConfig.channel) {
-            message.channel.send(`There's no game started yet ! Start a game with the \`${constants_1.CREATE_COMMAND}\` command.`);
+        if (game_config_1.gameConfig.channel === null) {
+            message.channel.send(`No game started. Start a game first with \`${constants_1.CREATE_COMMAND}\`.`);
             return;
         }
+        const nickname = yield game_config_1.getNickname(message.author);
         if (!game_config_1.gameConfig.allPlayers.some(p => p === message.author)) {
-            message.author.send(`Sorry, you aren't playing in the current game.`);
+            game_config_1.gameConfig.channel.send(`You didn't join, ${nickname}. No point in leaving.`);
             return;
         }
-        const isBadoozled = game_config_1.gameConfig.badoozledPlayers.some(p => p === message.author);
-        const isHypnotist = game_config_1.gameConfig.hypnotists.some(p => p === message.author);
-        message.author.send(`You are a ${isHypnotist ? "hypnotist" : "subject"}. You are ${isBadoozled ? "deep in trance" : "still sane"}.`);
+        if (game_config_1.gameConfig.phase) {
+            message.channel.send(`The game is in progress, ${nickname}. You can't leave a running game !`);
+            return;
+        }
+        game_config_1.gameConfig.allPlayers = game_config_1.gameConfig.allPlayers.filter(p => p !== message.author);
+        game_config_1.gameConfig.channel.send(`${nickname} left the game (${game_config_1.gameConfig.allPlayers.length} player[s])`);
     });
 }
-exports.getRole = getRole;
+exports.leave = leave;

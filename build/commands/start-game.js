@@ -9,12 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const game_config_1 = require("../data/game-config");
-const game_data_1 = require("../data/game-data");
 const rand_from_array_1 = require("../utils/rand-from-array");
 const handle_night_1 = require("../data/handle-night");
 const constants_1 = require("./constants");
-const MIN_PLAYERS = 4;
-const HYPNOTISTS_PERCENT = 0.25;
+const MIN_PLAYERS = 3;
+const HYPNOTISTS_PERCENT = 0.34;
 function startGame(message) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!game_config_1.gameConfig.channel) {
@@ -32,13 +31,29 @@ function startGame(message) {
         }
         game_config_1.gameConfig.channel.send(`Starting the game...`)
             .then((message) => {
-            const n = Math.ceil(game_config_1.gameConfig.allPlayers.length * HYPNOTISTS_PERCENT);
-            game_data_1.gameData.hypnotists = rand_from_array_1.default(game_config_1.gameConfig.allPlayers, n);
-            game_data_1.gameData.badoozledPlayers = [];
+            if (!game_config_1.gameConfig.channel)
+                return;
             message.delete(500);
+            game_config_1.gameConfig.badoozledPlayers = [];
+            game_config_1.gameConfig.recentlyBadoozled = [];
+            const n = Math.floor(game_config_1.gameConfig.allPlayers.length * HYPNOTISTS_PERCENT);
+            game_config_1.gameConfig.hypnotists = rand_from_array_1.default(game_config_1.gameConfig.allPlayers, n);
+            const normalPlayers = game_config_1.gameConfig.allPlayers.filter(p => !game_config_1.gameConfig.hypnotists.some(h => p === h));
+            if (normalPlayers.length >= 3) {
+                const detective = rand_from_array_1.default(normalPlayers, 1)[0];
+                game_config_1.gameConfig.specials[detective.id] = "detective";
+                if (normalPlayers.length >= 5) {
+                    const deprogrammer = rand_from_array_1.default(normalPlayers.filter(p => p !== detective), 1)[0];
+                    game_config_1.gameConfig.specials[deprogrammer.id] = "deprogrammer";
+                }
+            }
             for (let player of game_config_1.gameConfig.allPlayers) {
-                if (game_data_1.gameData.hypnotists.some(h => h === player))
-                    player.send(`The game has started ! you are a hypnotist, along with ${game_data_1.gameData.hypnotists.map(h => h.username).join(", ")}`);
+                if (game_config_1.gameConfig.hypnotists.some(h => h === player))
+                    player.send(`The game has started ! you are a hypnotist, along with ${game_config_1.gameConfig.hypnotists.map(h => h.username).join(", ")}`);
+                else if (game_config_1.gameConfig.specials[player.id] === "detective")
+                    player.send(`The game has started ! You are a detective.`);
+                else if (game_config_1.gameConfig.specials[player.id] === "deprogrammer")
+                    player.send(`The game has started ! You are a deprogrammer.`);
                 else
                     player.send(`The game has started ! You are a normal citizen.`);
             }

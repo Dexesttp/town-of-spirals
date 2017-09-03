@@ -1,4 +1,3 @@
-import { gameData } from "../data/game-data";
 import { gameConfig, getNickname } from "../data/game-config";
 import { CREATE_COMMAND } from "./constants";
 import { Message } from "discord.js";
@@ -8,7 +7,7 @@ export async function join(message: Message) {
 		message.channel.send(`No game started. Start a game first with \`${CREATE_COMMAND}\`.`);
 		return;
 	}
-	if(gameData.phase) {
+	if(gameConfig.phase) {
 		message.channel.send(`The game is in progress, <@${message.author.id}>. Wait for the next one :D`);
 		return;
 	}

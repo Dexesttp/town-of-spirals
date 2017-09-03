@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const game_config_1 = require("../data/game-config");
-const game_data_1 = require("../data/game-data");
 const check_all_1 = require("../data/check-all");
 const constants_1 = require("./constants");
 function handleVote(message, voteTarget) {
@@ -22,45 +21,51 @@ function handleVote(message, voteTarget) {
             message.author.send("You're not playing the game. Sorry.");
             return;
         }
-        if (game_data_1.gameData.phase === "night") {
+        if (game_config_1.gameConfig.phase === "night") {
             if (message.guild) {
-                game_config_1.gameConfig.channel.send(`Don't vote here at night, but by DM !. I hope you like having your mind broken, though.`);
+                if (message.deletable)
+                    yield message.delete();
+                game_config_1.gameConfig.channel.send(`Don't vote here at night, but by DM !`);
                 return;
             }
-            if (game_data_1.gameData.badoozledPlayers.some(p => p === message.author)) {
+            if (game_config_1.gameConfig.badoozledPlayers.some(p => p === message.author)) {
                 message.author.send(`Sorry, but you're not able to think at all, let alone cast a vote.`);
                 return;
             }
-            if (!game_data_1.gameData.hypnotists.some(p => p === message.author)) {
+            if (!game_config_1.gameConfig.hypnotists.some(p => p === message.author)) {
                 message.author.send(`You're not a hypnotist. You should be asleep at night !`);
                 return;
             }
-            var targets = game_config_1.gameConfig.allPlayers.filter(p => !game_data_1.gameData.badoozledPlayers.some(b => b === p));
+            var targets = game_config_1.gameConfig.allPlayers.filter(p => !game_config_1.gameConfig.badoozledPlayers.some(b => b === p));
             if (!targets.some(p => p.username === voteTarget)) {
                 message.author.send(`You can't vote for ${voteTarget}, they're not playing or already hypnotized. The available targets are : ${targets.map(t => t.username).join(", ")}`);
                 return;
             }
-            message.author.send(`You voted for ${voteTarget}.`);
-            game_data_1.gameData.votes[message.author.id] = voteTarget;
+            var saneTists = game_config_1.gameConfig.hypnotists.filter(h => !game_config_1.gameConfig.badoozledPlayers.some(b => b === h));
+            for (let tist of saneTists)
+                tist.send(`${message.author.username} voted for ${voteTarget}.`);
+            game_config_1.gameConfig.votes[message.author.id] = voteTarget;
             check_all_1.checkAll();
             return;
         }
-        if (game_data_1.gameData.phase === "day") {
+        if (game_config_1.gameConfig.phase === "day") {
             if (!message.guild) {
                 message.author.send(`By day, all votes are public.`);
                 return;
             }
-            if (game_data_1.gameData.badoozledPlayers.some(p => p === message.author)) {
-                game_config_1.gameConfig.channel.send(`Sorry <@${message.author.id}>, but you're not able to think at all, let alone cast a vote.`);
+            if (game_config_1.gameConfig.badoozledPlayers.some(p => p === message.author)) {
+                if (message.deletable)
+                    yield message.delete();
+                game_config_1.gameConfig.channel.send(`Sorry ${message.author.username}, but you're not able to think at all, let alone cast a vote.`);
                 return;
             }
-            var targets = game_config_1.gameConfig.allPlayers.filter(p => !game_data_1.gameData.badoozledPlayers.some(b => b === p));
+            var targets = game_config_1.gameConfig.allPlayers.filter(p => !game_config_1.gameConfig.badoozledPlayers.some(b => b === p));
             if (!targets.some(p => p.username === voteTarget)) {
                 game_config_1.gameConfig.channel.send(`You can't vote for ${voteTarget}, they're not playing or already hypnotized. The available targets are : ${targets.map(t => t.username).join(", ")}`);
                 return;
             }
-            game_data_1.gameData.votes[message.author.id] = voteTarget;
-            game_config_1.gameConfig.channel.send(`<@${message.author.id}> voted for ${voteTarget} !`);
+            game_config_1.gameConfig.votes[message.author.id] = voteTarget;
+            game_config_1.gameConfig.channel.send(`${message.author.username} voted for ${voteTarget} !`);
             check_all_1.checkAll();
             return;
         }

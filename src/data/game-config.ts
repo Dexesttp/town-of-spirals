@@ -1,20 +1,34 @@
 import { User, Channel, TextChannel } from "discord.js";
 
-export const gameConfig: {
-	allPlayers: User[],
+export type SpecialRole = "detective" | "deprogrammer";
+
+type GameConfig = {
+	gameStarter: User | null,
 	channel: TextChannel | null,
-	gameStarter: User | null ,
-} = {
-	allPlayers: [],
+	phase: "day" | "night" | null,
+	allPlayers: User[],
+	hypnotists: User[],
+	specials: {[userID: string]: SpecialRole},
+	badoozledPlayers: User[],
+	recentlyBadoozled: User[],
+	votes: {[key: string] : string},
+};
+
+export const gameConfig: GameConfig = {
+	gameStarter: null,
 	channel: null,
-	gameStarter: null,	
+	phase: null,
+	allPlayers: [],
+	hypnotists: [],
+	specials: {},
+	badoozledPlayers: [],
+	recentlyBadoozled: [],
+	votes: {},
 }
 
-export function sendChannelMessage(message: string) {
-	gameConfig.channel.send(message);
-}
-
-export async function getNickname(author) {
+export async function getNickname(author: User | null) {
+	if(!author || !gameConfig.channel)
+		return "";
 	const guildUser = await gameConfig.channel.guild.fetchMember(author);
 	return guildUser.nickname || author.username;
 }

@@ -1,12 +1,12 @@
 import {gameConfig, getNickname} from "../data/game-config";
-import {gameData} from "../data/game-data";
 import getRandom from "../utils/rand-from-array";
 import { handleNight } from "../data/handle-night";
 import { CREATE_COMMAND, CANCEL_CREATE_COMMAND } from "./constants";
 import { Message } from "discord.js";
+import { handleDay } from "../data/handle-day";
 
-const MIN_PLAYERS = 4;
-const HYPNOTISTS_PERCENT = 0.25;
+const MIN_PLAYERS = 3;
+const HYPNOTISTS_PERCENT = 0.34;
 
 export async function startGame(message: Message) {
 	if(!gameConfig.channel) {
@@ -24,15 +24,30 @@ export async function startGame(message: Message) {
 	}
 	gameConfig.channel.send(`Starting the game...`)
 	.then((message: Message) => {
-		const n = Math.ceil(gameConfig.allPlayers.length * HYPNOTISTS_PERCENT);
-		gameData.hypnotists = getRandom(gameConfig.allPlayers, n);
-		gameData.badoozledPlayers = [];
+		if(!gameConfig.channel) return;
 		message.delete(500);
+		gameConfig.badoozledPlayers = [];
+		gameConfig.recentlyBadoozled = [];
+		const n = Math.floor(gameConfig.allPlayers.length * HYPNOTISTS_PERCENT);
+		gameConfig.hypnotists = getRandom(gameConfig.allPlayers, n);
+		const normalPlayers = gameConfig.allPlayers.filter(p => !gameConfig.hypnotists.some(h => p === h));
+		if(normalPlayers.length >= 3) {
+			const detective = getRandom(normalPlayers, 1)[0];
+			gameConfig.specials[detective.id] = "detective";
+			if(normalPlayers.length >= 5) {
+				const deprogrammer = getRandom(normalPlayers.filter(p => p !== detective), 1)[0];
+				gameConfig.specials[deprogrammer.id] = "deprogrammer";
+			}
+		}
 		for(let player of gameConfig.allPlayers) {
-			if(gameData.hypnotists.some(h => h === player))
-				player.send(`The game has started ! you are a hypnotist, along with ${gameData.hypnotists.map(h => h.username).join(", ")}`);
+			if(gameConfig.hypnotists.some(h => h === player))
+				player.send(`The game has started ! you are a hypnotist, along with ${gameConfig.hypnotists.map(h => h.username).join(", ")}`);
+			else if(gameConfig.specials[player.id] === "detective")
+				player.send(`The game has started ! You are a detective.`);
+			else if(gameConfig.specials[player.id] === "deprogrammer")
+				player.send(`The game has started ! You are a deprogrammer.`);
 			else
-				player.send(`The game has started ! You are a normal citizen.`);				
+				player.send(`The game has started ! You are a normal citizen.`);
 		}
 		gameConfig.channel.send(`
 ${gameConfig.allPlayers.map(p => `<@${p.id}>`).join(" , ")} , the game has started !
