@@ -1,0 +1,57 @@
+hypnotist:
+  - |
+    The villagers check [name]'s house out.
+    They find a detailed summary of each of their likes and dislikes, and some instructions of how to use that against them. Pretty unsettling stuff.
+    It appears <@[id]> was a hypnotist !
+  - |
+    The villagers check [name]'s house out.
+    They find schematics for a mind-control helmet, and a nearly working prototype.
+    It appears <@[id]> was a hypnotist !
+  - |
+    The villagers check [name]'s house out.
+    As they enter, the TV screen flickers on and a huge spiral appears on it. As the whole town begins to stare at it, somebody has the common sense to turn the screen off.
+    It appears <@[id]> was a hypnotist !
+  - |
+    The villagers check [name]'s house out.
+    [name] definitely liked pocket watches. He must have at least a hundred of them !
+    It appears <@[id]> was a hypnotist !
+  - |
+    The villagers check [name]'s house out.
+    There is a big piece of paper on the wall, where everybody can read "I AM A HYPNOTIST. HERE ARE THE NAMES OF THE OTHERS :"
+    Unfortunately, somebody tore the bottom part of the paper, and the names are missing.
+    It appears <@[id]> was a hypnotist !
+villager:
+  - |
+    The villagers check [name]'s house out.
+    They find a dream diary with some pretty interesting fantasies.
+    It appears <@[id]> was just a normal villager.
+  - |
+    The villagers check [name]'s house out.
+    They find a really good recipe for chocolate cake, and hope [name] will still be able to cook.
+    It appears <@[id]> was just a normal villager.
+  - |
+    The villagers check [name]'s house out.
+    They find a massive dildo and there's no clue if [name] was ever able to use it.
+    It appears <@[id]> was just a normal villager.
+  - |
+    The villagers check [name]'s house out.
+    They cannot find anything out of the ordinary.
+    It appears <@[id]> was just a normal villager.
+  - |
+    The villagers check [name]'s house out.
+    They cannot find anything out of the ordinary.
+    It appears <@[id]> was just a normal villager.
+  - |
+    The villagers check [name]'s house out.
+    They cannot find anything out of the ordinary.
+    It appears <@[id]> was just a normal villager.
+deprogrammer:
+  - |
+    The villagers check [name]'s house out.
+    They find manuals about self-worth, analysis of hypnosis and some pretty complicated techniques about breaking conditioning.
+    It appears <@[id]> was a deprogrammer.
+detective:
+  - |
+    The villagers check [name]'s house out.
+    They find a pair of binoculars, some maps and a half-burnt piece of paper with "Potential hypnotists" written on it - no names can be deciphered, sadly.
+    It appears <@[id]> was a detective.

@@ -3,7 +3,6 @@ import { clearTimer } from "./check-timer";
 import { handleNight, handleSpecialRole } from "./handle-night";
 import { handleDay } from "./handle-day";
 import { getVoteResults } from "./get-results";
-import { voteFlavours } from "../flavours/vote-flavour";
 import { User } from "discord.js";
 import { revealFlavours } from "../flavours/reveal-flavours";
 import { handleVote } from "./handle-vote";
@@ -47,7 +46,7 @@ There's still ${remaining.length} people who have to vote.
 			handleNight();
 			return;
 		}
-		const target = results[0].user;
+		const target = results.length > 0 ? results[0].user : null;
 		if(target === null) {
 			gameConfig.channel.send("The majority voted to skip the vote.");	
 			handleNight();
@@ -97,7 +96,7 @@ There's still ${remaining.length} people who have to vote.
 			handleSpecialRole();
 			return;
 		}
-		const target = results[0].user;
+		const target = results.length > 0 ? results[0].user : null;
 		if(target === null) {
 			for(let tist of voters)
 				tist.send("The vote is closed. The majority voted to skip the night.");

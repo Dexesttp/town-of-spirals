@@ -10,15 +10,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const game_config_1 = require("./game-config");
 const reveal_flavours_1 = require("../flavours/reveal-flavours");
-const vote_flavour_1 = require("../flavours/vote-flavour");
 const rand_from_array_1 = require("../utils/rand-from-array");
+const load_flavours_1 = require("../flavours/load-flavours");
 function handleVote(target) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!game_config_1.gameConfig.channel)
             return;
         const alivePlayers = game_config_1.gameConfig.allPlayers.filter(p => !game_config_1.gameConfig.badoozledPlayers.some(b => b === p) && p !== target);
         const owner = rand_from_array_1.default(alivePlayers, 1)[0];
-        const flavour = rand_from_array_1.default(vote_flavour_1.voteFlavours, 1)[0];
+        const flavour = rand_from_array_1.default(load_flavours_1.voteFlavours, 1)[0];
         const targetNick = yield game_config_1.getNickname(target);
         const ownerNick = yield game_config_1.getNickname(owner);
         game_config_1.gameConfig.channel.send(flavour(targetNick, ownerNick));

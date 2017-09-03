@@ -9,18 +9,13 @@ const vote_1 = require("./commands/vote");
 const join_1 = require("./commands/join");
 const moment = require("moment");
 const reveal_flavours_1 = require("./flavours/reveal-flavours");
-const vote_flavour_1 = require("./flavours/vote-flavour");
 const leave_1 = require("./commands/leave");
-const new_day_flavours_1 = require("./flavours/new-day-flavours");
-const no_enthrall_flavours_1 = require("./flavours/no-enthrall-flavours");
-const enthrall_flavours_1 = require("./flavours/enthrall-flavours");
-const start_vote_flavours_1 = require("./flavours/start-vote-flavours");
+const load_flavours_1 = require("./flavours/load-flavours");
 const deprogram_1 = require("./commands/deprogram");
 const spy_1 = require("./commands/spy");
 const help_1 = require("./commands/help");
 const game_config_1 = require("./data/game-config");
 const rand_from_array_1 = require("./utils/rand-from-array");
-const mumble_flavour_1 = require("./flavours/mumble-flavour");
 const VOTE_NUMBER_COMMAND_REGEXP = /^!s vote-nb (\d+)$/i;
 const VOTE_COMMAND_REGEXP = /^!s vote (.+)$/i;
 const VOTE_ID_COMMAND_REGEXP = /^!s vote <@!?(\d+)>/i;
@@ -37,8 +32,8 @@ function handleMessage(message, allowMumble) {
             .then(n => {
             if (!game_config_1.gameConfig.channel)
                 return;
-            const flavour = rand_from_array_1.default(mumble_flavour_1.mumbleFlavours, 1)[0];
-            game_config_1.gameConfig.channel.send(flavour(n))
+            const flavour = rand_from_array_1.default(load_flavours_1.mumbleFlavours, 1)[0];
+            game_config_1.gameConfig.channel.send(flavour(n, ''))
                 .then(m => previousMumble = m);
         });
         return;
@@ -133,29 +128,29 @@ function handleMessage(message, allowMumble) {
             switch (messageData[1]) {
                 case "new-day":
                     {
-                        const flavour = new_day_flavours_1.newDayFlavours[+(messageData[2])];
+                        const flavour = load_flavours_1.newDayFlavours[+(messageData[2])];
                         message.channel.send(flavour());
                     }
                     ;
                     return;
                 case "no-enthrall":
                     {
-                        const flavour = no_enthrall_flavours_1.noEnthrallFlavours[+(messageData[2])];
+                        const flavour = load_flavours_1.noEnthrallFlavours[+(messageData[2])];
                         message.channel.send(flavour());
                     }
                     ;
                     return;
                 case "enthrall":
                     {
-                        const flavour = enthrall_flavours_1.enthrallFlavours[+(messageData[2])];
+                        const flavour = load_flavours_1.enthrallFlavours[+(messageData[2])];
                         message.channel.send(flavour(message.author.username, message.author.username));
                     }
                     ;
                     return;
                 case "start-vote":
                     {
-                        const flavour = start_vote_flavours_1.startVoteFlavours[+(messageData[2])];
-                        message.channel.send(flavour([]));
+                        const flavour = load_flavours_1.startVoteFlavours[+(messageData[2])];
+                        message.channel.send(flavour());
                     }
                     ;
                     return;
@@ -189,7 +184,7 @@ function handleMessage(message, allowMumble) {
                     return;
                 case "vote":
                     {
-                        const flavour = vote_flavour_1.voteFlavours[+(messageData[2])];
+                        const flavour = load_flavours_1.voteFlavours[+(messageData[2])];
                         message.channel.send(flavour(message.author.username, message.author.username));
                     }
                     ;

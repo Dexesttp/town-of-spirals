@@ -3,11 +3,9 @@ import { checkEnd } from "./check-end";
 import { timerA } from "./check-timer";
 import getRandFromArray from "../utils/rand-from-array";
 import { revealFlavours } from "../flavours/reveal-flavours";
-import { newDayFlavours } from "../flavours/new-day-flavours";
-import { enthrallFlavours } from "../flavours/enthrall-flavours";
-import { noEnthrallFlavours } from "../flavours/no-enthrall-flavours";
-import { startVoteFlavours } from "../flavours/start-vote-flavours";
+import { enthrallFlavours, newDayFlavours, noEnthrallFlavours, startVoteFlavours } from "../flavours/load-flavours";
 import * as moment from "moment";
+import { VOTE_NB_COMMAND, VOTE_COMMAND } from "../commands/constants";
 
 export async function handleDay() {
 	if(!gameConfig.channel)
@@ -16,6 +14,7 @@ export async function handleDay() {
 	const flavour = getRandFromArray(newDayFlavours, 1)[0];
 	gameConfig.channel.send(flavour());
 	const sanePlayers = gameConfig.allPlayers.filter(p => !gameConfig.badoozledPlayers.some(b => b === p));
+	const remainingVillagers = sanePlayers.some(p => !gameConfig.hypnotists.some(h => h === p));
 	if(gameConfig.recentlyBadoozled.length) {
 		gameConfig.channel.send(`The villagers all gather in the center of the village. Something is wrong.`)
 		for(let broken of gameConfig.recentlyBadoozled) {
@@ -24,6 +23,17 @@ export async function handleDay() {
 			const brokenNick = await getNickname(broken);
 			const ownerNick = await getNickname(owner);
 			gameConfig.channel.send(flavour(brokenNick, ownerNick));
+			if(remainingVillagers) {
+				const wasTist = gameConfig.hypnotists.some(h => h === broken);
+				const wasDetective = gameConfig.specials[broken.id] === "detective";
+				const wasDeprogrammer = gameConfig.specials[broken.id] === "deprogrammer";
+				const pickedRevealFlavour = wasTist
+				? getRandFromArray(revealFlavours.hypnotist, 1)[0]
+				: wasDetective ? getRandFromArray(revealFlavours.detective, 1)[0]
+				: wasDeprogrammer ? getRandFromArray(revealFlavours.deprogrammer, 1)[0]
+				: getRandFromArray(revealFlavours.villager, 1)[0];
+				gameConfig.channel.send(pickedRevealFlavour(broken));
+			}
 		}
 	}
 	else {
@@ -31,23 +41,16 @@ export async function handleDay() {
 		gameConfig.channel.send(flavour());
 	}
 	gameConfig.votes = {};
-	if(checkEnd())
+	if(await checkEnd())
 		return;
-	for(let broken of gameConfig.recentlyBadoozled) {
-		const wasTist = gameConfig.hypnotists.some(h => h === broken);
-		const wasDetective = gameConfig.specials[broken.id] === "detective";
-		const wasDeprogrammer = gameConfig.specials[broken.id] === "deprogrammer";
-		const pickedRevealFlavour = wasTist
-			? getRandFromArray(revealFlavours.hypnotist, 1)[0]
-			: wasDetective ? getRandFromArray(revealFlavours.detective, 1)[0]
-			: wasDeprogrammer ? getRandFromArray(revealFlavours.deprogrammer, 1)[0]
-			: getRandFromArray(revealFlavours.villager, 1)[0];
-		gameConfig.channel.send(pickedRevealFlavour(broken));
-	}
 	gameConfig.recentlyBadoozled = [];
 	const startVoteFlavour = getRandFromArray(startVoteFlavours, 1)[0];
 	var targets = gameConfig.allPlayers.filter(p => !gameConfig.badoozledPlayers.some(b => b === p)).map(t => t.username);
-	gameConfig.channel.send(startVoteFlavour(targets));
+	gameConfig.channel.send(`
+${startVoteFlavour()}
+The remaining villagers are : ${targets.map((t, id) => `[${id}] ${t}`).join(", ")}
+Use \`${VOTE_COMMAND}\` to vote, or \`${VOTE_NB_COMMAND}\`
+	`);
 	timerA();
 	console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Day time !`);
 }

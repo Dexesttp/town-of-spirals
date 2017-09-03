@@ -8,18 +8,13 @@ import { handleVote } from "./commands/vote";
 import { join } from "./commands/join";
 import * as moment from "moment";
 import { revealFlavours } from "./flavours/reveal-flavours";
-import { voteFlavours } from "./flavours/vote-flavour";
 import { leave } from "./commands/leave";
-import { newDayFlavours } from "./flavours/new-day-flavours";
-import { noEnthrallFlavours } from "./flavours/no-enthrall-flavours";
-import { enthrallFlavours } from "./flavours/enthrall-flavours";
-import { startVoteFlavours } from "./flavours/start-vote-flavours";
+import { enthrallFlavours, mumbleFlavours, newDayFlavours, noEnthrallFlavours, startVoteFlavours, voteFlavours } from "./flavours/load-flavours";
 import { setSave, setSkip, setBreak } from "./commands/deprogram";
 import { handleSpy } from "./commands/spy";
 import { handleHelp, handleRules } from "./commands/help";
 import { gameConfig, getNickname } from "./data/game-config";
 import getRandFromArray from "./utils/rand-from-array";
-import { mumbleFlavours } from "./flavours/mumble-flavour";
 
 const VOTE_NUMBER_COMMAND_REGEXP = /^!s vote-nb (\d+)$/i;
 const VOTE_COMMAND_REGEXP = /^!s vote (.+)$/i;
@@ -40,7 +35,7 @@ export function handleMessage(message: Discord.Message, allowMumble: boolean) {
 			if(!gameConfig.channel)
 				return;
 			const flavour = getRandFromArray(mumbleFlavours, 1)[0];
-			gameConfig.channel.send(flavour(n))
+			gameConfig.channel.send(flavour(n, ''))
 			.then(m => previousMumble = m as Discord.Message);
 		})
 		return;
@@ -137,7 +132,6 @@ export function handleMessage(message: Discord.Message, allowMumble: boolean) {
 	const messageData = MESSAGE_COMMAND_REGEXP.exec(content);
 	if(messageData) {
 		try {
-
 			switch(messageData[1]) {
 				case "new-day": {
 					const flavour = newDayFlavours[+(messageData[2])];
@@ -153,7 +147,7 @@ export function handleMessage(message: Discord.Message, allowMumble: boolean) {
 				}; return;
 				case "start-vote": {
 					const flavour = startVoteFlavours[+(messageData[2])];
-					message.channel.send(flavour([]));
+					message.channel.send(flavour());
 				}; return;
 				case "reveal-hypnotist": {
 					const flavour = revealFlavours.hypnotist[+(messageData[2])];

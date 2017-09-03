@@ -1,8 +1,8 @@
 import { User } from "discord.js";
 import { gameConfig, getNickname } from "./game-config";
 import { revealFlavours } from "../flavours/reveal-flavours";
-import { voteFlavours } from "../flavours/vote-flavour";
 import getRandFromArray from "../utils/rand-from-array";
+import { voteFlavours } from "../flavours/load-flavours";
 
 export async function handleVote(target: User) {
 	if(!gameConfig.channel)

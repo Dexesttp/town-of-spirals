@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const yaml = require("js-yaml");
+const fs_1 = require("fs");
+const result = yaml.safeLoad(fs_1.readFileSync("strings/basic.yaml").toString());
+exports.newDayFlavours = result.newDay.map((text) => () => text);
+exports.enthrallFlavours = result.enthrall.map((text) => (broken, owner) => text.replace(/\[broken\]/ig, broken).replace(/\[owner\]/ig, owner));
+exports.mumbleFlavours = result.mumble.map((text) => (name, owner) => text.replace(/\[name\]/ig, name).replace(/\[owner\]/ig, owner));
+exports.noEnthrallFlavours = result.noEnthrall.map((text) => () => text);
+exports.startVoteFlavours = result.startVote.map((text) => () => text);
+exports.voteFlavours = result.break.map((text) => (broken, owner) => text.replace(/\[broken\]/ig, broken).replace(/\[owner\]/ig, owner));

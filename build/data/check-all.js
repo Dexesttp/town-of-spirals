@@ -53,7 +53,7 @@ There's still ${remaining.length} people who have to vote.
                 handle_night_1.handleNight();
                 return;
             }
-            const target = results[0].user;
+            const target = results.length > 0 ? results[0].user : null;
             if (target === null) {
                 game_config_1.gameConfig.channel.send("The majority voted to skip the vote.");
                 handle_night_1.handleNight();
@@ -103,7 +103,7 @@ There's still ${remaining.length} people who have to vote.
                 handle_night_1.handleSpecialRole();
                 return;
             }
-            const target = results[0].user;
+            const target = results.length > 0 ? results[0].user : null;
             if (target === null) {
                 for (let tist of voters)
                     tist.send("The vote is closed. The majority voted to skip the night.");

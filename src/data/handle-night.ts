@@ -13,7 +13,7 @@ let remainingSpecialRoles: {user: User, role: SpecialRole}[] = [];
 export async function handleNight() {
 	if(!gameConfig.channel)
 		return;
-	if(checkEnd())
+	if(await checkEnd())
 		return;
 	gameConfig.phase = "night";
 	gameConfig.channel.send(`A new night falls on the town.`);

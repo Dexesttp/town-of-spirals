@@ -21,7 +21,7 @@ function handleNight() {
     return __awaiter(this, void 0, void 0, function* () {
         if (!game_config_1.gameConfig.channel)
             return;
-        if (check_end_1.checkEnd())
+        if (yield check_end_1.checkEnd())
             return;
         game_config_1.gameConfig.phase = "night";
         game_config_1.gameConfig.channel.send(`A new night falls on the town.`);
