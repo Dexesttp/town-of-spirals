@@ -29,8 +29,8 @@ function handleNight() {
         var saneTists = game_config_1.gameConfig.hypnotists.filter(h => !game_config_1.gameConfig.badoozledPlayers.some(b => b === h));
         for (let tist of saneTists) {
             tist.send(`
-The night has fallen. Vote for a new victim with \`${constants_1.VOTE_COMMAND}\` (without the {}s please. E.g. : \`!s vote Jk\`)
-The available targets for tonight are : ${aliveVillagers.map(v => v.username).join(", ")}.
+The night has fallen. Vote for a new victim with \`${constants_1.VOTE_COMMAND}\` (without the {}s please. E.g. : \`!s vote Jk\`), or \`${constants_1.VOTE_NB_COMMAND}\`
+The available targets for tonight are : ${aliveVillagers.map((v, id) => `[${id}] ${v.username}`).join(", ")}.
 As a reminder, your colleagues are : ${saneTists.map(v => v.username).join(", ")}.
 		`);
         }

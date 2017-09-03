@@ -1,6 +1,6 @@
 import { gameConfig } from "../data/game-config";
 import { checkAll } from "../data/check-all";
-import { CREATE_COMMAND } from "./constants";
+import { CREATE_COMMAND, START_COMMAND } from "./constants";
 import { Message } from "discord.js";
 
 export async function handleVote(message: Message, voteTarget: string | null) {
@@ -8,8 +8,11 @@ export async function handleVote(message: Message, voteTarget: string | null) {
 		message.channel.send(`There's no game started yet ! Start a game with the \`${CREATE_COMMAND}\` command.`);
 		return;
 	}
+	if(!gameConfig.phase) {
+		message.channel.send(`The game is not started ! Start it with the \`${START_COMMAND}\` command.`);
+	}
 	if(!gameConfig.allPlayers.some(p => p === message.author)) {
-		message.author.send("You're not playing the game. Sorry.");
+		message.channel.send(`You're not playing the game, ${message.author.username}. Sorry.`);
 		return;
 	}
 	if(gameConfig.phase === "night") {
@@ -36,12 +39,13 @@ export async function handleVote(message: Message, voteTarget: string | null) {
 			var saneTists = gameConfig.hypnotists.filter(h => !gameConfig.badoozledPlayers.some(b => b === h));
 			for(let tist of saneTists)
 				tist.send(`${message.author.username} voted for ${voteTarget}.`);
+			gameConfig.votes[message.author.id] = voteTarget;
+			checkAll();
+			return;
 		}
-		else {
-			var saneTists = gameConfig.hypnotists.filter(h => !gameConfig.badoozledPlayers.some(b => b === h));
-			for(let tist of saneTists)
-				tist.send(`${message.author.username} voted for to not target anybody.`);
-		}
+		var saneTists = gameConfig.hypnotists.filter(h => !gameConfig.badoozledPlayers.some(b => b === h));
+		for(let tist of saneTists)
+			tist.send(`${message.author.username} voted for to not target anybody.`);
 		gameConfig.votes[message.author.id] = voteTarget;
 		checkAll();
 		return;
@@ -52,8 +56,6 @@ export async function handleVote(message: Message, voteTarget: string | null) {
 			return;
 		}
 		if(gameConfig.badoozledPlayers.some(p => p === message.author)) {
-			if(message.deletable)
-				await message.delete();
 			gameConfig.channel.send(`Sorry ${message.author.username}, but you're not able to think at all, let alone cast a vote.`);
 			return;
 		}
@@ -64,10 +66,11 @@ export async function handleVote(message: Message, voteTarget: string | null) {
 				return;
 			}
 			gameConfig.channel.send(`${message.author.username} voted for ${voteTarget} !`);
+			gameConfig.votes[message.author.id] = voteTarget;
+			checkAll();
+			return;
 		}
-		else {
-			gameConfig.channel.send(`${message.author.username} voted to not target anybody !`);
-		}
+		gameConfig.channel.send(`${message.author.username} voted to not target anybody !`);
 		gameConfig.votes[message.author.id] = voteTarget;
 		checkAll();
 		return;

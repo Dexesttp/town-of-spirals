@@ -20,7 +20,7 @@ function checkAll(forceEnd) {
         forceEnd = forceEnd || false;
         if (game_config_1.gameConfig.phase === "day") {
             const voters = game_config_1.gameConfig.allPlayers.filter(p => !game_config_1.gameConfig.badoozledPlayers.some(b => b === p));
-            const remaining = voters.filter(t => !game_config_1.gameConfig.votes[t.id]);
+            const remaining = voters.filter(t => game_config_1.gameConfig.votes[t.id] === undefined);
             console.log("Remaining votes : " + remaining.length);
             if (!forceEnd) {
                 if (remaining.length > 0) {
@@ -65,7 +65,7 @@ There's still ${remaining.length} people who have to vote.
         }
         if (game_config_1.gameConfig.phase === "night") {
             const voters = game_config_1.gameConfig.hypnotists.filter(p => !game_config_1.gameConfig.badoozledPlayers.some(b => b === p));
-            const remaining = voters.filter(t => !game_config_1.gameConfig.votes[t.id]);
+            const remaining = voters.filter(t => game_config_1.gameConfig.votes[t.id] === undefined);
             console.log("Remaining votes : " + remaining.length);
             if (!forceEnd) {
                 if (remaining.length > 0) {

@@ -10,6 +10,7 @@ exports.START_COMMAND = "!s start";
 exports.ROLE_COMMAND = "!s role";
 exports.NO_VOTE_COMMAND = "!s no-vote";
 exports.VOTE_COMMAND = "!s vote {player name}";
+exports.VOTE_NB_COMMAND = "!s vote-nb {number}";
 exports.SPY_COMMAND = "!s spy {player name}";
 exports.BREAK_COMMAND = "!s break {player name}";
 exports.SAVE_COMMAND = "!s save";

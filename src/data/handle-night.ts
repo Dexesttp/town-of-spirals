@@ -1,6 +1,6 @@
 import { checkEnd } from "./check-end";
 import { gameConfig, SpecialRole } from "./game-config";
-import { VOTE_COMMAND, SPY_COMMAND, SAVE_COMMAND, SKIP_COMMAND, BREAK_COMMAND } from "../commands/constants";
+import { VOTE_COMMAND, SPY_COMMAND, SAVE_COMMAND, SKIP_COMMAND, BREAK_COMMAND, VOTE_NB_COMMAND } from "../commands/constants";
 import { timerA } from "./check-timer";
 import { User } from "discord.js";
 import { handleDay } from "./handle-day";
@@ -21,8 +21,8 @@ export async function handleNight() {
 	var saneTists = gameConfig.hypnotists.filter(h => !gameConfig.badoozledPlayers.some(b => b === h));
 	for(let tist of saneTists) {
 		tist.send(`
-The night has fallen. Vote for a new victim with \`${VOTE_COMMAND}\` (without the {}s please. E.g. : \`!s vote Jk\`)
-The available targets for tonight are : ${aliveVillagers.map(v => v.username).join(", ")}.
+The night has fallen. Vote for a new victim with \`${VOTE_COMMAND}\` (without the {}s please. E.g. : \`!s vote Jk\`), or \`${VOTE_NB_COMMAND}\`
+The available targets for tonight are : ${aliveVillagers.map((v, id) => `[${id}] ${v.username}`).join(", ")}.
 As a reminder, your colleagues are : ${saneTists.map(v => v.username).join(", ")}.
 		`);
 	}

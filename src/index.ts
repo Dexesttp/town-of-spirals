@@ -9,6 +9,7 @@ const client = new Discord.Client();
 const config = jsonfile.readFileSync("config.json");
 
 const CAN_DELETE_MESSAGES = config.canDelete || false;
+const ALLOW_MUMBLE = config.allowMumble || false;
 
 client.on("ready", () => {
 	console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Client ready !`);
@@ -39,7 +40,7 @@ client.on("message", async message => {
 		}
 		return;
 	}
-	handleMessage(message);
+	handleMessage(message, ALLOW_MUMBLE);
 });
 
 client.login(config.token)

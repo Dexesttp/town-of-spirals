@@ -38,7 +38,7 @@ function createGame(message) {
         game_config_1.gameConfig.allPlayers = [];
         console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message.author.username} created a game !`);
         game_config_1.gameConfig.channel = message.channel;
-        game_config_1.gameConfig.channel.send(`Game started. Type \`${constants_1.JOIN_COMMAND}\` to join the game, and ${constants_1.START_COMMAND} to create it !`);
+        game_config_1.gameConfig.channel.send(`Game started. Type \`${constants_1.JOIN_COMMAND}\` to join the game, and \`${constants_1.START_COMMAND}\` to start it !`);
         return true;
     });
 }

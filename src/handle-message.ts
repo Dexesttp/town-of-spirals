@@ -17,14 +17,41 @@ import { startVoteFlavours } from "./flavours/start-vote-flavours";
 import { setSave, setSkip, setBreak } from "./commands/deprogram";
 import { handleSpy } from "./commands/spy";
 import { handleHelp, handleRules } from "./commands/help";
+import { gameConfig, getNickname } from "./data/game-config";
+import getRandFromArray from "./utils/rand-from-array";
+import { mumbleFlavours } from "./flavours/mumble-flavour";
 
-const VOTE_COMMAND_REGEXP = /^!s vote (.+)$/ig;
-const SPY_COMMAND_REGEXP = /^!s spy (.+)$/ig;
-const BREAK_COMMAND_REGEXP = /^!s break (.+)$/ig;
-const MESSAGE_COMMAND_REGEXP = /^!s message (.+) (.+)$/ig;
+const VOTE_NUMBER_COMMAND_REGEXP = /^!s vote-nb (\d+)$/i;
+const VOTE_COMMAND_REGEXP = /^!s vote (.+)$/i;
+const VOTE_ID_COMMAND_REGEXP = /^!s vote <@!?(\d+)>/i;
+const SPY_COMMAND_REGEXP = /^!s spy (.+)$/i;
+const BREAK_COMMAND_REGEXP = /^!s break (.+)$/i;
+const MESSAGE_COMMAND_REGEXP = /^!s message (.+) (.+)$/i;
 
-export function handleMessage(message: Discord.Message) {
-	switch(message.content) {
+let previousMumble: Discord.Message | null = null;
+
+export function handleMessage(message: Discord.Message, debug: boolean) {
+	if(!debug && gameConfig.channel === message.channel && gameConfig.badoozledPlayers.some(m => !gameConfig.recentlyBadoozled.some(b => b != m) && m === message.author)) {
+		message.delete();
+		if(previousMumble)
+			previousMumble.delete();
+		getNickname(message.author)
+		.then(n => {
+			if(!gameConfig.channel)
+				return;
+			const flavour = getRandFromArray(mumbleFlavours, 1)[0];
+			gameConfig.channel.send(flavour(n))
+			.then(m => previousMumble = m as Discord.Message);
+		})
+		return;
+	}
+	const content = message.content;
+
+	if(!content.startsWith("!s")) {
+		return;
+	}
+	console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Received command : '${content}'`);
+	switch(content) {
 		case HELP_COMMAND:
 			handleHelp(message);
 			return;
@@ -62,28 +89,49 @@ export function handleMessage(message: Discord.Message) {
 		default:
 			break;
 	}
-	const voteData = VOTE_COMMAND_REGEXP.exec(message.content);
-	if(voteData) {
-		let voteTarget = voteData[1];
-		if(message.mentions.members && message.mentions.members) {
-			const member = message.mentions.members.first();
-			if(member)
-				voteTarget = member.user.username;
+	const voteNumberData = VOTE_NUMBER_COMMAND_REGEXP.exec(content);
+	if(voteNumberData) {
+		const alivePeeps = gameConfig.allPlayers.filter(p => !gameConfig.badoozledPlayers.some(b => b === p));
+		const target = alivePeeps[+voteNumberData[1]];
+		if(!target) {
+			message.channel.send(`Error. Available IDs are : ${alivePeeps.map((u, id) => `[${id}] ${u.username}`).join(", ")}`);
+			return;
 		}
-		handleVote(message, voteTarget);
+		handleVote(message, target.username);
 		return;
 	}
-	const spyData = SPY_COMMAND_REGEXP.exec(message.content);
+
+	const voteIDData = VOTE_ID_COMMAND_REGEXP.exec(content);
+	if(voteIDData) {
+		let voteTarget = voteIDData[1];
+		const member = gameConfig.allPlayers.filter(p => p.id === voteTarget)[0];
+		if(!member) {
+			message.channel.send("Could not find player with that ID.");
+			return;
+		}
+		handleVote(message, member.username);
+		return;
+	}
+
+	const voteData = VOTE_COMMAND_REGEXP.exec(content);
+	if(voteData) {
+		handleVote(message, voteData[1]);
+		return;
+	}
+
+	const spyData = SPY_COMMAND_REGEXP.exec(content);
 	if(spyData) {
 		handleSpy(message, spyData[1]);
 		return;
 	}
-	const breakData = BREAK_COMMAND_REGEXP.exec(message.content);
+
+	const breakData = BREAK_COMMAND_REGEXP.exec(content);
 	if(breakData) {
 		setBreak(message, breakData[1]);
 		return;
 	}
-	const messageData = MESSAGE_COMMAND_REGEXP.exec(message.content);
+
+	const messageData = MESSAGE_COMMAND_REGEXP.exec(content);
 	if(messageData) {
 		try {
 
@@ -133,4 +181,5 @@ export function handleMessage(message: Discord.Message) {
 		}
 		return;
 	}
+	console.log("Unknown command : '" + content + "'");
 }

@@ -15,6 +15,7 @@ const handle_message_1 = require("./handle-message");
 const client = new Discord.Client();
 const config = jsonfile.readFileSync("config.json");
 const CAN_DELETE_MESSAGES = config.canDelete || false;
+const ALLOW_MUMBLE = config.allowMumble || false;
 client.on("ready", () => {
     console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Client ready !`);
     client.user.setUsername("Town of Spirals")
@@ -43,7 +44,7 @@ client.on("message", (message) => __awaiter(this, void 0, void 0, function* () {
         }
         return;
     }
-    handle_message_1.handleMessage(message);
+    handle_message_1.handleMessage(message, ALLOW_MUMBLE);
 }));
 client.login(config.token)
     .then((str) => {

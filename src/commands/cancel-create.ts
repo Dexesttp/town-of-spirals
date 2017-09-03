@@ -16,6 +16,10 @@ export function cancelCreate(message: Message) {
 	gameConfig.channel.send(`Game cancelled. Type \`${CREATE_COMMAND}\` create a new game.`);
 	gameConfig.channel = null;
 	gameConfig.gameStarter = null;
-	gameConfig.allPlayers = [];
+	gameConfig.allPlayers = [];;
+	gameConfig.badoozledPlayers = [];
+	gameConfig.recentlyBadoozled = [];
+	gameConfig.hypnotists = [];
+	gameConfig.specials = {};
 	clearTimer()
 }

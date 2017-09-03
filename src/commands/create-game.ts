@@ -31,6 +31,6 @@ export async function createGame(message: Message) {
 	gameConfig.allPlayers = [];
 	console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message.author.username} created a game !`);
 	gameConfig.channel = <TextChannel> message.channel;
-	gameConfig.channel.send(`Game started. Type \`${JOIN_COMMAND}\` to join the game, and ${START_COMMAND} to create it !`);
+	gameConfig.channel.send(`Game started. Type \`${JOIN_COMMAND}\` to join the game, and \`${START_COMMAND}\` to start it !`);
 	return true;
 }

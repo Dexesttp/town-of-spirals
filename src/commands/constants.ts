@@ -11,6 +11,7 @@ export const START_COMMAND = "!s start";
 export const ROLE_COMMAND = "!s role";
 export const NO_VOTE_COMMAND = "!s no-vote";
 export const VOTE_COMMAND = "!s vote {player name}";
+export const VOTE_NB_COMMAND = "!s vote-nb {number}";
 
 export const SPY_COMMAND = "!s spy {player name}";
 

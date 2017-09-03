@@ -17,8 +17,11 @@ function handleVote(message, voteTarget) {
             message.channel.send(`There's no game started yet ! Start a game with the \`${constants_1.CREATE_COMMAND}\` command.`);
             return;
         }
+        if (!game_config_1.gameConfig.phase) {
+            message.channel.send(`The game is not started ! Start it with the \`${constants_1.START_COMMAND}\` command.`);
+        }
         if (!game_config_1.gameConfig.allPlayers.some(p => p === message.author)) {
-            message.author.send("You're not playing the game. Sorry.");
+            message.channel.send(`You're not playing the game, ${message.author.username}. Sorry.`);
             return;
         }
         if (game_config_1.gameConfig.phase === "night") {
@@ -45,12 +48,13 @@ function handleVote(message, voteTarget) {
                 var saneTists = game_config_1.gameConfig.hypnotists.filter(h => !game_config_1.gameConfig.badoozledPlayers.some(b => b === h));
                 for (let tist of saneTists)
                     tist.send(`${message.author.username} voted for ${voteTarget}.`);
+                game_config_1.gameConfig.votes[message.author.id] = voteTarget;
+                check_all_1.checkAll();
+                return;
             }
-            else {
-                var saneTists = game_config_1.gameConfig.hypnotists.filter(h => !game_config_1.gameConfig.badoozledPlayers.some(b => b === h));
-                for (let tist of saneTists)
-                    tist.send(`${message.author.username} voted for to not target anybody.`);
-            }
+            var saneTists = game_config_1.gameConfig.hypnotists.filter(h => !game_config_1.gameConfig.badoozledPlayers.some(b => b === h));
+            for (let tist of saneTists)
+                tist.send(`${message.author.username} voted for to not target anybody.`);
             game_config_1.gameConfig.votes[message.author.id] = voteTarget;
             check_all_1.checkAll();
             return;
@@ -61,8 +65,6 @@ function handleVote(message, voteTarget) {
                 return;
             }
             if (game_config_1.gameConfig.badoozledPlayers.some(p => p === message.author)) {
-                if (message.deletable)
-                    yield message.delete();
                 game_config_1.gameConfig.channel.send(`Sorry ${message.author.username}, but you're not able to think at all, let alone cast a vote.`);
                 return;
             }
@@ -73,10 +75,11 @@ function handleVote(message, voteTarget) {
                     return;
                 }
                 game_config_1.gameConfig.channel.send(`${message.author.username} voted for ${voteTarget} !`);
+                game_config_1.gameConfig.votes[message.author.id] = voteTarget;
+                check_all_1.checkAll();
+                return;
             }
-            else {
-                game_config_1.gameConfig.channel.send(`${message.author.username} voted to not target anybody !`);
-            }
+            game_config_1.gameConfig.channel.send(`${message.author.username} voted to not target anybody !`);
             game_config_1.gameConfig.votes[message.author.id] = voteTarget;
             check_all_1.checkAll();
             return;

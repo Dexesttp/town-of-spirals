@@ -7,6 +7,7 @@ const start_game_1 = require("./commands/start-game");
 const get_role_1 = require("./commands/get-role");
 const vote_1 = require("./commands/vote");
 const join_1 = require("./commands/join");
+const moment = require("moment");
 const reveal_flavours_1 = require("./flavours/reveal-flavours");
 const vote_flavour_1 = require("./flavours/vote-flavour");
 const leave_1 = require("./commands/leave");
@@ -17,12 +18,37 @@ const start_vote_flavours_1 = require("./flavours/start-vote-flavours");
 const deprogram_1 = require("./commands/deprogram");
 const spy_1 = require("./commands/spy");
 const help_1 = require("./commands/help");
-const VOTE_COMMAND_REGEXP = /^!s vote (.+)$/ig;
-const SPY_COMMAND_REGEXP = /^!s spy (.+)$/ig;
-const BREAK_COMMAND_REGEXP = /^!s break (.+)$/ig;
-const MESSAGE_COMMAND_REGEXP = /^!s message (.+) (.+)$/ig;
-function handleMessage(message) {
-    switch (message.content) {
+const game_config_1 = require("./data/game-config");
+const rand_from_array_1 = require("./utils/rand-from-array");
+const mumble_flavour_1 = require("./flavours/mumble-flavour");
+const VOTE_NUMBER_COMMAND_REGEXP = /^!s vote-nb (\d+)$/i;
+const VOTE_COMMAND_REGEXP = /^!s vote (.+)$/i;
+const VOTE_ID_COMMAND_REGEXP = /^!s vote <@!?(\d+)>/i;
+const SPY_COMMAND_REGEXP = /^!s spy (.+)$/i;
+const BREAK_COMMAND_REGEXP = /^!s break (.+)$/i;
+const MESSAGE_COMMAND_REGEXP = /^!s message (.+) (.+)$/i;
+let previousMumble = null;
+function handleMessage(message, debug) {
+    if (!debug && game_config_1.gameConfig.channel === message.channel && game_config_1.gameConfig.badoozledPlayers.some(m => !game_config_1.gameConfig.recentlyBadoozled.some(b => b != m) && m === message.author)) {
+        message.delete();
+        if (previousMumble)
+            previousMumble.delete();
+        game_config_1.getNickname(message.author)
+            .then(n => {
+            if (!game_config_1.gameConfig.channel)
+                return;
+            const flavour = rand_from_array_1.default(mumble_flavour_1.mumbleFlavours, 1)[0];
+            game_config_1.gameConfig.channel.send(flavour(n))
+                .then(m => previousMumble = m);
+        });
+        return;
+    }
+    const content = message.content;
+    if (!content.startsWith("!s")) {
+        return;
+    }
+    console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Received command : '${content}'`);
+    switch (content) {
         case constants_1.HELP_COMMAND:
             help_1.handleHelp(message);
             return;
@@ -60,28 +86,44 @@ function handleMessage(message) {
         default:
             break;
     }
-    const voteData = VOTE_COMMAND_REGEXP.exec(message.content);
-    if (voteData) {
-        let voteTarget = voteData[1];
-        if (message.mentions.members && message.mentions.members) {
-            const member = message.mentions.members.first();
-            if (member)
-                voteTarget = member.user.username;
+    const voteNumberData = VOTE_NUMBER_COMMAND_REGEXP.exec(content);
+    if (voteNumberData) {
+        const alivePeeps = game_config_1.gameConfig.allPlayers.filter(p => !game_config_1.gameConfig.badoozledPlayers.some(b => b === p));
+        const target = alivePeeps[+voteNumberData[1]];
+        if (!target) {
+            message.channel.send(`Error. Available IDs are : ${alivePeeps.map((u, id) => `[${id}] ${u.username}`).join(", ")}`);
+            return;
         }
-        vote_1.handleVote(message, voteTarget);
+        vote_1.handleVote(message, target.username);
         return;
     }
-    const spyData = SPY_COMMAND_REGEXP.exec(message.content);
+    const voteIDData = VOTE_ID_COMMAND_REGEXP.exec(content);
+    if (voteIDData) {
+        let voteTarget = voteIDData[1];
+        const member = game_config_1.gameConfig.allPlayers.filter(p => p.id === voteTarget)[0];
+        if (!member) {
+            message.channel.send("Could not find player with that ID.");
+            return;
+        }
+        vote_1.handleVote(message, member.username);
+        return;
+    }
+    const voteData = VOTE_COMMAND_REGEXP.exec(content);
+    if (voteData) {
+        vote_1.handleVote(message, voteData[1]);
+        return;
+    }
+    const spyData = SPY_COMMAND_REGEXP.exec(content);
     if (spyData) {
         spy_1.handleSpy(message, spyData[1]);
         return;
     }
-    const breakData = BREAK_COMMAND_REGEXP.exec(message.content);
+    const breakData = BREAK_COMMAND_REGEXP.exec(content);
     if (breakData) {
         deprogram_1.setBreak(message, breakData[1]);
         return;
     }
-    const messageData = MESSAGE_COMMAND_REGEXP.exec(message.content);
+    const messageData = MESSAGE_COMMAND_REGEXP.exec(content);
     if (messageData) {
         try {
             switch (messageData[1]) {
@@ -157,5 +199,6 @@ function handleMessage(message) {
         }
         return;
     }
+    console.log("Unknown command : '" + content + "'");
 }
 exports.handleMessage = handleMessage;

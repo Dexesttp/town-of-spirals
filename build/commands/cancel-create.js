@@ -17,6 +17,11 @@ function cancelCreate(message) {
     game_config_1.gameConfig.channel = null;
     game_config_1.gameConfig.gameStarter = null;
     game_config_1.gameConfig.allPlayers = [];
+    ;
+    game_config_1.gameConfig.badoozledPlayers = [];
+    game_config_1.gameConfig.recentlyBadoozled = [];
+    game_config_1.gameConfig.hypnotists = [];
+    game_config_1.gameConfig.specials = {};
     check_timer_1.clearTimer();
 }
 exports.cancelCreate = cancelCreate;
