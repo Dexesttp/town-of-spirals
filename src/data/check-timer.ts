@@ -1,5 +1,6 @@
 import { gameConfig } from "./game-config";
 import { checkAll } from "./check-all";
+import * as moment from "moment";
 
 let timer: NodeJS.Timer | null = null;
 export function timerA() {
@@ -14,6 +15,7 @@ export function timerA() {
 export function timerB() {
 	if(!gameConfig.channel)
 		return;
+	console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] 30s limit !`);
 	gameConfig.channel.send("30s remaining !");
 	timer = setTimeout(() => {
 		checkAll(true);

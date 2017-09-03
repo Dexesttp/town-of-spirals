@@ -15,6 +15,7 @@ const check_timer_1 = require("./check-timer");
 const handle_day_1 = require("./handle-day");
 const spy_1 = require("../commands/spy");
 const deprogram_1 = require("../commands/deprogram");
+const moment = require("moment");
 let remainingSpecialRoles = [];
 function handleNight() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -44,7 +45,7 @@ As a reminder, your colleagues are : ${saneTists.map(v => v.username).join(", ")
         }
         game_config_1.gameConfig.votes = {};
         check_timer_1.timerA();
-        console.log("Night time");
+        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Night time !`);
     });
 }
 exports.handleNight = handleNight;
@@ -57,6 +58,7 @@ function handleSpecialRole() {
         }
         const alivePlayers = game_config_1.gameConfig.allPlayers.filter(p => !game_config_1.gameConfig.badoozledPlayers.some(b => p === b)).map(u => u.username);
         if (special.role === "detective") {
+            console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Detective time !`);
             spy_1.setDetective(special.user);
             special.user.send(`Time to snoop up on somebody ! Use \`${constants_1.SPY_COMMAND}\` to spy on a target (without the curly brackets please).`);
             special.user.send(`You can spy on ${alivePlayers.join(", ")}.`);
@@ -70,6 +72,7 @@ function handleSpecialRole() {
                 handleSpecialRole();
                 return;
             }
+            console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Deprogrammer time ! Remaining save : ${saveAllowed}, remaining break: ${breakAllowed}`);
             deprogram_1.setDeprogrammer(special.user);
             if (victim && saveAllowed)
                 special.user.send(`It appears ${victim.username} had their mind broken ! Use \`${constants_1.SAVE_COMMAND}\` to save them.`);

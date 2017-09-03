@@ -37,12 +37,12 @@ Mind-wiped are out of the game and cannot do anything else.
 While the tists know who each other are, no one else knows anyone else - but the same goes for villagers with a hidden talent : this is a game of deception.
 The game ends when the whole town is safe from danger, or when nobody in it is left to worry.
 **SPECIAL ROLES**
-   _Hypnotist_
+   _Hypnotist_ (at most one for each two villagers)
 Each night, the hypnotists vote on a person to break. Be careful, because if the vote ends in a tie nobody will be affected !
-   _Detective_
-A villager has an unnatural ability to uncover people's secrets. They weren't always liked before, but now their skills are useful and each night they can figure out what is a specific villager.
-   _Deprogrammer_
+	_Deprogrammer_ (4 players or more)
 One of the villagers has had extensive training with mind-control and how to undo it. They are able to save one person recently broken by the hypnotists throughout the game. They are also able to break one person at night, but only once.
+   _Detective_ (more than two hypnotists)
+A villager has an unnatural ability to uncover people's secrets. They weren't always liked before, but now their skills are useful and each night they can figure out what is a specific villager.
 	`,
 	}})
 }

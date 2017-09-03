@@ -4,6 +4,7 @@ import { handleNight } from "../data/handle-night";
 import { CREATE_COMMAND, CANCEL_CREATE_COMMAND } from "./constants";
 import { Message } from "discord.js";
 import { handleDay } from "../data/handle-day";
+import * as moment from "moment";
 
 const MIN_PLAYERS = 3;
 const HYPNOTISTS_PERCENT = 0.34;
@@ -31,13 +32,13 @@ export async function startGame(message: Message) {
 		const n = Math.floor(gameConfig.allPlayers.length * HYPNOTISTS_PERCENT);
 		gameConfig.hypnotists = getRandom(gameConfig.allPlayers, n);
 		const normalPlayers = gameConfig.allPlayers.filter(p => !gameConfig.hypnotists.some(h => p === h));
-		if(normalPlayers.length >= 3) {
+		if(gameConfig.hypnotists.length >= 2) {
 			const detective = getRandom(normalPlayers, 1)[0];
 			gameConfig.specials[detective.id] = "detective";
-			if(normalPlayers.length >= 5) {
-				const deprogrammer = getRandom(normalPlayers.filter(p => p !== detective), 1)[0];
-				gameConfig.specials[deprogrammer.id] = "deprogrammer";
-			}
+		}
+		if(gameConfig.allPlayers.length >= 4) {
+			const deprogrammer = getRandom(normalPlayers.filter(p => !gameConfig.specials[p.id]), 1)[0];
+			gameConfig.specials[deprogrammer.id] = "deprogrammer";
 		}
 		for(let player of gameConfig.allPlayers) {
 			if(gameConfig.hypnotists.some(h => h === player))

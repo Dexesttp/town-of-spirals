@@ -7,6 +7,7 @@ import { newDayFlavours } from "../flavours/new-day-flavours";
 import { enthrallFlavours } from "../flavours/enthrall-flavours";
 import { noEnthrallFlavours } from "../flavours/no-enthrall-flavours";
 import { startVoteFlavours } from "../flavours/start-vote-flavours";
+import * as moment from "moment";
 
 export async function handleDay() {
 	if(!gameConfig.channel)
@@ -23,28 +24,30 @@ export async function handleDay() {
 			const brokenNick = await getNickname(broken);
 			const ownerNick = await getNickname(owner);
 			gameConfig.channel.send(flavour(brokenNick, ownerNick));
-			const wasTist = gameConfig.hypnotists.some(h => h === broken);
-			const wasDetective = gameConfig.specials[broken.id] === "detective";
-			const wasDeprogrammer = gameConfig.specials[broken.id] === "deprogrammer";
-			const pickedRevealFlavour = wasTist
-				? getRandFromArray(revealFlavours.hypnotist, 1)[0]
-				: wasDetective ? getRandFromArray(revealFlavours.detective, 1)[0]
-				: wasDeprogrammer ? getRandFromArray(revealFlavours.deprogrammer, 1)[0]
-				: getRandFromArray(revealFlavours.villager, 1)[0];
-			gameConfig.channel.send(pickedRevealFlavour(broken));
 		}
 	}
 	else {
 		const flavour = getRandFromArray(noEnthrallFlavours, 1)[0];
 		gameConfig.channel.send(flavour());
 	}
-	gameConfig.recentlyBadoozled = [];
 	gameConfig.votes = {};
 	if(checkEnd())
 		return;
+	for(let broken of gameConfig.recentlyBadoozled) {
+		const wasTist = gameConfig.hypnotists.some(h => h === broken);
+		const wasDetective = gameConfig.specials[broken.id] === "detective";
+		const wasDeprogrammer = gameConfig.specials[broken.id] === "deprogrammer";
+		const pickedRevealFlavour = wasTist
+			? getRandFromArray(revealFlavours.hypnotist, 1)[0]
+			: wasDetective ? getRandFromArray(revealFlavours.detective, 1)[0]
+			: wasDeprogrammer ? getRandFromArray(revealFlavours.deprogrammer, 1)[0]
+			: getRandFromArray(revealFlavours.villager, 1)[0];
+		gameConfig.channel.send(pickedRevealFlavour(broken));
+	}
+	gameConfig.recentlyBadoozled = [];
 	const startVoteFlavour = getRandFromArray(startVoteFlavours, 1)[0];
 	var targets = gameConfig.allPlayers.filter(p => !gameConfig.badoozledPlayers.some(b => b === p)).map(t => t.username);
 	gameConfig.channel.send(startVoteFlavour(targets));
 	timerA();
-	console.log("Day time");
+	console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Day time !`);
 }

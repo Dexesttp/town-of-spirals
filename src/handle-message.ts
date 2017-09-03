@@ -30,8 +30,8 @@ const MESSAGE_COMMAND_REGEXP = /^!s message (.+) (.+)$/i;
 
 let previousMumble: Discord.Message | null = null;
 
-export function handleMessage(message: Discord.Message, debug: boolean) {
-	if(!debug && gameConfig.channel === message.channel && gameConfig.badoozledPlayers.some(m => !gameConfig.recentlyBadoozled.some(b => b != m) && m === message.author)) {
+export function handleMessage(message: Discord.Message, allowMumble: boolean) {
+	if(allowMumble && gameConfig.channel === message.channel && gameConfig.badoozledPlayers.some(m => !gameConfig.recentlyBadoozled.some(b => b != m) && m === message.author)) {
 		message.delete();
 		if(previousMumble)
 			previousMumble.delete();
@@ -51,6 +51,7 @@ export function handleMessage(message: Discord.Message, debug: boolean) {
 		return;
 	}
 	console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Received command : '${content}'`);
+	const alivePeeps = gameConfig.allPlayers.filter(p => !gameConfig.badoozledPlayers.some(b => b === p));
 	switch(content) {
 		case HELP_COMMAND:
 			handleHelp(message);
@@ -77,6 +78,9 @@ export function handleMessage(message: Discord.Message, debug: boolean) {
 		case ROLE_COMMAND:
 			getRole(message);
 			return;
+		case "!s vote-nb":
+			message.channel.send(`Available IDs are : ${alivePeeps.map((u, id) => `[${id}] ${u.username}`).join(", ")}`);;
+			return;
 		case NO_VOTE_COMMAND:
 			handleVote(message, null);
 			return;
@@ -91,7 +95,6 @@ export function handleMessage(message: Discord.Message, debug: boolean) {
 	}
 	const voteNumberData = VOTE_NUMBER_COMMAND_REGEXP.exec(content);
 	if(voteNumberData) {
-		const alivePeeps = gameConfig.allPlayers.filter(p => !gameConfig.badoozledPlayers.some(b => b === p));
 		const target = alivePeeps[+voteNumberData[1]];
 		if(!target) {
 			message.channel.send(`Error. Available IDs are : ${alivePeeps.map((u, id) => `[${id}] ${u.username}`).join(", ")}`);
@@ -181,5 +184,5 @@ export function handleMessage(message: Discord.Message, debug: boolean) {
 		}
 		return;
 	}
-	console.log("Unknown command : '" + content + "'");
+	console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Unknown command : '${content}'.`);
 }

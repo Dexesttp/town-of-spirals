@@ -7,6 +7,7 @@ import { voteFlavours } from "../flavours/vote-flavour";
 import { User } from "discord.js";
 import { revealFlavours } from "../flavours/reveal-flavours";
 import { handleVote } from "./handle-vote";
+import * as moment from "moment";
 
 export async function checkAll(forceEnd?: boolean) {
 	if(!gameConfig.channel)
@@ -15,7 +16,7 @@ export async function checkAll(forceEnd?: boolean) {
 	if(gameConfig.phase === "day") {
 		const voters = gameConfig.allPlayers.filter(p => !gameConfig.badoozledPlayers.some(b => b === p));
 		const remaining = voters.filter(t => gameConfig.votes[t.id] === undefined);
-		console.log("Remaining votes : " + remaining.length);
+		console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Remaining votes : ${remaining.length}.`);
 		if(!forceEnd) {
 			if(remaining.length > 0) {
 				const results = getVoteResults();
@@ -60,7 +61,7 @@ There's still ${remaining.length} people who have to vote.
 	if(gameConfig.phase === "night") {
 		const voters = gameConfig.hypnotists.filter(p => !gameConfig.badoozledPlayers.some(b => b === p));
 		const remaining = voters.filter(t => gameConfig.votes[t.id] === undefined);
-		console.log("Remaining votes : " + remaining.length);
+		console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Remaining votes : ${remaining.length}.`);
 		if(!forceEnd) {
 			if(remaining.length > 0) {
 				const results = getVoteResults();

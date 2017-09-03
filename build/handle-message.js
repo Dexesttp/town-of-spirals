@@ -28,8 +28,8 @@ const SPY_COMMAND_REGEXP = /^!s spy (.+)$/i;
 const BREAK_COMMAND_REGEXP = /^!s break (.+)$/i;
 const MESSAGE_COMMAND_REGEXP = /^!s message (.+) (.+)$/i;
 let previousMumble = null;
-function handleMessage(message, debug) {
-    if (!debug && game_config_1.gameConfig.channel === message.channel && game_config_1.gameConfig.badoozledPlayers.some(m => !game_config_1.gameConfig.recentlyBadoozled.some(b => b != m) && m === message.author)) {
+function handleMessage(message, allowMumble) {
+    if (allowMumble && game_config_1.gameConfig.channel === message.channel && game_config_1.gameConfig.badoozledPlayers.some(m => !game_config_1.gameConfig.recentlyBadoozled.some(b => b != m) && m === message.author)) {
         message.delete();
         if (previousMumble)
             previousMumble.delete();
@@ -48,6 +48,7 @@ function handleMessage(message, debug) {
         return;
     }
     console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Received command : '${content}'`);
+    const alivePeeps = game_config_1.gameConfig.allPlayers.filter(p => !game_config_1.gameConfig.badoozledPlayers.some(b => b === p));
     switch (content) {
         case constants_1.HELP_COMMAND:
             help_1.handleHelp(message);
@@ -74,6 +75,10 @@ function handleMessage(message, debug) {
         case constants_1.ROLE_COMMAND:
             get_role_1.getRole(message);
             return;
+        case "!s vote-nb":
+            message.channel.send(`Available IDs are : ${alivePeeps.map((u, id) => `[${id}] ${u.username}`).join(", ")}`);
+            ;
+            return;
         case constants_1.NO_VOTE_COMMAND:
             vote_1.handleVote(message, null);
             return;
@@ -88,7 +93,6 @@ function handleMessage(message, debug) {
     }
     const voteNumberData = VOTE_NUMBER_COMMAND_REGEXP.exec(content);
     if (voteNumberData) {
-        const alivePeeps = game_config_1.gameConfig.allPlayers.filter(p => !game_config_1.gameConfig.badoozledPlayers.some(b => b === p));
         const target = alivePeeps[+voteNumberData[1]];
         if (!target) {
             message.channel.send(`Error. Available IDs are : ${alivePeeps.map((u, id) => `[${id}] ${u.username}`).join(", ")}`);
@@ -199,6 +203,6 @@ function handleMessage(message, debug) {
         }
         return;
     }
-    console.log("Unknown command : '" + content + "'");
+    console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Unknown command : '${content}'.`);
 }
 exports.handleMessage = handleMessage;

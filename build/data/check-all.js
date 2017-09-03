@@ -13,6 +13,7 @@ const check_timer_1 = require("./check-timer");
 const handle_night_1 = require("./handle-night");
 const get_results_1 = require("./get-results");
 const handle_vote_1 = require("./handle-vote");
+const moment = require("moment");
 function checkAll(forceEnd) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!game_config_1.gameConfig.channel)
@@ -21,7 +22,7 @@ function checkAll(forceEnd) {
         if (game_config_1.gameConfig.phase === "day") {
             const voters = game_config_1.gameConfig.allPlayers.filter(p => !game_config_1.gameConfig.badoozledPlayers.some(b => b === p));
             const remaining = voters.filter(t => game_config_1.gameConfig.votes[t.id] === undefined);
-            console.log("Remaining votes : " + remaining.length);
+            console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Remaining votes : ${remaining.length}.`);
             if (!forceEnd) {
                 if (remaining.length > 0) {
                     const results = get_results_1.getVoteResults();
@@ -66,7 +67,7 @@ There's still ${remaining.length} people who have to vote.
         if (game_config_1.gameConfig.phase === "night") {
             const voters = game_config_1.gameConfig.hypnotists.filter(p => !game_config_1.gameConfig.badoozledPlayers.some(b => b === p));
             const remaining = voters.filter(t => game_config_1.gameConfig.votes[t.id] === undefined);
-            console.log("Remaining votes : " + remaining.length);
+            console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Remaining votes : ${remaining.length}.`);
             if (!forceEnd) {
                 if (remaining.length > 0) {
                     const results = get_results_1.getVoteResults();

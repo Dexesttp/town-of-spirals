@@ -6,6 +6,7 @@ import { User } from "discord.js";
 import { handleDay } from "./handle-day";
 import { setDetective } from "../commands/spy";
 import { canBreak, canSave, setDeprogrammer } from "../commands/deprogram";
+import * as moment from "moment";
 
 let remainingSpecialRoles: {user: User, role: SpecialRole}[] = [];
 
@@ -36,7 +37,7 @@ As a reminder, your colleagues are : ${saneTists.map(v => v.username).join(", ")
 	}
 	gameConfig.votes = {};
 	timerA();
-	console.log("Night time");
+	console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Night time !`);
 }
 
 export async function handleSpecialRole() {
@@ -47,6 +48,7 @@ export async function handleSpecialRole() {
 	}
 	const alivePlayers = gameConfig.allPlayers.filter(p => !gameConfig.badoozledPlayers.some(b => p === b)).map(u => u.username);
 	if(special.role === "detective") {
+		console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Detective time !`);
 		setDetective(special.user);
 		special.user.send(`Time to snoop up on somebody ! Use \`${SPY_COMMAND}\` to spy on a target (without the curly brackets please).`);
 		special.user.send(`You can spy on ${alivePlayers.join(", ")}.`);
@@ -60,6 +62,7 @@ export async function handleSpecialRole() {
 			handleSpecialRole();
 			return;
 		}
+		console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Deprogrammer time ! Remaining save : ${saveAllowed}, remaining break: ${breakAllowed}`);
 		setDeprogrammer(special.user);
 		if(victim && saveAllowed)
 			special.user.send(`It appears ${victim.username} had their mind broken ! Use \`${SAVE_COMMAND}\` to save them.`);

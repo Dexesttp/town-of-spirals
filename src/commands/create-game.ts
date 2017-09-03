@@ -9,8 +9,8 @@ export function checkDate() {
 	if(!createdDate)
 		return true;
 	if(!gameConfig.phase)
-		return createdDate < moment().add(5, "minutes");
-	return createdDate < moment().add(30, "minutes");
+		return createdDate.add(5, "minutes") < moment();
+	return createdDate.add(30, "minutes") < moment();
 }
 
 export async function createGame(message: Message) {

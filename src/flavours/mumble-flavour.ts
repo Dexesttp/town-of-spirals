@@ -14,5 +14,5 @@ export const mumbleFlavours: ((userName: string) => void)[] = [
 (name) => `${name} spouts a slew of lewd rambling`,
 (name) => `${name} lets out a needy moan`,
 (name) => `${name} runs their hands on their skin.`,
-(name) => `${name} tries to speak, but can only think about pleasing his caretaker`,
+(name) => `${name} tries to speak, but can only think about pleasing their caretaker`,
 ];

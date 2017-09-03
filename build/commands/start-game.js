@@ -39,13 +39,13 @@ function startGame(message) {
             const n = Math.floor(game_config_1.gameConfig.allPlayers.length * HYPNOTISTS_PERCENT);
             game_config_1.gameConfig.hypnotists = rand_from_array_1.default(game_config_1.gameConfig.allPlayers, n);
             const normalPlayers = game_config_1.gameConfig.allPlayers.filter(p => !game_config_1.gameConfig.hypnotists.some(h => p === h));
-            if (normalPlayers.length >= 3) {
+            if (game_config_1.gameConfig.hypnotists.length >= 2) {
                 const detective = rand_from_array_1.default(normalPlayers, 1)[0];
                 game_config_1.gameConfig.specials[detective.id] = "detective";
-                if (normalPlayers.length >= 5) {
-                    const deprogrammer = rand_from_array_1.default(normalPlayers.filter(p => p !== detective), 1)[0];
-                    game_config_1.gameConfig.specials[deprogrammer.id] = "deprogrammer";
-                }
+            }
+            if (game_config_1.gameConfig.allPlayers.length >= 4) {
+                const deprogrammer = rand_from_array_1.default(normalPlayers.filter(p => !game_config_1.gameConfig.specials[p.id]), 1)[0];
+                game_config_1.gameConfig.specials[deprogrammer.id] = "deprogrammer";
             }
             for (let player of game_config_1.gameConfig.allPlayers) {
                 if (game_config_1.gameConfig.hypnotists.some(h => h === player))
