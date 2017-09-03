@@ -16,13 +16,18 @@ const enthrall_flavours_1 = require("./flavours/enthrall-flavours");
 const start_vote_flavours_1 = require("./flavours/start-vote-flavours");
 const deprogram_1 = require("./commands/deprogram");
 const spy_1 = require("./commands/spy");
+const help_1 = require("./commands/help");
 const VOTE_COMMAND_REGEXP = /^!s vote (.+)$/ig;
 const SPY_COMMAND_REGEXP = /^!s spy (.+)$/ig;
 const BREAK_COMMAND_REGEXP = /^!s break (.+)$/ig;
 const MESSAGE_COMMAND_REGEXP = /^!s message (.+) (.+)$/ig;
 function handleMessage(message) {
     switch (message.content) {
-        case "!s help":
+        case constants_1.HELP_COMMAND:
+            help_1.handleHelp(message);
+            return;
+        case constants_1.RULES_COMMAND:
+            help_1.handleRules(message);
             return;
         case constants_1.CREATE_COMMAND:
             if (create_game_1.createGame(message))
@@ -42,6 +47,9 @@ function handleMessage(message) {
             return;
         case constants_1.ROLE_COMMAND:
             get_role_1.getRole(message);
+            return;
+        case constants_1.NO_VOTE_COMMAND:
+            vote_1.handleVote(message, null);
             return;
         case constants_1.SAVE_COMMAND:
             deprogram_1.setSave(message);

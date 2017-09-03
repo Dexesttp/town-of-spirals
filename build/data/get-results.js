@@ -5,15 +5,15 @@ function getVoteResults() {
     const results = [];
     for (let value in game_config_1.gameConfig.votes) {
         const target = game_config_1.gameConfig.votes[value];
-        const targetPlayer = game_config_1.gameConfig.allPlayers.filter(p => p.username === target)[0];
-        const targetValues = results.filter(v => v[0] === targetPlayer);
+        const targetPlayer = target === null ? null : game_config_1.gameConfig.allPlayers.filter(p => p.username === target)[0];
+        const targetValues = results.filter(v => v.user === targetPlayer);
         if (targetValues.length > 0)
-            targetValues[0][1] += 1;
+            targetValues[0].count += 1;
         else
-            results.push([targetPlayer, 1]);
+            results.push({ user: targetPlayer, count: 1 });
     }
     results.sort(function (a, b) {
-        return b[1] - a[1];
+        return b.count - a.count;
     });
     return results;
 }

@@ -36,14 +36,21 @@ function handleVote(message, voteTarget) {
                 message.author.send(`You're not a hypnotist. You should be asleep at night !`);
                 return;
             }
-            var targets = game_config_1.gameConfig.allPlayers.filter(p => !game_config_1.gameConfig.badoozledPlayers.some(b => b === p));
-            if (!targets.some(p => p.username === voteTarget)) {
-                message.author.send(`You can't vote for ${voteTarget}, they're not playing or already hypnotized. The available targets are : ${targets.map(t => t.username).join(", ")}`);
-                return;
+            if (voteTarget) {
+                var targets = game_config_1.gameConfig.allPlayers.filter(p => !game_config_1.gameConfig.badoozledPlayers.some(b => b === p));
+                if (!targets.some(p => p.username === voteTarget)) {
+                    message.author.send(`You can't vote for ${voteTarget}, they're not playing or already hypnotized. The available targets are : ${targets.map(t => t.username).join(", ")}`);
+                    return;
+                }
+                var saneTists = game_config_1.gameConfig.hypnotists.filter(h => !game_config_1.gameConfig.badoozledPlayers.some(b => b === h));
+                for (let tist of saneTists)
+                    tist.send(`${message.author.username} voted for ${voteTarget}.`);
             }
-            var saneTists = game_config_1.gameConfig.hypnotists.filter(h => !game_config_1.gameConfig.badoozledPlayers.some(b => b === h));
-            for (let tist of saneTists)
-                tist.send(`${message.author.username} voted for ${voteTarget}.`);
+            else {
+                var saneTists = game_config_1.gameConfig.hypnotists.filter(h => !game_config_1.gameConfig.badoozledPlayers.some(b => b === h));
+                for (let tist of saneTists)
+                    tist.send(`${message.author.username} voted for to not target anybody.`);
+            }
             game_config_1.gameConfig.votes[message.author.id] = voteTarget;
             check_all_1.checkAll();
             return;
@@ -59,13 +66,18 @@ function handleVote(message, voteTarget) {
                 game_config_1.gameConfig.channel.send(`Sorry ${message.author.username}, but you're not able to think at all, let alone cast a vote.`);
                 return;
             }
-            var targets = game_config_1.gameConfig.allPlayers.filter(p => !game_config_1.gameConfig.badoozledPlayers.some(b => b === p));
-            if (!targets.some(p => p.username === voteTarget)) {
-                game_config_1.gameConfig.channel.send(`You can't vote for ${voteTarget}, they're not playing or already hypnotized. The available targets are : ${targets.map(t => t.username).join(", ")}`);
-                return;
+            if (voteTarget) {
+                var targets = game_config_1.gameConfig.allPlayers.filter(p => !game_config_1.gameConfig.badoozledPlayers.some(b => b === p));
+                if (!targets.some(p => p.username === voteTarget)) {
+                    game_config_1.gameConfig.channel.send(`You can't vote for ${voteTarget}, they're not playing or already hypnotized. The available targets are : ${targets.map(t => t.username).join(", ")}`);
+                    return;
+                }
+                game_config_1.gameConfig.channel.send(`${message.author.username} voted for ${voteTarget} !`);
+            }
+            else {
+                game_config_1.gameConfig.channel.send(`${message.author.username} voted to not target anybody !`);
             }
             game_config_1.gameConfig.votes[message.author.id] = voteTarget;
-            game_config_1.gameConfig.channel.send(`${message.author.username} voted for ${voteTarget} !`);
             check_all_1.checkAll();
             return;
         }

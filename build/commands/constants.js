@@ -1,9 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.HELP_COMMAND = "!s help";
+exports.RULES_COMMAND = "!s rules";
 exports.CREATE_COMMAND = "!s create";
 exports.JOIN_COMMAND = "!s join";
 exports.LEAVE_COMMAND = "!s leave";
-exports.CANCEL_CREATE_COMMAND = "!s cancelCreate";
+exports.CANCEL_CREATE_COMMAND = "!s cancel-create";
 exports.START_COMMAND = "!s start";
 exports.ROLE_COMMAND = "!s role";
 exports.NO_VOTE_COMMAND = "!s no-vote";

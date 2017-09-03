@@ -11,7 +11,7 @@ type GameConfig = {
 	specials: {[userID: string]: SpecialRole},
 	badoozledPlayers: User[],
 	recentlyBadoozled: User[],
-	votes: {[key: string] : string},
+	votes: {[key: string] : string | null | undefined},
 };
 
 export const gameConfig: GameConfig = {

@@ -20,7 +20,7 @@ export async function checkAll(forceEnd?: boolean) {
 			if(remaining.length > 0) {
 				const results = getVoteResults();
 				gameConfig.channel.send(`
-Current votes : ${results.map(r => `${r[0].username} (${r[1]})`).join(", ")}
+Current votes : ${results.map(r => r.user ? `${r.user.username} (${r.count})` : `\`Skip the vote\` (${r.count})`).join(", ")}
 There's still ${remaining.length} people who have to vote.
 				`);
 				return;
@@ -30,18 +30,28 @@ There's still ${remaining.length} people who have to vote.
 		gameConfig.channel.send(`Everybody has voted ! Here's the result.`);
 		const results = getVoteResults();
 		if(results.length > 1) {
-			if(results[0][1] === results[1][1]) {
+			if(results[0].count === results[1].count) {
 				gameConfig.channel.send("This was a tie and nobody got mindbroken today.");
 				handleNight();
 				return;
 			}
-			const target = results[0][0];
+			const target = results[0].user;
+			if(target === null) {
+				gameConfig.channel.send("The majority voted to skip the vote.");	
+				handleNight();
+				return;			
+			}
 			await handleVote(target);
 			gameConfig.badoozledPlayers.push(target);
 			handleNight();
 			return;
 		}
-		const target = results[0][0];
+		const target = results[0].user;
+		if(target === null) {
+			gameConfig.channel.send("The majority voted to skip the vote.");	
+			handleNight();
+			return;			
+		}
 		await handleVote(target);
 		gameConfig.badoozledPlayers.push(target);
 		handleNight();
@@ -56,7 +66,7 @@ There's still ${remaining.length} people who have to vote.
 				const results = getVoteResults();
 				for(let tist of voters)
 					tist.send(`
-Current votes : ${results.map(r => `${r[0].username} (${r[1]})`).join(", ")}
+Current votes : ${results.map(r => r.user ? `${r.user.username} (${r.count})` : `\`Skip the vote\` (${r.count})`).join(", ")}
 There's still ${remaining.length} people who have to vote.
 					`);
 				return;
@@ -67,20 +77,32 @@ There's still ${remaining.length} people who have to vote.
 			tist.send(`Everybody has voted ! Here's the result.`);
 		const results = getVoteResults();
 		if(results.length > 1) {
-			if(results[0][1] === results[1][1]) {
+			if(results[0].count === results[1].count) {
 				for(let tist of voters)
 					tist.send("The vote is closed. This was a tie and nobody got mindbroken today.");
 				handleSpecialRole();
 				return;
 			}
-			const target = results[0][0];
+			const target = results[0].user;
+			if(target === null) {
+				for(let tist of voters)
+					tist.send("The vote is closed. The majority voted to skip the night.");
+				handleSpecialRole();
+				return;			
+			}
 			await handleTistEnd(target, voters);
 			gameConfig.badoozledPlayers.push(target);
 			gameConfig.recentlyBadoozled.push(target);
 			handleSpecialRole();
 			return;
 		}
-		const target = results[0][0];
+		const target = results[0].user;
+		if(target === null) {
+			for(let tist of voters)
+				tist.send("The vote is closed. The majority voted to skip the night.");
+			handleSpecialRole();
+			return;			
+		}
 		await handleTistEnd(target, voters);
 		gameConfig.badoozledPlayers.push(target);
 		gameConfig.recentlyBadoozled.push(target);

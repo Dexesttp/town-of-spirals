@@ -3,6 +3,16 @@ import { getNickname, gameConfig } from "../data/game-config";
 import { JOIN_COMMAND, START_COMMAND } from "./constants";
 import { Message, TextChannel } from "discord.js";
 
+let createdDate: moment.Moment | null = null;
+
+export function checkDate() {
+	if(!createdDate)
+		return true;
+	if(!gameConfig.phase)
+		return createdDate < moment().add(5, "minutes");
+	return createdDate < moment().add(30, "minutes");
+}
+
 export async function createGame(message: Message) {
 	if(gameConfig.channel !== null) {
 		const authorNickname = await getNickname(gameConfig.gameStarter);
@@ -16,6 +26,7 @@ export async function createGame(message: Message) {
 		message.author.send(`You cannot start a game here. Go to a server channel.`);
 		return false;
 	}
+	createdDate = moment();
 	gameConfig.gameStarter = message.author;
 	gameConfig.allPlayers = [];
 	console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message.author.username} created a game !`);

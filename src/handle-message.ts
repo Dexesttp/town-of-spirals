@@ -1,5 +1,5 @@
 import * as Discord from "discord.js";
-import { CREATE_COMMAND, CANCEL_CREATE_COMMAND, JOIN_COMMAND, START_COMMAND, ROLE_COMMAND, LEAVE_COMMAND, SAVE_COMMAND, SKIP_COMMAND } from "./commands/constants";
+import { CREATE_COMMAND, CANCEL_CREATE_COMMAND, JOIN_COMMAND, START_COMMAND, ROLE_COMMAND, LEAVE_COMMAND, SAVE_COMMAND, SKIP_COMMAND, HELP_COMMAND, NO_VOTE_COMMAND, RULES_COMMAND } from "./commands/constants";
 import { createGame } from "./commands/create-game";
 import { cancelCreate } from "./commands/cancel-create";
 import { startGame } from "./commands/start-game";
@@ -16,6 +16,7 @@ import { enthrallFlavours } from "./flavours/enthrall-flavours";
 import { startVoteFlavours } from "./flavours/start-vote-flavours";
 import { setSave, setSkip, setBreak } from "./commands/deprogram";
 import { handleSpy } from "./commands/spy";
+import { handleHelp, handleRules } from "./commands/help";
 
 const VOTE_COMMAND_REGEXP = /^!s vote (.+)$/ig;
 const SPY_COMMAND_REGEXP = /^!s spy (.+)$/ig;
@@ -24,7 +25,11 @@ const MESSAGE_COMMAND_REGEXP = /^!s message (.+) (.+)$/ig;
 
 export function handleMessage(message: Discord.Message) {
 	switch(message.content) {
-		case "!s help":
+		case HELP_COMMAND:
+			handleHelp(message);
+			return;
+		case RULES_COMMAND:
+			handleRules(message);
 			return;
 		case CREATE_COMMAND:
 			if(createGame(message))
@@ -44,6 +49,9 @@ export function handleMessage(message: Discord.Message) {
 			return;
 		case ROLE_COMMAND:
 			getRole(message);
+			return;
+		case NO_VOTE_COMMAND:
+			handleVote(message, null);
 			return;
 		case SAVE_COMMAND:
 			setSave(message);

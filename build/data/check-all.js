@@ -26,7 +26,7 @@ function checkAll(forceEnd) {
                 if (remaining.length > 0) {
                     const results = get_results_1.getVoteResults();
                     game_config_1.gameConfig.channel.send(`
-Current votes : ${results.map(r => `${r[0].username} (${r[1]})`).join(", ")}
+Current votes : ${results.map(r => r.user ? `${r.user.username} (${r.count})` : `\`Skip the vote\` (${r.count})`).join(", ")}
 There's still ${remaining.length} people who have to vote.
 				`);
                     return;
@@ -36,18 +36,28 @@ There's still ${remaining.length} people who have to vote.
             game_config_1.gameConfig.channel.send(`Everybody has voted ! Here's the result.`);
             const results = get_results_1.getVoteResults();
             if (results.length > 1) {
-                if (results[0][1] === results[1][1]) {
+                if (results[0].count === results[1].count) {
                     game_config_1.gameConfig.channel.send("This was a tie and nobody got mindbroken today.");
                     handle_night_1.handleNight();
                     return;
                 }
-                const target = results[0][0];
+                const target = results[0].user;
+                if (target === null) {
+                    game_config_1.gameConfig.channel.send("The majority voted to skip the vote.");
+                    handle_night_1.handleNight();
+                    return;
+                }
                 yield handle_vote_1.handleVote(target);
                 game_config_1.gameConfig.badoozledPlayers.push(target);
                 handle_night_1.handleNight();
                 return;
             }
-            const target = results[0][0];
+            const target = results[0].user;
+            if (target === null) {
+                game_config_1.gameConfig.channel.send("The majority voted to skip the vote.");
+                handle_night_1.handleNight();
+                return;
+            }
             yield handle_vote_1.handleVote(target);
             game_config_1.gameConfig.badoozledPlayers.push(target);
             handle_night_1.handleNight();
@@ -62,7 +72,7 @@ There's still ${remaining.length} people who have to vote.
                     const results = get_results_1.getVoteResults();
                     for (let tist of voters)
                         tist.send(`
-Current votes : ${results.map(r => `${r[0].username} (${r[1]})`).join(", ")}
+Current votes : ${results.map(r => r.user ? `${r.user.username} (${r.count})` : `\`Skip the vote\` (${r.count})`).join(", ")}
 There's still ${remaining.length} people who have to vote.
 					`);
                     return;
@@ -73,20 +83,32 @@ There's still ${remaining.length} people who have to vote.
                 tist.send(`Everybody has voted ! Here's the result.`);
             const results = get_results_1.getVoteResults();
             if (results.length > 1) {
-                if (results[0][1] === results[1][1]) {
+                if (results[0].count === results[1].count) {
                     for (let tist of voters)
                         tist.send("The vote is closed. This was a tie and nobody got mindbroken today.");
                     handle_night_1.handleSpecialRole();
                     return;
                 }
-                const target = results[0][0];
+                const target = results[0].user;
+                if (target === null) {
+                    for (let tist of voters)
+                        tist.send("The vote is closed. The majority voted to skip the night.");
+                    handle_night_1.handleSpecialRole();
+                    return;
+                }
                 yield handleTistEnd(target, voters);
                 game_config_1.gameConfig.badoozledPlayers.push(target);
                 game_config_1.gameConfig.recentlyBadoozled.push(target);
                 handle_night_1.handleSpecialRole();
                 return;
             }
-            const target = results[0][0];
+            const target = results[0].user;
+            if (target === null) {
+                for (let tist of voters)
+                    tist.send("The vote is closed. The majority voted to skip the night.");
+                handle_night_1.handleSpecialRole();
+                return;
+            }
             yield handleTistEnd(target, voters);
             game_config_1.gameConfig.badoozledPlayers.push(target);
             game_config_1.gameConfig.recentlyBadoozled.push(target);

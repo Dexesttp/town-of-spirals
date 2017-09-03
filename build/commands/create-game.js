@@ -11,6 +11,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const moment = require("moment");
 const game_config_1 = require("../data/game-config");
 const constants_1 = require("./constants");
+let createdDate = null;
+function checkDate() {
+    if (!createdDate)
+        return true;
+    if (!game_config_1.gameConfig.phase)
+        return createdDate < moment().add(5, "minutes");
+    return createdDate < moment().add(30, "minutes");
+}
+exports.checkDate = checkDate;
 function createGame(message) {
     return __awaiter(this, void 0, void 0, function* () {
         if (game_config_1.gameConfig.channel !== null) {
@@ -24,6 +33,7 @@ function createGame(message) {
             message.author.send(`You cannot start a game here. Go to a server channel.`);
             return false;
         }
+        createdDate = moment();
         game_config_1.gameConfig.gameStarter = message.author;
         game_config_1.gameConfig.allPlayers = [];
         console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message.author.username} created a game !`);

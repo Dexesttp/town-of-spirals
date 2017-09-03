@@ -3,18 +3,18 @@ import { gameConfig } from "../data/game-config";
 import { User } from "discord.js";
 
 export function getVoteResults() {
-	const results: [User, number][] = [];
+	const results: {user: User | null, count: number}[] = [];
 	for(let value in gameConfig.votes) {
 		const target = gameConfig.votes[value];
-		const targetPlayer = gameConfig.allPlayers.filter(p => p.username === target)[0];
-		const targetValues = results.filter(v => v[0] === targetPlayer);
+		const targetPlayer = target === null ? null : gameConfig.allPlayers.filter(p => p.username === target)[0];
+		const targetValues = results.filter(v => v.user === targetPlayer);
 		if(targetValues.length > 0)
-			targetValues[0][1] += 1;
+			targetValues[0].count += 1;
 		else
-			results.push([targetPlayer, 1]);
+			results.push({user: targetPlayer, count: 1});
 	}
 	results.sort(function(a, b) {
-		return b[1] - a[1];
+		return b.count - a.count;
 	});
 	return results;
 }
