@@ -10,14 +10,13 @@ const config = jsonfile.readFileSync("config.json");
 
 const CAN_DELETE_MESSAGES = config.canDelete || false;
 const ALLOW_MUMBLE = config.allowMumble || false;
+const MUMBLE_SHOULD_EDIT = config.mumbleShouldEdit || false;
 
 client.on("ready", () => {
-	console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Client ready !`);
+	console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Setting client data...`);
 	client.user.setUsername("Town of Spirals")
 	.then(c => client.user.setStatus("online"))
-	.then(c => {
-		console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Client ready !`);
-	})
+	.then(c => console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Client ready !`))
 	.catch(e => {
 		console.error(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Error while setting client data `);
 		console.error(e)
@@ -40,7 +39,7 @@ client.on("message", async message => {
 		}
 		return;
 	}
-	handleMessage(message, ALLOW_MUMBLE);
+	handleMessage(message, ALLOW_MUMBLE, MUMBLE_SHOULD_EDIT);
 });
 
 client.login(config.token)

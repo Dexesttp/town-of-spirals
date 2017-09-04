@@ -14,7 +14,8 @@ import { setSave, setSkip, setBreak } from "./commands/deprogram";
 import { handleSpy } from "./commands/spy";
 import { handleHelp, handleRules } from "./commands/help";
 import { gameConfig, getNickname } from "./data/game-config";
-import getRandFromArray from "./utils/rand-from-array";
+import { printMessage } from "./commands/message";
+import { mumbleMessage } from "./commands/mumble";
 
 const VOTE_NUMBER_COMMAND_REGEXP = /^!s vote-nb (\d+)$/i;
 const VOTE_COMMAND_REGEXP = /^!s vote (.+)$/i;
@@ -23,21 +24,12 @@ const SPY_COMMAND_REGEXP = /^!s spy (.+)$/i;
 const BREAK_COMMAND_REGEXP = /^!s break (.+)$/i;
 const MESSAGE_COMMAND_REGEXP = /^!s message (.+) (.+)$/i;
 
-let previousMumble: Discord.Message | null = null;
-
-export function handleMessage(message: Discord.Message, allowMumble: boolean) {
-	if(allowMumble && gameConfig.channel === message.channel && gameConfig.badoozledPlayers.some(m => !gameConfig.recentlyBadoozled.some(b => b != m) && m === message.author)) {
-		message.delete();
-		if(previousMumble)
-			previousMumble.delete();
-		getNickname(message.author)
-		.then(n => {
-			if(!gameConfig.channel)
-				return;
-			const flavour = getRandFromArray(mumbleFlavours, 1)[0];
-			gameConfig.channel.send(flavour(n, ''))
-			.then(m => previousMumble = m as Discord.Message);
-		})
+export function handleMessage(message: Discord.Message, allowMumble: boolean, mumbleShouldEdit: boolean) {
+	if(allowMumble
+		&& gameConfig.channel === message.channel
+		&& gameConfig.badoozledPlayers.some(m => !gameConfig.recentlyBadoozled.some(b => b != m) && m === message.author)
+	) {
+		mumbleMessage(message, mumbleShouldEdit);
 		return;
 	}
 	const content = message.content;
@@ -48,6 +40,9 @@ export function handleMessage(message: Discord.Message, allowMumble: boolean) {
 	console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Received command : '${content}'`);
 	const alivePeeps = gameConfig.allPlayers.filter(p => !gameConfig.badoozledPlayers.some(b => b === p));
 	switch(content) {
+		case "!s mumble":
+			mumbleMessage(message, mumbleShouldEdit);
+			return;
 		case HELP_COMMAND:
 			handleHelp(message);
 			return;
@@ -131,51 +126,7 @@ export function handleMessage(message: Discord.Message, allowMumble: boolean) {
 
 	const messageData = MESSAGE_COMMAND_REGEXP.exec(content);
 	if(messageData) {
-		try {
-			switch(messageData[1]) {
-				case "new-day": {
-					const flavour = newDayFlavours[+(messageData[2])];
-					message.channel.send(flavour());
-				}; return;
-				case "no-enthrall": {
-					const flavour = noEnthrallFlavours[+(messageData[2])];
-					message.channel.send(flavour());
-				}; return;
-				case "enthrall": {
-					const flavour = enthrallFlavours[+(messageData[2])];
-					message.channel.send(flavour(message.author.username, message.author.username));
-				}; return;
-				case "start-vote": {
-					const flavour = startVoteFlavours[+(messageData[2])];
-					message.channel.send(flavour());
-				}; return;
-				case "reveal-hypnotist": {
-					const flavour = revealFlavours.hypnotist[+(messageData[2])];
-					message.channel.send(flavour(message.author));
-				}; return;
-				case "reveal-villager": {
-					const flavour = revealFlavours.villager[+(messageData[2])];
-					message.channel.send(flavour(message.author));
-				}; return;
-				case "reveal-detective": {
-					const flavour = revealFlavours.detective[+(messageData[2])];
-					message.channel.send(flavour(message.author));
-				}; return;
-				case "reveal-deprogrammer": {
-					const flavour = revealFlavours.deprogrammer[+(messageData[2])];
-					message.channel.send(flavour(message.author));
-				}; return;
-				case "vote": {
-					const flavour = voteFlavours[+(messageData[2])];
-					message.channel.send(flavour(message.author.username, message.author.username));
-				}; return;
-				default:
-				message.channel.send(`Invalid flavour : ${messageData[1]}. Available ones are \`new-day\`, \`no-enthrall\`, \`enthrall\`, \`start-vote\`, \`hypnotist-reveal\`, \`villager-reveal\`, \`vote\`.`);
-			}
-		}
-		catch(e) {
-			message.channel.send(`Invalid flavour index : ${messageData[2]}.`);
-		}
+		printMessage(message, messageData[1], +(messageData[2]));
 		return;
 	}
 	console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Unknown command : '${content}'.`);
