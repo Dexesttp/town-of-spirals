@@ -14,8 +14,14 @@ const rand_from_array_1 = require("../utils/rand-from-array");
 let mumbles = [];
 function mumbleMessage(message, mumbleShouldEdit) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (!mumbleShouldEdit && message.deletable)
-            message.delete().catch(e => { });
+        if (!mumbleShouldEdit) {
+            if (message.deletable) {
+                message.delete().catch(e => { console.log("delete failed."); });
+            }
+            else {
+                console.log("Deleting the message is not allowed. Ensure that the bot has permissions in the give channel.");
+            }
+        }
         game_config_1.getNickname(message.author)
             .then(nickname => {
             const name = nickname || message.author.username;

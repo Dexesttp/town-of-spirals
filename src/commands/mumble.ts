@@ -6,8 +6,14 @@ import getRandFromArray from "../utils/rand-from-array";
 let mumbles: {userID: string, message: Message}[] = [];
 
 export async function mumbleMessage(message: Message, mumbleShouldEdit: boolean) {
-	if(!mumbleShouldEdit && message.deletable)
-		message.delete().catch(e => { /* NO OP*/ });
+	if(!mumbleShouldEdit) {
+		if(message.deletable) {
+			message.delete().catch(e => { console.log("delete failed."); });
+		}
+		else {
+			console.log("Deleting the message is not allowed. Ensure that the bot has permissions in the give channel.");
+		}
+	}
 	
 	getNickname(message.author)
 	.then(nickname => {

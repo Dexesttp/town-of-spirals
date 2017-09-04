@@ -5,7 +5,42 @@
 		"**/.hg": true,
 		"**/CVS": true,
 		"**/.DS_Store": true,
+		"build": true,
+		"package-lock.json": true,
 		"node_modules": true
 	},
+	"json.schemas": [
+		{
+			"fileMatch": [
+				"/config.json",
+				"/config.default.json"
+			],
+			"schema": {
+				"type": "object",
+				"properties": {
+					"token" : {
+						"type": "string",
+						"description": "The Discord bot token. Defined in https://discordapp.com/developers/applications/me/, under APP BOT USER/Token"
+					},
+					"can_delete" : {
+						"type": "boolean",
+						"description": "Allow to delete the bot's message with !s clean-messages",
+						"default": false
+					},
+					"allow_mumble" : {
+						"type": "boolean",
+						"description": "Replace every broken people's message by a mumble.",
+						"default": true
+					},
+					"mumble_should_edit" : {
+						"type": "boolean",
+						"description": "Do not set to true ! If Discord ever allows to edit other's messages, this will do exactly that.",
+						"default": false
+					}
+				},
+				"required": ["token"]
+			}
+		}
+	],
 	"python.promptToInstallJupyter": false
 }

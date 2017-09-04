@@ -65,7 +65,6 @@ function handleMessage(message, allowMumble, mumbleShouldEdit) {
             return;
         case "!s vote-nb":
             message.channel.send(`Available IDs are : ${alivePeeps.map((u, id) => `[${id}] ${u.username}`).join(", ")}`);
-            ;
             return;
         case constants_1.NO_VOTE_COMMAND:
             vote_1.handleVote(message, null);
