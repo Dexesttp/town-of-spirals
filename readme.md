@@ -16,6 +16,8 @@ Run the commands :
 
 `npm i`
 
+`tsc`
+
 Create the file `config.json` in the current folder, it should look like that :
 
 ```json
@@ -24,14 +26,25 @@ Create the file `config.json` in the current folder, it should look like that :
 }
 ```
 
-To start the bot, run 
-`node build/index.js`
+To start the bot, run  
+`npm start`  
+or  
+`node build/ts/index.js`
 
 Voilà ! The bot is setup !
 
 ## Commands
 
 The main one is help (`!s help`). You'll learn everything from that.
+
+## Local debug
+
+To start debugging with the REPL, run  
+`npm run debug`  
+or  
+`node build/ts/debug.js`
+
+Note : you can emulate people by typing `1>!s <command>` for channel or `1p>!s <command>` for direct messages
 
 ## License
 

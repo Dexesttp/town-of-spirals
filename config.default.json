@@ -1,6 +1,6 @@
 {
 	"token": "",
-	"can_delete": false,
-	"allow_mumble": true,
-	"mumble_should_edit": false
+	"canDelete": false,
+	"allowMumble": true,
+	"mumbleShouldEdit": false
 }

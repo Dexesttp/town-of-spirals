@@ -3,7 +3,9 @@
   "version": "0.2.0",
   "description": "Discord bot for playing Town Of Salem, adapted to hypno stuff",
   "scripts": {
-    "start": "node build/index.js"
+    "start": "node build/ts/index.js",
+    "test": "mocha -r ts-node/register src/specs/**/*.ts",
+    "debug": "node build/ts/debug.js"
   },
   "main": "build/index.js",
   "license": "MIT",
@@ -16,16 +18,21 @@
     "erlpack": "github:hammerandchisel/erlpack",
     "js-yaml": "^3.9.1",
     "jsonfile": "^3.0.1",
-    "libsodium-wrappers": "^0.5.4",
     "moment": "^2.18.1",
     "node-opus": "^0.2.6",
     "opusscript": "0.0.3",
-    "sodium": "^2.0.1",
     "uws": "^0.14.5"
   },
   "devDependencies": {
+    "@types/chai": "^4.0.4",
     "@types/js-yaml": "^3.9.1",
+    "@types/mocha": "^2.2.43",
     "@types/node": "^8.0.26",
+    "chai": "^4.1.2",
+    "mocha": "^3.5.1",
+    "sinon": "^3.2.1",
+    "ts-node": "^3.3.0",
+    "tslint": "^5.7.0",
     "typescript": "^2.5.2"
   }
 }

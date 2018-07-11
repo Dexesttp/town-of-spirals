@@ -9,8 +9,23 @@
 			"problemMatcher": [
 				"$tsc"
 			],
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared"
+			},
 			"group": {
 				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"type": "npm",
+			"script": "test",
+			"group": {
+				"kind": "test",
 				"isDefault": true
 			}
 		}
