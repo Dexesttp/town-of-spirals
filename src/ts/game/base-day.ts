@@ -2,6 +2,7 @@ import { GameContext } from "./data/context";
 import { GameTools } from "./data/tools";
 import { GetAlivePlayers } from "./utils/alive-players";
 import { VoteResultType } from "./vote/types";
+import { BROKEN } from "./data/player-states";
 
 export async function baseDay(context: GameContext, tools: GameTools) {
     // TODO add flavour
@@ -11,7 +12,7 @@ export async function baseDay(context: GameContext, tools: GameTools) {
     });
     if (voteResult.type === VoteResultType.MAJORITY || voteResult.type === VoteResultType.UNANIMITY) {
         const targetPlayer = context.players.filter(p => p.id === voteResult.target)[0];
-        targetPlayer.attributes.push("broken");
+        targetPlayer.attributes.push(BROKEN);
         // TODO add flavour
         await context.sendMessage(`<@${targetPlayer.id}> was chosen to be broken. They were a ${targetPlayer.roles.join(", ")}`);
     } else {

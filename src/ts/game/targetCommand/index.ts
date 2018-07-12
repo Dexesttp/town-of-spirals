@@ -80,14 +80,14 @@ export function targetEngine(
                     return TargetRequestResult.INVALID_MODE;
                 }
                 // If the vote request is made by somebody who can't vote.
-                if (players.some(p => p.id === playerID)) {
+                if (!players.some(p => p.id === playerID)) {
                     reject(TargetRequestResult.INVALID_VOTER);
                     return TargetRequestResult.INVALID_VOTER;
                 }
                 // If the vote request is made towards somebody, and they cannot be targeted.
                 if (targetID !== null
                     && targetID !== undefined
-                    && targets.some(t => t.id === targetID)
+                    && !targets.some(t => t.id === targetID)
                 ) {
                     reject(TargetRequestResult.INVALID_TARGET);
                     return TargetRequestResult.INVALID_TARGET;

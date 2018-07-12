@@ -5,11 +5,12 @@ import { ALLOW_MUMBLE, MUMBLE_SHOULD_EDIT, CAN_DELETE_MESSAGES } from "./config"
 import { help } from "./commands/help";
 import { rules } from "./commands/rules";
 import { GameCreator } from "./game-creator/debug";
-import { Game, GameData } from "./game/index";
+import { Game, GameData } from "./game";
 import { GiveRolesTo } from "./game-creator/give-roles-to";
 import { handleDetective } from "./roles/detective";
 import { handleDeprogrammer } from "./roles/deprogrammer";
 import { handleHypnotist } from "./roles/hypnotist";
+import { BROKEN } from "./game/data/player-states";
 
 moment.relativeTimeThreshold("ss", 1);
 moment.relativeTimeThreshold("s", 60);
@@ -25,6 +26,15 @@ let game: GameData | null = null;
 
 /** Mumbling */
 command.onBefore(async message => {
+    if (ALLOW_MUMBLE
+        && game
+        && game.context.players.some(
+            p => p.id === message.author && p.attributes.some(a => a === BROKEN),
+        )
+    ) {
+        console.log(`>Trying to mumble message (${message.original})`);
+        return true;
+    }
     return false;
 });
 
@@ -73,7 +83,7 @@ command.on("start", async(message, text) => {
         players,
         async (m) => { console.log(`>${m}`); },
         gameCreator.playerInterface(),
-        async (m) => false,
+        async (m) => { console.log(`>Trying to delete message (${m})`); return false; },
     );
     game.subscribeNightRole(handleHypnotist);
     game.subscribeNightRole(handleDeprogrammer);

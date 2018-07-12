@@ -1,4 +1,4 @@
-import { startVoteFactory } from "../../../ts/game/vote/index";
+import { startVoteFactory } from "../../../ts/game/vote";
 import { TimerPromise } from "../../../ts/utils/timer";
 import { VoteRequest } from "../../../ts/game/vote/types";
 

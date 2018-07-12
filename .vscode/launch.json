@@ -11,7 +11,8 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceRoot}/build/ts/debug.js"
+            "program": "${workspaceRoot}/build/ts/debug.js",
+            "console": "integratedTerminal"
         },
         {
             "type": "node",

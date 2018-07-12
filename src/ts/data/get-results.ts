@@ -1,5 +1,5 @@
 
-import { gameConfig } from "../data/game-config";
+import { gameConfig } from "./game-config";
 import { User } from "discord.js";
 
 export function getVoteResults() {

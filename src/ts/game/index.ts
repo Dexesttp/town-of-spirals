@@ -1,11 +1,11 @@
 import { GameContext } from "./data/context";
 import { PlayerData, PlayerInterface } from "./data/player";
-import { startVoteFactory } from "./vote/index";
+import { startVoteFactory } from "./vote";
 import { TimerPromise } from "../utils/timer";
 import { VoteRequest } from "./vote/types";
 import { Message } from "../client/type";
-import { targetEngine } from "./targetCommand/index";
-import { commandEngine } from "./command/index";
+import { targetEngine } from "./targetCommand";
+import { commandEngine } from "./command";
 import { GameTools } from "./data/tools";
 import { resolveAllBroken } from "./resolve-all-broken";
 import { baseDay } from "./base-day";

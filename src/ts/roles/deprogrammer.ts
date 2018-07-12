@@ -6,6 +6,7 @@ import { CommandPromiseGetter } from "../game/command/types";
 import { PlayerInterface } from "../game/data/player";
 import { GameTools } from "../game/data/tools";
 import { BROKEN_NIGHT } from "../game/data/player-states";
+import { callUntilResolved } from "../utils/promise-until-resolved";
 
 export const DEPROGRAMMER_ROLE = "deprogrammer";
 
@@ -27,44 +28,49 @@ type DeprogrammingCommandResult = {
 export async function handleDeprogrammer(
     context: GameContext,
     tools: GameTools,
+    timeout = 120000,
 ) {
     const deprogrammers = GetAlivePlayers(context).filter(p => p.roles.some(r => r === DEPROGRAMMER_ROLE));
     for (const deprogrammer of deprogrammers) {
         const promises: Array<Promise<DeprogrammingCommandResult>> = [];
         const deprogrammerInterface = context.playerInterface[deprogrammer.id];
 
-        const timeoutPromise = TimerPromise(120000).then<DeprogrammingCommandResult>(r => ({ command: "timeout" }));
+        const timeoutPromise = TimerPromise(timeout).then<DeprogrammingCommandResult>(r => ({ command: "timeout" }));
         promises.push(timeoutPromise);
 
         const canBreak = !deprogrammer.attributes.some(a => a === "has_broken");
         if (canBreak) {
             const targets = GetAlivePlayers(context).filter(p => !p.attributes.some(a => a === ""));
-            const breakPromise = tools.getTargettingCommandPromise("break", [deprogrammer], targets, true)
-                .then<DeprogrammingCommandResult>(r => ({ command: "break", ...r}));
+            const breakPromise = callUntilResolved(() =>
+                tools.getTargettingCommandPromise("break", [deprogrammer], targets, true)
+                .then<DeprogrammingCommandResult>(r => ({ command: "break", ...r})),
+            );
             promises.push(breakPromise);
             // TODO add flavour
             deprogrammerInterface.sendMessage(`
 You can break somebody with \`!s break\` if you want :
-${targets.map((t, i) => `[${i}] ${t.nickname} (${t.username})}`)}
+${targets.map((t, i) => `[${i}] ${t.nickname} (${t.username})`)}
             `);
         }
 
         const canSave = !deprogrammer.attributes.some(a => a === "has_saved");
         const recentlyBrokenPlayers = GetAlivePlayers(context).filter(p => p.attributes.some(a => a === BROKEN_NIGHT));
         if (canSave && recentlyBrokenPlayers.length) {
-            const savePromise = tools.getTargettingCommandPromise("save", [deprogrammer], recentlyBrokenPlayers, true)
-                .then<DeprogrammingCommandResult>(r => ({ command: "save", ...r }));
+            const savePromise = callUntilResolved(() =>
+                tools.getTargettingCommandPromise("save", [deprogrammer], recentlyBrokenPlayers, true)
+                .then<DeprogrammingCommandResult>(r => ({ command: "save", ...r })),
+            );
             promises.push(savePromise);
             // TODO add flavour
             deprogrammerInterface.sendMessage(`
 You can save people somebody with \`!s save\` if you want :
-${recentlyBrokenPlayers.map((t, i) => `[${i}] ${t.nickname} (${t.username})}`)}
+${recentlyBrokenPlayers.map((t, i) => `[${i}] ${t.nickname} (${t.username})`)}
             `);
         }
 
 
-        const skipPromise = tools.getCommandPromise("skip", [deprogrammer], true)
-            .then<DeprogrammingCommandResult>(r => ({ command: "skip", playerID: r.playerID }));
+        const skipPromise = callUntilResolved(() => tools.getCommandPromise("skip", [deprogrammer], true)
+            .then<DeprogrammingCommandResult>(r => ({ command: "skip", playerID: r.playerID })));
         promises.push(skipPromise);
         // TODO add flavour
         deprogrammerInterface.sendMessage(`You can skip tonight's vote with \`!s skip\`.`);
@@ -88,6 +94,8 @@ ${recentlyBrokenPlayers.map((t, i) => `[${i}] ${t.nickname} (${t.username})}`)}
             deprogrammerInterface.sendMessage(`You saved somebody.`);
             continue;
         }
+        // TODO add flavour
         deprogrammerInterface.sendMessage(`You didn't do anything.`);
+        continue;
     }
 }

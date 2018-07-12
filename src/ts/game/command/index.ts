@@ -72,7 +72,7 @@ export function commandEngine(
                     return CommandResult.INVALID_MODE;
                 }
                 // If the vote request is made by somebody who can't vote.
-                if (players.some(p => p.id === playerID)) {
+                if (!players.some(p => p.id === playerID)) {
                     reject(CommandResult.INVALID_VOTER);
                     return CommandResult.INVALID_VOTER;
                 }
