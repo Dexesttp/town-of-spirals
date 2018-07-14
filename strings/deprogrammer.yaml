@@ -1,5 +1,41 @@
+intro:
+  break:
+    enabled:
+      - |
+        You can use [command.break] and your knowledge of conditioning to break somebody's mind'.
+        Possible targets are [targets]
+  save:
+    enabled:
+      - |
+        It appears [targets] had their mind broken !
+        Use [command.save] to save them.
+    disabled:
+      - |
+        You've lost your un-conditioning gear and can't save any more people.
+  skip:
+    - |
+      You can also use [command.skip] to go back to sleep.
+actions:
+  break:
+    - |
+      You go to [target]'s house.
+      While repeating to yourself that it's for the greater good, you use all your knowledge of conditioning to thoroughly break [target].
+      Leaving [target] behind sleeping peacefully, you are overcome with horror.
+      You now know that - despite everything the hypnotists are doing - you won't be able to erase another person's mind ever again.
+  save:
+    - |
+      You go to [target]'s house, where they appear to be sleeping peacefully - but you know what really is up.
+      You set up your gear and spent an hour un-conditioning them.
+      Unfortunately, your gear breaks just as [target] shuffles to wake up.
+      You gather the broken pieces and leave hurriedly, but you won't be able to un-condition anybody else for a while.
+  skip:
+    - |
+      Convinced that doing nothing for now is the right choice, you go back to sleep.
+role:
+  - |
+    The game has started ! You are a deprogrammer.
 reveal:
   - |
-    The villagers check [name]'s house out.
+    The villagers check [target]'s house out.
     They find manuals about self-worth, analysis of hypnosis and some pretty complicated techniques about breaking conditioning.
-    It appears <@[id]> was a deprogrammer.
+    It appears [targetMention] was a deprogrammer.

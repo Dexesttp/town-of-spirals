@@ -28,6 +28,14 @@ export type GameData = {
     start: () => Promise<any>,
 };
 
+function notifyRoles(context: GameContext, tools: GameTools): Promise<any> {
+    return Promise.all(context.players.map(p => {
+        /// TODO add flavour
+        const message = `A new game has started ! You are a ${p.roles.length > 0 ? p.roles.join(", ") : "normal bystander"}.`;
+        return context.playerInterface[p.id].sendMessage(message);
+    }));
+}
+
 export function Game(
     players: PlayerData[],
     sendMessage: (message: string) => Promise<void>,
@@ -113,6 +121,8 @@ export function Game(
             night.push(role);
         },
         async start() {
+            await notifyRoles(context, internalsTools);
+
             while (true) {
                 // TODO add flavour
                 await context.sendMessage(`The night falls...`);

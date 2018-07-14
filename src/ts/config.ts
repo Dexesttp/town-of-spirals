@@ -4,7 +4,7 @@ import * as fs from "fs";
 
 const defaultConfig = jsonfile.readFileSync("config.default.json");
 if (!fs.existsSync("config.json")) {
-    throw new Error("There's config.json file ! Create it and add your bot token to it.");
+    throw new Error("There's no config.json file ! Create it and add your bot token to it.");
 }
 const config = jsonfile.readFileSync("config.json");
 
@@ -18,7 +18,7 @@ export const TOKEN = (() => {
     throw new Error("There's no token in config.json ! Please add your bot token.");
 })();
 
-export const ADMIN_ID: string[] = config.adminList || [ "242814424300126208" ];
+export const ADMIN_ID: string[] = config.adminList || [ ];
 
 console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Config loaded !`);
 console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Can delete : ${CAN_DELETE_MESSAGES}`);

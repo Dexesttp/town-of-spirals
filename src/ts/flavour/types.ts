@@ -1,4 +1,4 @@
-import { PlayerData } from "../data/player";
+import { PlayerData } from "../game/data/player";
 
 export type FlavourData = {
     target?: PlayerData,

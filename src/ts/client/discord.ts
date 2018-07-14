@@ -12,11 +12,22 @@ export function GetClient() {
         client.user.setUsername("Town of Spirals");
         console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Username set !`);
     });
-    client.on("message", (message) => {
+    client.on("message", async (message) => {
         if (!config.ADMIN_ID.some(i => message.author.id === i)) {
             return;
         }
         if (message.channel.type !== "dm") {
+            return;
+        }
+        if (!message.content.startsWith("!sadmin")) {
+            return;
+        }
+        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Running admin command : ${message.content}`);
+        if (message.content.startsWith("!sadmin clean ")) {
+            const qty = +(message.content.substring("!sadmin clean ".length));
+            const messages = await message.channel.fetchMessages({ limit: qty });
+            messages.forEach(m => { if (m.deletable) m.delete(); });
+            console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Deleted ${messages.size} messages`);
             return;
         }
         if (message.content === "!sadmin status get") {
@@ -38,17 +49,36 @@ export function GetClient() {
             message.channel.send(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Set status to online`);
             return;
         }
-        if (message.content === "!sadmin channels") {
-            message.channel.send(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Known channels :\n${client.channels.map(c => {
-                    if (c.type !== "text") return null;
-                    const tc = <discord.TextChannel>c;
-                    if (!tc.members.some(m => m.id === client.user.id)) return null;
-                    return `${tc.guild.name} #${tc.name} {${c.id}}`;
+        if (message.content === "!sadmin guilds") {
+            message.channel.send(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Known guilds :\n${client.guilds.map(g => {
+                    return `${g.name} {${g.owner.nickname} / ${g.owner.user.username} / ${g.owner.user.tag}}`;
                 }).filter(v => !!v).join("\n")}
             `);
             client.user.setStatus("online");
             return;
         }
+        if (message.content === "!sadmin channels") {
+            message.channel.send(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Available channels :\n${client.channels.map(c => {
+                if (c.type !== "text") return null;
+                const tc = <discord.TextChannel>c;
+                if (!tc.members.some(m => m.id === client.user.id)) return null;
+                return `${tc.guild.name} #${tc.name} {${c.id}}`;
+            }).filter(v => !!v).join("\n")}
+            `);
+            client.user.setStatus("online");
+            return;
+        }
+        if (message.content === "!sadmin channels all") {
+            message.channel.send(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] All channels :\n${client.channels.map(c => {
+                if (c.type !== "text") return null;
+                const tc = <discord.TextChannel>c;
+                return `${tc.guild.name} #${tc.name} {${c.id}}`;
+            }).filter(v => !!v).join("\n")}
+            `);
+            client.user.setStatus("online");
+            return;
+        }
+        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Unknown command.`);
     });
 
     console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Logging in client...`);

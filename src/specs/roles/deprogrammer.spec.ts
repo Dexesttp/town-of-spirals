@@ -1,17 +1,23 @@
-import { handleDeprogrammer, DEPROGRAMMER_ROLE } from "../../ts/roles/deprogrammer";
+import {
+    DEPROGRAMMER_HAS_BROKEN_ATTRIBUTE,
+    DEPROGRAMMER_HAS_SAVED_ATTRIBUTE,
+    DEPROGRAMMER_ROLE,
+    DEPROGRAMMER_SAVED_ATTRIBUTE,
+    handleDeprogrammer,
+} from "../../ts/roles/deprogrammer";
 import { BROKEN_NIGHT } from "../../ts/game/data/player-states";
 import { expect } from "chai";
 
+// tslint:disable:no-unused-expression
 describe("The deprogrammer role", () => {
     it("Should run properly to completion with no commands used (timeout)", async () => {
-        const results: string[] = [];
-        await handleDeprogrammer(
+        const messages: string[] = [];
+        const deprog = { id: "0", roles: [ DEPROGRAMMER_ROLE ], attributes: [], nickname: "0", username: "0" };
+        const results = await handleDeprogrammer(
             {
-                players: [
-                    { id: "0", roles: [ DEPROGRAMMER_ROLE ], attributes: [], nickname: "0", username: "0" },
-                ],
+                players: [ deprog ],
                 playerInterface: {
-                    "0": { sendMessage: async (message) => { results.push(message); } },
+                    "0": { sendMessage: async (message) => { messages.push(message); } },
                 },
                 sendMessage: async (message) => { /* */ },
             },
@@ -24,18 +30,19 @@ describe("The deprogrammer role", () => {
             },
             1,
         );
-        expect(results.length).to.equals(3);
+        expect(results[deprog.id]).to.not.be.undefined;
+        expect(results[deprog.id].command).to.equals("timeout");
+        expect(deprog.attributes).to.be.empty;
     });
 
     it("Should run properly to completion by skipping", async () => {
-        const results: string[] = [];
-        await handleDeprogrammer(
+        const messages: string[] = [];
+        const deprog = { id: "0", roles: [ DEPROGRAMMER_ROLE ], attributes: [], nickname: "0", username: "0" };
+        const results = await handleDeprogrammer(
             {
-                players: [
-                    { id: "0", roles: [ DEPROGRAMMER_ROLE ], attributes: [], nickname: "0", username: "0" },
-                ],
+                players: [ deprog ],
                 playerInterface: {
-                    "0": { sendMessage: async (message) => { results.push(message); } },
+                    "0": { sendMessage: async (message) => { messages.push(message); } },
                 },
                 sendMessage: async (message) => { /* */ },
             },
@@ -48,20 +55,20 @@ describe("The deprogrammer role", () => {
             },
             1,
         );
-        expect(results.length).to.equals(3);
+        expect(results[deprog.id]).to.not.be.undefined;
+        expect(results[deprog.id].command).to.equals("skip");
+        expect(deprog.attributes).to.be.empty;
     });
 
     it("Should run properly to completion by saving somebody", async () => {
-        const results: string[] = [];
+        const messages: string[] = [];
+        const deprog = { id: "0", roles: [ DEPROGRAMMER_ROLE ], attributes: [], nickname: "0", username: "0" };
         const savedPlayer = { id: "1", roles: [ ], attributes: [ BROKEN_NIGHT ], nickname: "1", username: "1" };
-        await handleDeprogrammer(
+        const results = await handleDeprogrammer(
             {
-                players: [
-                    { id: "0", roles: [ DEPROGRAMMER_ROLE ], attributes: [], nickname: "0", username: "0" },
-                    savedPlayer,
-                ],
+                players: [ deprog, savedPlayer ],
                 playerInterface: {
-                    "0": { sendMessage: async (message) => { results.push(message); } },
+                    "0": { sendMessage: async (message) => { messages.push(message); } },
                     "1": { sendMessage: async (message) => { /* */ } },
                 },
                 sendMessage: async (message) => { /* */ },
@@ -78,21 +85,23 @@ describe("The deprogrammer role", () => {
             },
             1,
         );
-        expect(results.length).to.equals(4);
-        expect(savedPlayer.attributes.length).to.equals(0);
+        expect(results[deprog.id]).to.not.be.undefined;
+        expect(results[deprog.id].command).to.equals("save");
+        expect(savedPlayer.attributes).not.to.be.empty;
+        expect(savedPlayer.attributes[0]).to.equals(DEPROGRAMMER_SAVED_ATTRIBUTE);
+        expect(deprog.attributes).not.to.be.empty;
+        expect(deprog.attributes[0]).to.equals(DEPROGRAMMER_HAS_SAVED_ATTRIBUTE);
     });
 
     it("Should run properly to completion by breaking somebody", async () => {
-        const results: string[] = [];
-        const brokenPlayer = { id: "1", roles: [ ], attributes: [ ], nickname: "1", username: "1" };
-        await handleDeprogrammer(
+        const messages: string[] = [];
+        const deprog = { id: "0", roles: [ DEPROGRAMMER_ROLE ], attributes: [], nickname: "0", username: "0" };
+        const healthyPlayer = { id: "1", roles: [ ], attributes: [ ], nickname: "1", username: "1" };
+        const results = await handleDeprogrammer(
             {
-                players: [
-                    { id: "0", roles: [ DEPROGRAMMER_ROLE ], attributes: [], nickname: "0", username: "0" },
-                    brokenPlayer,
-                ],
+                players: [ deprog, healthyPlayer ],
                 playerInterface: {
-                    "0": { sendMessage: async (message) => { results.push(message); } },
+                    "0": { sendMessage: async (message) => { messages.push(message); } },
                     "1": { sendMessage: async (message) => { /* */ } },
                 },
                 sendMessage: async (message) => { /* */ },
@@ -109,7 +118,11 @@ describe("The deprogrammer role", () => {
             },
             1,
         );
-        expect(results.length).to.equals(3);
-        expect(brokenPlayer.attributes.length).to.equals(1);
+        expect(results[deprog.id]).to.not.be.undefined;
+        expect(results[deprog.id].command).to.equals("break");
+        expect(healthyPlayer.attributes).not.to.be.empty;
+        expect(healthyPlayer.attributes[0]).to.equals(BROKEN_NIGHT);
+        expect(deprog.attributes).not.to.be.empty;
+        expect(deprog.attributes[0]).to.equals(DEPROGRAMMER_HAS_BROKEN_ATTRIBUTE);
     });
 });

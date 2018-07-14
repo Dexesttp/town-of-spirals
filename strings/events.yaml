@@ -1,0 +1,32 @@
+start:
+  - |
+    [playerMentions] , the game has started !
+    There's [hypnotistCount] hypnotists in the town of spirals.
+newNight:
+  - |
+    A new night falls on the town.
+newDay:
+  - |
+    The sun is rising on the town of spirals.
+  - |
+    A new day rises on the town of spirals.
+nightResult:
+  - |
+    The villagers all gather in the center of the village. Something is wrong.
+startVote:
+  - |
+    And now the villagers have to choose which of them to... pacify.
+    The remaining villagers are : [targets]
+    Use [command.vote] to vote, or [command.no_vote] to vote for nobody
+victory:
+  hypnotist:
+    - |
+      And with their last slaves in their harem, [players] have enthralled all of the village.
+      [allMention]
+      The game has ended, and the town has fallen to the hypnotists.
+      The hypnotists were : [hypnotists]
+  townies:
+    - |
+      [allMention]
+      The game has ended, and the town is safe from the hypnotists.
+      The hypnotists were : [hypnotists]

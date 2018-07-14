@@ -1,16 +1,16 @@
-import { handleDetective, DETECTIVE_ROLE } from "../../ts/roles/detective";
+import { handleDetective, DETECTIVE_ROLE, DETECTIVE_SPIED_ATTRIBUTE } from "../../ts/roles/detective";
 import { expect } from "chai";
 
+// tslint:disable:no-unused-expression
 describe("The detective role", () => {
     it("Should run properly to completion with no commands used (timeout)", async () => {
-        const results: string[] = [];
-        await handleDetective(
+        const messages: string[] = [];
+        const detective = { id: "0", roles: [ DETECTIVE_ROLE ], attributes: [], nickname: "0", username: "0" };
+        const results = await handleDetective(
             {
-                players: [
-                    { id: "0", roles: [ DETECTIVE_ROLE ], attributes: [], nickname: "0", username: "0" },
-                ],
+                players: [ detective ],
                 playerInterface: {
-                    "0": { sendMessage: async (message) => { results.push(message); } },
+                    "0": { sendMessage: async (message) => { messages.push(message); } },
                 },
                 sendMessage: async (message) => { /* */ },
             },
@@ -23,18 +23,19 @@ describe("The detective role", () => {
             },
             1,
         );
-        expect(results.length).to.equals(3);
+        expect(results[detective.id]).to.not.be.undefined;
+        expect(results[detective.id].command).to.equals("timeout");
+        expect(detective.attributes).to.be.empty;
     });
 
     it("Should run properly to completion by skipping", async () => {
-        const results: string[] = [];
-        await handleDetective(
+        const messages: string[] = [];
+        const detective = { id: "0", roles: [ DETECTIVE_ROLE ], attributes: [], nickname: "0", username: "0" };
+        const results = await handleDetective(
             {
-                players: [
-                    { id: "0", roles: [ DETECTIVE_ROLE ], attributes: [], nickname: "0", username: "0" },
-                ],
+                players: [ detective ],
                 playerInterface: {
-                    "0": { sendMessage: async (message) => { results.push(message); } },
+                    "0": { sendMessage: async (message) => { messages.push(message); } },
                 },
                 sendMessage: async (message) => { /* */ },
             },
@@ -47,20 +48,20 @@ describe("The detective role", () => {
             },
             1,
         );
-        expect(results.length).to.equals(3);
+        expect(results[detective.id]).to.not.be.undefined;
+        expect(results[detective.id].command).to.equals("skip");
+        expect(detective.attributes).to.be.empty;
     });
 
     it("Should run properly to completion by spying on somebody", async () => {
-        const results: string[] = [];
+        const messages: string[] = [];
+        const detective = { id: "0", roles: [ DETECTIVE_ROLE ], attributes: [], nickname: "0", username: "0" };
         const spiedOnPlayer = { id: "1", roles: [ ], attributes: [ ], nickname: "1", username: "1" };
-        await handleDetective(
+        const results = await handleDetective(
             {
-                players: [
-                    { id: "0", roles: [ DETECTIVE_ROLE ], attributes: [], nickname: "0", username: "0" },
-                    spiedOnPlayer,
-                ],
+                players: [ detective, spiedOnPlayer ],
                 playerInterface: {
-                    "0": { sendMessage: async (message) => { results.push(message); } },
+                    "0": { sendMessage: async (message) => { messages.push(message); } },
                     "1": { sendMessage: async (message) => { /* */ } },
                 },
                 sendMessage: async (message) => { /* */ },
@@ -74,7 +75,9 @@ describe("The detective role", () => {
             },
             1,
         );
-        expect(results.length).to.equals(3, "Not the right number of messages");
-        expect(spiedOnPlayer.attributes.length).to.equals(1);
+        expect(results[detective.id]).to.not.be.undefined;
+        expect(results[detective.id].command).to.equals("spy");
+        expect(spiedOnPlayer.attributes).not.to.be.empty;
+        expect(spiedOnPlayer.attributes[0]).to.equals(DETECTIVE_SPIED_ATTRIBUTE);
     });
 });

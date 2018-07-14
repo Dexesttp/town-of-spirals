@@ -1,6 +1,5 @@
 import { Message } from "discord.js";
-import { mumbleFlavours } from "../game/flavours/load-flavours";
-import { getNickname, gameConfig } from "../data/game-config";
+import { mumbleFlavours } from "../flavour/load-flavours";
 import getRandFromArray from "../utils/rand-from-array";
 
 let mumbles: Array<{userID: string, message: Message}> = [];
@@ -15,14 +14,19 @@ export async function mumbleMessage(message: Message, mumbleShouldEdit: boolean)
         }
     }
 
-    getNickname(message.author)
-    .then(nickname => {
+    (message.guild
+        ? message.guild.fetchMember(message.author)
+        .then(m => m.displayName)
+        : new Promise<string>(res => res(message.author.username))
+    ).then(nickname => {
         const name = nickname || message.author.username;
         const flavour = getRandFromArray(mumbleFlavours, 1)[0];
+        const toSend = flavour(name, "");
+        console.log(toSend);
         if (mumbleShouldEdit) {
-            return message.edit(flavour(name, ""));
+            return message.edit(toSend);
         }
-        return (gameConfig.channel || message.channel).send(flavour(name, ""));
+        return message.channel.send(toSend);
     })
     .then(m => {
         const userID = message.author.id;

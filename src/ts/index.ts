@@ -1,7 +1,6 @@
 import * as moment from "moment";
 import { GetClient, discordReplier } from "./client/discord";
 import { ALLOW_MUMBLE, MUMBLE_SHOULD_EDIT, CAN_DELETE_MESSAGES } from "./config";
-import { gameConfig } from "./data/game-config";
 import { help } from "./commands/help";
 import { rules } from "./commands/rules";
 import { mumbleMessage } from "./commands-old/mumble";
@@ -28,13 +27,9 @@ const client = GetClient();
 const command = GetCommandHandler<Message>((message, text) => message.original.channel.send(text));
 
 /** Mumbling */
+let shouldMumble = false;
 command.onBefore(async message => {
-    if (ALLOW_MUMBLE
-        && message.original.channel === gameConfig.channel
-        && gameConfig.badoozledPlayers.some(
-            m => !gameConfig.recentlyBadoozled.some(b => b !== m) && m.id === message.author,
-        )
-    ) {
+    if (shouldMumble) {
         mumbleMessage(message.original, MUMBLE_SHOULD_EDIT);
         return true;
     }

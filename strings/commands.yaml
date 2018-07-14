@@ -1,3 +1,39 @@
-help:
-  - |
-    
+help: |
+  ***COMMANDS***
+      **=== General ===**
+  `!s help` - Show this screen
+  `!s rules` - Show a summary of the game's rules
+  `!s rolelist` - Show all the roles and a description of them
+      **=== Create a game ===**
+  `!s create` - Create a new game
+  `!s cancel-game` - Cancel the game currently created (5min timeout)
+  `!s join` - Join the game
+  `!s leave` - Leave the game
+  `!s start` - Starts the game
+      **=== In-game commands ===**
+  Note : all these commands will be reminded automatically when you need them.
+  `!s role` - Send your current status and role as PM
+  `!s vote [player]` - Vote for the given player (no brackets needed). E.g. `!s vote @DexesTTP` or `!s vote Ch0wW`
+      Use `!s vote` to display a list of all possible vote targets
+  `!s vote-nb [number]` - Vote for the player using their number (no brackets needed). E.g. `!s vote-nb 2`
+      The number is shown on the vote list. Use `!s vote` to show the list again 
+  `!s no-vote` - Vote to not target anybody
+  `!s cancel-vote` - Resets your current vote to none. The voting round will not finish until you have voted.
+  detective-only : `!s spy`
+  deprogrammer-only: `!s save`, `!s break`, `!s skip`
+rules: |
+  ***RULES***
+  The town of Spirals was a peaceful community, until a secret team of hypnotists infiltrated them and started brainwashing people.
+  Each night, the hypnotists can vote to break the mind of one victim.
+  Each day, the town as a whole votes on someone to mind-break, hoping to catch an hypnotist.
+  Mind-wiped are out of the game and cannot do anything else.
+  While the tists know who each other are, no one else knows anyone - but the same goes for villagers with a hidden talent : this is a game of deception.
+  The game ends when the whole town is safe from danger, or when nobody in it is left to worry.
+roles: |
+  ***ROLES***
+    _Hypnotist_ (at most one for each two villagers)
+  Each night, the hypnotists vote on a person to break. Be careful, because if the vote ends in a tie nobody will be affected !
+    _Deprogrammer_ (4 players or more)
+  One of the villagers has had extensive training with mind-control and how to undo it. They are able to save one person recently broken by the hypnotists throughout the game. They are also able to break one person at night, but only once.
+    _Detective_ (more than two hypnotists)
+  A villager has an unnatural ability to uncover people's secrets. They weren't always liked before, but now their skills are useful and each night they can figure out what is a specific villager.

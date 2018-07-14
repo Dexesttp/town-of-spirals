@@ -1,0 +1,59 @@
+intro:
+  - |
+    The night has fallen. Vote for a new victim with [command.vote], or skip the vote with [command.no_vote]
+    The available targets for tonight are : [targets].
+    As a reminder, your colleagues are : [players].
+action:
+  break:
+    self:
+      1:
+        - |
+          You pick a mirror, and look at yourself in the eyes. Carefully, you start the process of breaking your own mind.
+      2:
+        - |
+          [owner] meets [target] at their house, where they trick them into trance. [target]'s mind quickly gets melted.
+      multi:
+        player:
+          - |
+            You and the other hypnotists sneak into [target]'s house.
+            With the [hypnotistCount] of you, you restrain [target] and begin the process of breaking their mind.
+        target:
+          - |
+            A bit surprised, you get thrown on your bed by an angry-looking team of [hypnotistCount] hypnotists.
+            Before you can scream, one of them covers your mouth with their hand, and all you can do is listen to their words and feel your mind slipping away.
+    other:
+      1:
+        - |
+          You sneak to [target]'s house. Carefully, without waking them up, you whisper them into trance, where you start the process of breaking their mind.
+      multi:
+        - |
+          You sneak to [target]'s house, where you find your fellow tists. With their help, you break [target]'s mind.
+role:
+  single:
+    - |
+      The game has started ! You're the only hypnotist in town.
+  multiple:
+    - |
+      The game has started ! you are a hypnotist, along with [players]
+reveal:
+  - |
+    The villagers check [target]'s house out.
+    They find a detailed summary of each of their likes and dislikes, and some instructions of how to use that against them. Pretty unsettling stuff.
+    It appears [targetMention] was a hypnotist !
+  - |
+    The villagers check [target]'s house out.
+    They find schematics for a mind-control helmet, and a nearly working prototype.
+    It appears [targetMention] was a hypnotist !
+  - |
+    The villagers check [target]'s house out.
+    As they enter, the TV screen flickers on and a huge spiral appears on it. As the whole town begins to stare at it, somebody has the common sense to turn the screen off.
+    It appears [targetNotification] was a hypnotist !
+  - |
+    The villagers check [target]'s house out.
+    [target] definitely liked pocket watches. He must have at least a hundred of them !
+    It appears [targetMention] was a hypnotist !
+  - |
+    The villagers check [target]'s house out.
+    There is a big piece of paper on the wall, where everybody can read "I AM A HYPNOTIST. HERE ARE THE NAMES OF THE OTHERS :"
+    Unfortunately, somebody tore the bottom part of the paper, and the names are missing.
+    It appears [targetMention] was a hypnotist !

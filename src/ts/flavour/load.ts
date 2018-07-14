@@ -1,6 +1,6 @@
 import * as yaml from "js-yaml";
 import {readFileSync} from "fs";
-import { PlayerData } from "../data/player";
+import { PlayerData } from "../game/data/player";
 import { FlavourData, FlavourEngine } from "./types";
 
 export function load(dataString: string): FlavourEngine {
