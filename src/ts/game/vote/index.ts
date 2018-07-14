@@ -1,6 +1,6 @@
 import * as moment from "moment";
 import { PlayerData } from "../data/player";
-import { VoteConfig, VoteResult, VotingData, VoteResultType } from "./types";
+import { VoteConfig, VoteResult, VotingData } from "./types";
 import { TimeoutPromise } from "../../utils/timer";
 import { GetResults, GetVoteResults } from "./get-results";
 import { GameContext } from "../data/context";
@@ -43,7 +43,7 @@ export function startVoteFactory(
                         config.voters.map(v => v.id),
                         targets.map(t => t.id),
                         votingData,
-                        config.rig ? config.rig() : undefined,
+                        config.rig ? config.rig(votingData) : undefined,
                     );
                     resolve(riggedVoteResult);
                 })
@@ -102,7 +102,7 @@ export function startVoteFactory(
                             config.voters.map(v => v.id),
                             targets.map(t => t.id),
                             votingData,
-                            config.rig ? config.rig() : undefined,
+                            config.rig ? config.rig(votingData) : undefined,
                         );
                         // Return.
                         resolve(riggedVoteResult);

@@ -8,9 +8,8 @@ export function GetClient() {
     const client = new discord.Client();
 
     client.on("ready", () => {
-        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Client ready ! Setting username...`);
-        client.user.setUsername("Town of Spirals");
-        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Username set !`);
+        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Client ready !`);
+        client.user.setStatus("online");
     });
     client.on("message", async (message) => {
         if (!config.ADMIN_ID.some(i => message.author.id === i)) {
@@ -47,6 +46,11 @@ export function GetClient() {
         if (message.content === "!sadmin status online") {
             client.user.setStatus("online");
             message.channel.send(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Set status to online`);
+            return;
+        }
+        if (message.content === "!sadmin resetname") {
+            client.user.setUsername("Town of Spirals");
+            message.channel.send(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Resetting name`);
             return;
         }
         if (message.content === "!sadmin guilds") {
@@ -86,6 +90,7 @@ export function GetClient() {
         .then(_ => console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Client logged in !`))
         .catch(e => console.error(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Error while logging in : ${e}`) );
 
+    let mumbles: Array<{ userID: string, message: discord.Message }> = [];
     return {
         client,
         onMessage(handler: (message: ClientMessage<discord.Message>) => void) {
@@ -97,6 +102,25 @@ export function GetClient() {
                     original: message,
                 });
             });
+        },
+        async mumbleMessage(message: discord.Message, flavour: string) {
+            if (message.channel.type === "text") {
+                if (message.deletable) {
+                    await message.delete()
+                        .catch(e => { console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Delete failed.`); });
+                }
+                else {
+                    console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Deleting message not possible.`);
+                    console.log(
+                        `[${moment().format("YYYY-MM-DD HH:mm:ss")}]Check perms in '#${(message.channel as discord.TextChannel).name}'`,
+                    );
+                }
+            }
+            const m = await message.channel.send(flavour);
+            const userID = message.author.id;
+            const previousMumblesFrom = mumbles.filter(mess => mess.userID === userID && mess.message.deletable);
+            mumbles.push({ userID, message: m as discord.Message });
+            return Promise.all(previousMumblesFrom.map(p => p.message.delete()));
         },
         async tryDeleteMessage(message: Message, timeout?: number) {
             const clientMessage = message as ClientMessage<discord.Message>;

@@ -3,21 +3,9 @@ import { GetClient, discordReplier } from "./client/discord";
 import { ALLOW_MUMBLE, MUMBLE_SHOULD_EDIT, CAN_DELETE_MESSAGES } from "./config";
 import { help } from "./commands/help";
 import { rules } from "./commands/rules";
-import { mumbleMessage } from "./commands-old/mumble";
-/*
-import { createGame } from "./commands-old/create-game";
-import { join } from "./commands-old/join";
-import { cancelCreate } from "./commands-old/cancel-create";
-import { leave } from "./commands-old/leave";
-import { startGame } from "./commands-old/start-game";
-import { setSave, setSkip, setBreak } from "./commands-old/deprogram";
-import { handleVote } from "./commands-old/vote";
-import { getRole } from "./commands-old/get-role";
-import { handleSpy } from "./commands-old/spy";
-import { printMessage } from "./commands-old/message";
-*/
 import { Message } from "discord.js";
 import { GetCommandHandler } from "./client/command-handler";
+import { ChannelManager } from "./channel-manager";
 
 moment.relativeTimeThreshold("ss", 1);
 moment.relativeTimeThreshold("s", 60);
@@ -26,11 +14,17 @@ moment.relativeTimeThreshold("m", 60);
 const client = GetClient();
 const command = GetCommandHandler<Message>((message, text) => message.original.channel.send(text));
 
+const channelManager = ChannelManager();
+
 /** Mumbling */
 let shouldMumble = false;
+import { mumbleFlavours } from "./flavour/load-flavours";
+import getRandom from "./utils/rand-from-array";
 command.onBefore(async message => {
     if (shouldMumble) {
-        mumbleMessage(message.original, MUMBLE_SHOULD_EDIT);
+        const flavour = getRandom(mumbleFlavours, 1)[0];
+        const toSend = flavour(message.original.author.username, "");
+        client.mumbleMessage(message.original, toSend);
         return true;
     }
     return false;
@@ -63,7 +57,9 @@ command.on("clear-chat", async (message, text) => {
     return true;
 });
 command.on("mumble", async (message, text) => {
-    mumbleMessage(message.original, MUMBLE_SHOULD_EDIT);
+    const flavour = getRandom(mumbleFlavours, 1)[0];
+    const toSend = flavour(message.original.author.username, "");
+    client.mumbleMessage(message.original, toSend);
     return true;
 });
 

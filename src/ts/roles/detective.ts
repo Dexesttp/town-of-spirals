@@ -4,7 +4,14 @@ import { TimerPromise } from "../utils/timer";
 import { GameTools } from "../game/data/tools";
 import { callUntilResolved } from "../utils/promise-until-resolved";
 
-export const DETECTIVE_SPIED_ATTRIBUTE = "spied";
+export const ATTRIBUTES = {
+    SPIED: "spied",
+};
+
+export const COMMANDS = {
+    SPY: "spy",
+    SKIP: "skip",
+};
 
 type DetectiveCommandResult = {
     command: "timeout",
@@ -38,7 +45,7 @@ export async function handleDetective(
         //#region Spy
         const targets = GetAlivePlayers(context);
         const spyPromise = callUntilResolved(() =>
-            tools.getTargettingCommandPromise("spy", [detective], targets, true)
+            tools.getTargettingCommandPromise(COMMANDS.SPY, [detective], targets, true)
                 .then<DetectiveCommandResult>(r => ({ command: "spy", ...r })),
         );
         promises.push(spyPromise);
@@ -51,7 +58,7 @@ ${targets.map((t, i) => `[${i}] ${t.nickname} (${t.username})}`)}
 
         //#region Skip
         const skipPromise = callUntilResolved(() =>
-            tools.getCommandPromise("skip", [detective], true)
+            tools.getCommandPromise(COMMANDS.SKIP, [detective], true)
                 .then<DetectiveCommandResult>(r => ({ command: "skip", playerID: r.playerID })),
         );
         promises.push(skipPromise);
@@ -67,7 +74,7 @@ ${targets.map((t, i) => `[${i}] ${t.nickname} (${t.username})}`)}
 
         if (result.command === "spy") {
             const target = context.players.filter(p => p.id === result.targetID)[0];
-            target.attributes.push(DETECTIVE_SPIED_ATTRIBUTE);
+            target.attributes.push(ATTRIBUTES.SPIED);
             // TODO add flavour
             detectiveInterface.sendMessage(`You spy on ${target.nickname}. They're a ${target.roles.join(", ")}`);
             continue;

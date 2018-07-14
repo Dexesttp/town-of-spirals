@@ -1,5 +1,4 @@
 import * as moment from "moment";
-import { timeout } from "../utils/timeout";
 import { ClientMessage } from "./type";
 
 let COMMAND_MATCHER = /^!s ([^\s]+) ?(.*)$/i;

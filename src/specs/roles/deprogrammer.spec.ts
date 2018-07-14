@@ -1,8 +1,7 @@
 import {
-    DEPROGRAMMER_HAS_BROKEN_ATTRIBUTE,
-    DEPROGRAMMER_HAS_SAVED_ATTRIBUTE,
+    ATTRIBUTES,
+    COMMANDS,
     DEPROGRAMMER_ROLE,
-    DEPROGRAMMER_SAVED_ATTRIBUTE,
     handleDeprogrammer,
 } from "../../ts/roles/deprogrammer";
 import { BROKEN_NIGHT } from "../../ts/game/data/player-states";
@@ -78,7 +77,7 @@ describe("The deprogrammer role", () => {
                 cleanSubscribedTargettingCommands: () => { /* NO OP */ },
                 getCommandPromise: () => new Promise(() => { /* NO OP */ }),
                 getTargettingCommandPromise: (command) => {
-                    if (command === "save") return new Promise((res) => { res({ playerID: "0", targetID: "1" }); });
+                    if (command === COMMANDS.SAVE) return new Promise((res) => { res({ playerID: "0", targetID: "1" }); });
                     return new Promise(() => { /* NO OP */ });
                 },
                 startVote: () => new Promise(() => { /* NO OP */ }),
@@ -88,9 +87,9 @@ describe("The deprogrammer role", () => {
         expect(results[deprog.id]).to.not.be.undefined;
         expect(results[deprog.id].command).to.equals("save");
         expect(savedPlayer.attributes).not.to.be.empty;
-        expect(savedPlayer.attributes[0]).to.equals(DEPROGRAMMER_SAVED_ATTRIBUTE);
+        expect(savedPlayer.attributes[0]).to.equals(ATTRIBUTES.SAVED);
         expect(deprog.attributes).not.to.be.empty;
-        expect(deprog.attributes[0]).to.equals(DEPROGRAMMER_HAS_SAVED_ATTRIBUTE);
+        expect(deprog.attributes[0]).to.equals(ATTRIBUTES.HAS_SAVED);
     });
 
     it("Should run properly to completion by breaking somebody", async () => {
@@ -111,7 +110,7 @@ describe("The deprogrammer role", () => {
                 cleanSubscribedTargettingCommands: () => { /* NO OP */ },
                 getCommandPromise: () => new Promise(() => { /* NO OP */ }),
                 getTargettingCommandPromise: (command) => {
-                    if (command === "break") return new Promise((res) => { res({ playerID: "0", targetID: "1" }); });
+                    if (command === COMMANDS.BREAK) return new Promise((res) => { res({ playerID: "0", targetID: "1" }); });
                     return new Promise(() => { /* NO OP */ });
                 },
                 startVote: () => new Promise(() => { /* NO OP */ }),
@@ -123,6 +122,6 @@ describe("The deprogrammer role", () => {
         expect(healthyPlayer.attributes).not.to.be.empty;
         expect(healthyPlayer.attributes[0]).to.equals(BROKEN_NIGHT);
         expect(deprog.attributes).not.to.be.empty;
-        expect(deprog.attributes[0]).to.equals(DEPROGRAMMER_HAS_BROKEN_ATTRIBUTE);
+        expect(deprog.attributes[0]).to.equals(ATTRIBUTES.HAS_BROKEN);
     });
 });

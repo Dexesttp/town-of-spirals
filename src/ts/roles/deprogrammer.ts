@@ -6,9 +6,18 @@ import { BROKEN_NIGHT } from "../game/data/player-states";
 import { callUntilResolved } from "../utils/promise-until-resolved";
 
 export const DEPROGRAMMER_ROLE = "deprogrammer";
-export const DEPROGRAMMER_HAS_SAVED_ATTRIBUTE = "has_saved";
-export const DEPROGRAMMER_SAVED_ATTRIBUTE = "saved";
-export const DEPROGRAMMER_HAS_BROKEN_ATTRIBUTE = "has_broken";
+
+export const ATTRIBUTES = {
+    HAS_BROKEN: "has_broken",
+    HAS_SAVED: "has_saved",
+    SAVED: "saved",
+};
+
+export const COMMANDS = {
+    BREAK: "break",
+    SAVE: "save",
+    SKIP: "skip",
+};
 
 type DeprogrammingCommandResult = {
     command: "timeout",
@@ -42,42 +51,42 @@ export async function handleDeprogrammer(
         //#endregion
 
         //#region Break
-        const canBreak = !deprogrammer.attributes.some(a => a === DEPROGRAMMER_HAS_BROKEN_ATTRIBUTE);
+        const canBreak = !deprogrammer.attributes.some(a => a === ATTRIBUTES.HAS_BROKEN);
         if (canBreak) {
             const targets = GetAlivePlayers(context).filter(p => !p.attributes.some(a => a === ""));
             const breakPromise = callUntilResolved(() =>
-                tools.getTargettingCommandPromise("break", [deprogrammer], targets, true)
+                tools.getTargettingCommandPromise(COMMANDS.BREAK, [deprogrammer], targets, true)
                     .then<DeprogrammingCommandResult>(r => ({ command: "break", ...r})),
             );
             promises.push(breakPromise);
             // TODO add flavour
             deprogrammerInterface.sendMessage(`
-            You can break somebody with \`!s break\` if you want :
-            ${targets.map((t, i) => `[${i}] ${t.nickname} (${t.username})`)}
+                You can break somebody with \`!s break\` if you want :
+                ${targets.map((t, i) => `[${i}] ${t.nickname} (${t.username})`)}
             `);
         }
         //#endregion
 
         //#region Save
-        const canSave = !deprogrammer.attributes.some(a => a === DEPROGRAMMER_HAS_SAVED_ATTRIBUTE);
+        const canSave = !deprogrammer.attributes.some(a => a === ATTRIBUTES.HAS_SAVED);
         const recentlyBrokenPlayers = GetAlivePlayers(context).filter(p => p.attributes.some(a => a === BROKEN_NIGHT));
         if (canSave && recentlyBrokenPlayers.length) {
             const savePromise = callUntilResolved(() =>
-                tools.getTargettingCommandPromise("save", [deprogrammer], recentlyBrokenPlayers, true)
+                tools.getTargettingCommandPromise(COMMANDS.SAVE, [deprogrammer], recentlyBrokenPlayers, true)
                 .then<DeprogrammingCommandResult>(r => ({ command: "save", ...r })),
             );
             promises.push(savePromise);
             // TODO add flavour
             deprogrammerInterface.sendMessage(`
-You can save people somebody with \`!s save\` if you want :
-${recentlyBrokenPlayers.map((t, i) => `[${i}] ${t.nickname} (${t.username})`)}
+                You can save people somebody with \`!s save\` if you want :
+                ${recentlyBrokenPlayers.map((t, i) => `[${i}] ${t.nickname} (${t.username})`)}
             `);
         }
         //#endregion
 
         //#region Skip
         const skipPromise = callUntilResolved(() =>
-            tools.getCommandPromise("skip", [deprogrammer], true)
+            tools.getCommandPromise(COMMANDS.SKIP, [deprogrammer], true)
                 .then<DeprogrammingCommandResult>(r => ({ command: "skip", playerID: r.playerID })),
         );
         promises.push(skipPromise);
@@ -94,7 +103,7 @@ ${recentlyBrokenPlayers.map((t, i) => `[${i}] ${t.nickname} (${t.username})`)}
         if (result.command === "break") {
             const target = context.players.filter(p => p.id === result.targetID)[0];
             target.attributes.push(BROKEN_NIGHT);
-            deprogrammer.attributes.push(DEPROGRAMMER_HAS_BROKEN_ATTRIBUTE);
+            deprogrammer.attributes.push(ATTRIBUTES.HAS_BROKEN);
             // TODO add flavour
             deprogrammerInterface.sendMessage(`You broke ${target.nickname}.`);
             continue;
@@ -102,8 +111,8 @@ ${recentlyBrokenPlayers.map((t, i) => `[${i}] ${t.nickname} (${t.username})`)}
         if (result.command === "save") {
             const target = context.players.filter(p => p.id === result.targetID)[0];
             target.attributes = target.attributes.filter(a => a !== BROKEN_NIGHT);
-            target.attributes.push(DEPROGRAMMER_SAVED_ATTRIBUTE);
-            deprogrammer.attributes.push(DEPROGRAMMER_HAS_SAVED_ATTRIBUTE);
+            target.attributes.push(ATTRIBUTES.SAVED);
+            deprogrammer.attributes.push(ATTRIBUTES.HAS_SAVED);
             // TODO add flavour
             deprogrammerInterface.sendMessage(`You saved somebody.`);
             continue;

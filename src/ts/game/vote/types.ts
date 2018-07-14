@@ -77,7 +77,7 @@ export type VoteConfig = {
     /** Whether to disable the "no-vote" option. Defaults to allowed (true). */
     disableNoVote?: boolean,
     /** A method returning a list of rigged votes. The list is one of IDs. Defaults to () => [] (no rig). */
-    rig?: () => Array<{voter: string, target: string | null}>,
+    rig?: (data: VotingData) => Array<{voter: string, target: string | null}>,
 };
 
 export type VotingData = {

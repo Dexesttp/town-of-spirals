@@ -1,4 +1,4 @@
-import { handleDetective, DETECTIVE_ROLE, DETECTIVE_SPIED_ATTRIBUTE } from "../../ts/roles/detective";
+import { handleDetective, DETECTIVE_ROLE, ATTRIBUTES } from "../../ts/roles/detective";
 import { expect } from "chai";
 
 // tslint:disable:no-unused-expression
@@ -78,6 +78,6 @@ describe("The detective role", () => {
         expect(results[detective.id]).to.not.be.undefined;
         expect(results[detective.id].command).to.equals("spy");
         expect(spiedOnPlayer.attributes).not.to.be.empty;
-        expect(spiedOnPlayer.attributes[0]).to.equals(DETECTIVE_SPIED_ATTRIBUTE);
+        expect(spiedOnPlayer.attributes[0]).to.equals(ATTRIBUTES.SPIED);
     });
 });
