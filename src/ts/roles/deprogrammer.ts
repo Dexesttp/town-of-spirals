@@ -55,9 +55,8 @@ export async function handleDeprogrammer(
         if (canBreak) {
             const targets = GetAlivePlayers(context).filter(p => !p.attributes.some(a => a === ""));
             const breakPromise = callUntilResolved(() =>
-                tools.getTargettingCommandPromise(COMMANDS.BREAK, [deprogrammer], targets, true)
-                    .then<DeprogrammingCommandResult>(r => ({ command: "break", ...r})),
-            );
+                tools.getTargettingCommandPromise(COMMANDS.BREAK, [deprogrammer], targets, true),
+            ).then<DeprogrammingCommandResult>(r => ({ command: "break", ...r}));
             promises.push(breakPromise);
             // TODO add flavour
             deprogrammerInterface.sendMessage(`
@@ -72,9 +71,8 @@ export async function handleDeprogrammer(
         const recentlyBrokenPlayers = GetAlivePlayers(context).filter(p => p.attributes.some(a => a === BROKEN_NIGHT));
         if (canSave && recentlyBrokenPlayers.length) {
             const savePromise = callUntilResolved(() =>
-                tools.getTargettingCommandPromise(COMMANDS.SAVE, [deprogrammer], recentlyBrokenPlayers, true)
-                .then<DeprogrammingCommandResult>(r => ({ command: "save", ...r })),
-            );
+                tools.getTargettingCommandPromise(COMMANDS.SAVE, [deprogrammer], recentlyBrokenPlayers, true),
+            ).then<DeprogrammingCommandResult>(r => ({ command: "save", ...r }));
             promises.push(savePromise);
             // TODO add flavour
             deprogrammerInterface.sendMessage(`
@@ -86,9 +84,8 @@ export async function handleDeprogrammer(
 
         //#region Skip
         const skipPromise = callUntilResolved(() =>
-            tools.getCommandPromise(COMMANDS.SKIP, [deprogrammer], true)
-                .then<DeprogrammingCommandResult>(r => ({ command: "skip", playerID: r.playerID })),
-        );
+            tools.getCommandPromise(COMMANDS.SKIP, [deprogrammer], true),
+        ).then<DeprogrammingCommandResult>(r => ({ command: "skip", playerID: r.playerID }));
         promises.push(skipPromise);
         // TODO add flavour
         deprogrammerInterface.sendMessage(`You can skip tonight's vote with \`!s skip\`.`);

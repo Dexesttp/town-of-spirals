@@ -13,7 +13,7 @@ describe("For 4 player games, the test environment", () => {
             ],
             { tists: 1 },
         );
-        expect(replies.pop()).to.equals("Townspeople won !");
+        expect(replies.pop()).to.equals("general > Townspeople won !");
         expect(mumbles).to.equals(0);
     });
 
@@ -29,7 +29,7 @@ describe("For 4 player games, the test environment", () => {
             ],
             { tists: 1 },
         );
-        expect(replies.pop()).to.equals("Hypnotists won !");
+        expect(replies.pop()).to.equals("general > Hypnotists won !");
         expect(mumbles).to.equals(0);
     });
 
@@ -45,7 +45,7 @@ describe("For 4 player games, the test environment", () => {
             ],
             { tists: 1 },
         );
-        expect(replies.pop()).to.equals("Hypnotists won !");
+        expect(replies.pop()).to.equals("general > Hypnotists won !");
         expect(mumbles).to.equals(0);
     });
 
@@ -62,7 +62,7 @@ describe("For 4 player games, the test environment", () => {
             ],
             { tists: 1 },
         );
-        expect(replies.pop()).to.equals("Hypnotists won !");
+        expect(replies.pop()).to.equals("general > Hypnotists won !");
         expect(mumbles).to.equals(0);
     });
 });

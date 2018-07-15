@@ -102,7 +102,7 @@ command.on("vote", async (message, text) => {
         console.log("Unknown player.");
         return true;
     }
-    game.handleTargettingCommand("vote", message.author, target.id, message);
+    game.handleTargettingCommand("vote", message.author, { type: "id", content: target.id }, message);
     return true;
 });
 
@@ -121,7 +121,7 @@ command.on("break", async (message, text) => {
         return true;
     }
     const target = game.context.players.filter(p => p.id === text)[0];
-    game.handleTargettingCommand("break", message.author, target.id, message);
+    game.handleTargettingCommand("break", message.author, { type: "id", content: target.id }, message);
     return true;
 });
 
@@ -131,7 +131,7 @@ command.on("save", async (message, text) => {
         return true;
     }
     const target = game.context.players.filter(p => p.id === text)[0];
-    game.handleTargettingCommand("save", message.author, target.id, message);
+    game.handleTargettingCommand("save", message.author, { type: "id", content: target.id }, message);
     return true;
 });
 
@@ -141,7 +141,7 @@ command.on("spy", async (message, text) => {
         return true;
     }
     const target = game.context.players.filter(p => p.id === text)[0];
-    game.handleTargettingCommand("spy", message.author, target.id, message);
+    game.handleTargettingCommand("spy", message.author, { type: "id", content: target.id }, message);
     return true;
 });
 

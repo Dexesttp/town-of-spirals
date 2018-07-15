@@ -15,11 +15,34 @@ brokenNight:
     - |
       Surprisingly, nobody got enthralled tonight. Maybe the remaining hypnotists were too busy arguing between themselves.
       The villagers gather around in the center of the village. A single night of respite doesn't mean there's no danger.
-break:
+brokenDay:
   event:
     - |
-      [target] has been chosen as the victim.
+      [target] has been chosen as today's victim.
       The town gather as [target] is brought to the chair.
       The chair begins its magic, and [target] slowly feels their mind slipping away.
       After a while, they stop struggling. They're let free to wander around, not able to think much anymore.
       [owner] decides to take [target] in and take care of them.
+  none: 
+    - |
+      There's danger around, but the villagers decide to not tempt fate.
+      Nobody will be brought to the chair today.
+vote:
+  warnTimeout:
+    - |
+      [playerList] Hurry up ! Only [time] remaining before the vote ends !
+    - |
+      [playerList] Only [time] remaining before the vote ends.
+  onVote:
+    - |
+      [player] voted for [target] !
+    - |
+      [player] thinks [target] would be a good candidate for the chair.
+  onNoVote:
+    - |
+      [player] prefers not to break anybody's mind.
+    - |
+      [player] thinks it's better not to make mistakes, and votes against targetting people.
+  onCurrentVotes:
+    - |
+      The current votes are [resultsList]

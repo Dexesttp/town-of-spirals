@@ -9,10 +9,12 @@ export type TargettingPromiseGetter = (
     shouldBePrivate: boolean,
 ) => Promise<TargettingCommandData>;
 
+export type InputTargetType = { type: "id", content: string } | { type: "index", content: number };
+
 export type TargettingHandler = (
     command: string,
     playerID: string,
-    targetID: string,
+    target: InputTargetType,
     message: Message,
 ) => void;
 

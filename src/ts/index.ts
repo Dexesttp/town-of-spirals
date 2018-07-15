@@ -17,17 +17,22 @@ const command = GetCommandHandler<Message>((message, text) => message.original.c
 const channelManager = ChannelManager();
 
 /** Mumbling */
-let shouldMumble = false;
 import { mumbleFlavours } from "./flavour/load-flavours";
 import getRandom from "./utils/rand-from-array";
 command.onBefore(async message => {
-    if (shouldMumble) {
+    if (channelManager.shouldMumble(message)) {
         const flavour = getRandom(mumbleFlavours, 1)[0];
         const toSend = flavour(message.original.author.username, "");
         client.mumbleMessage(message.original, toSend);
         return true;
     }
     return false;
+});
+command.on("mumble", async (message, text) => {
+    const flavour = getRandom(mumbleFlavours, 1)[0];
+    const toSend = flavour(message.original.author.username, "");
+    client.mumbleMessage(message.original, toSend);
+    return true;
 });
 
 /**
@@ -37,30 +42,26 @@ command.on("help", discordReplier(help));
 command.on("rules", discordReplier(rules));
 
 /**
- * Game start commands
+ * Game commands
  */
-command.on("create", discordReplier(() => "The bot is under construction for now..."));
+command.on("create", async (message, text) => { await channelManager.createGame(message.original); return true; });
+command.on("cancel", async (message, text) => { await channelManager.cancelGame(message.original); return true; });
+command.on("join", async (message, text) => { await channelManager.joinGame(message.original); return true; });
+command.on("leave", async (message, text) => { await channelManager.leaveGame(message.original); return true; });
+command.on("start", async (message, text) => { await channelManager.startGame(message.original); return true; });
+command.on("vote", async (message, text) => await channelManager.handleCommand("vote", message, text));
+command.on("vote-nb", async (message, text) => await channelManager.handleCommand("vote-nb", message, text));
+command.on("no-vote", async (message, text) => await channelManager.handleCommand("no-vote", message, text));
+command.on("break", async (message, text) => await channelManager.handleCommand("break", message, text));
+command.on("break-nb", async (message, text) => await channelManager.handleCommand("break", message, text));
+command.on("save", async (message, text) => await channelManager.handleCommand("save", message, text));
+command.on("save-nb", async (message, text) => await channelManager.handleCommand("save", message, text));
+command.on("spy", async (message, text) => await channelManager.handleCommand("spy", message, text));
+command.on("spy-nb", async (message, text) => await channelManager.handleCommand("spy", message, text));
+command.on("skip", async (message, text) => await channelManager.handleCommand("skip", message, text));
 
 /**
  * Debug commands
  */
-command.on("clear-chat", async (message, text) => {
-    if (!CAN_DELETE_MESSAGES) return false;
-    const postedMessages = await message.original.channel.fetchMessages({
-        limit: 100,
-    });
-    let botMessages = postedMessages.map(m => m).filter(m => m.author === client.client.user);
-    const qty = +text;
-    if (qty) botMessages = botMessages.filter((m, i) => i < qty);
-    await Promise.all(botMessages.map(m => m.delete()));
-    console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Deleted ${botMessages.length} messages`);
-    return true;
-});
-command.on("mumble", async (message, text) => {
-    const flavour = getRandom(mumbleFlavours, 1)[0];
-    const toSend = flavour(message.original.author.username, "");
-    client.mumbleMessage(message.original, toSend);
-    return true;
-});
 
 client.onMessage(command.messageHandler);

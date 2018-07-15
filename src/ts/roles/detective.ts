@@ -45,9 +45,8 @@ export async function handleDetective(
         //#region Spy
         const targets = GetAlivePlayers(context);
         const spyPromise = callUntilResolved(() =>
-            tools.getTargettingCommandPromise(COMMANDS.SPY, [detective], targets, true)
-                .then<DetectiveCommandResult>(r => ({ command: "spy", ...r })),
-        );
+            tools.getTargettingCommandPromise(COMMANDS.SPY, [detective], targets, true),
+        ).then<DetectiveCommandResult>(r => ({ command: "spy", ...r }));
         promises.push(spyPromise);
         // TODO add flavour
         detectiveInterface.sendMessage(`
@@ -58,9 +57,8 @@ ${targets.map((t, i) => `[${i}] ${t.nickname} (${t.username})}`)}
 
         //#region Skip
         const skipPromise = callUntilResolved(() =>
-            tools.getCommandPromise(COMMANDS.SKIP, [detective], true)
-                .then<DetectiveCommandResult>(r => ({ command: "skip", playerID: r.playerID })),
-        );
+            tools.getCommandPromise(COMMANDS.SKIP, [detective], true),
+        ).then<DetectiveCommandResult>(r => ({ command: "skip", playerID: r.playerID }));
         promises.push(skipPromise);
         // TODO add flavour
         detectiveInterface.sendMessage(`You can skip tonight's action with \`!s skip\`.`);

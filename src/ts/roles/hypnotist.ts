@@ -15,6 +15,7 @@ export async function handleHypnotist(
     const targets = GetAlivePlayers(context).filter(p => !p.attributes.some(a => a === BROKEN_NIGHT));
     const hypnotistInterfaces = hypnotists.map(h => context.playerInterface[h.id]);
 
+    // TODO add flavour
     hypnotistInterfaces.forEach(f => f.sendMessage(`
 Breaking time ! Choose one person to target with \`!s vote\`.
 The available targets are : ${targets.map((t, i) => `[${i}] ${t.nickname} (${t.username})`)}
@@ -26,6 +27,8 @@ The available targets are : ${targets.map((t, i) => `[${i}] ${t.nickname} (${t.u
         timeout: 300000, // 5mn timeout
         warnTimeout: 30000, // 30s timeout warning
         sendDirectMessage: true,
+        // TODO add flavour
+        flavour: { },
     });
 
     if (voteResult.type === VoteResultType.MAJORITY

@@ -9,6 +9,8 @@ export async function baseDay(context: GameContext, tools: GameTools) {
     context.sendMessage(`Tis a new day ! vote with \`!s vote\`.`);
     const voteResult = await tools.startVote({
         voters: GetAlivePlayers(context),
+        // TODO add flavour
+        flavour: { },
     });
     if (voteResult.type === VoteResultType.MAJORITY || voteResult.type === VoteResultType.UNANIMITY) {
         const targetPlayer = context.players.filter(p => p.id === voteResult.target)[0];

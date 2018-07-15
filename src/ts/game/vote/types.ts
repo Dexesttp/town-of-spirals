@@ -48,16 +48,6 @@ export type VoteConfig = {
      * Defaults to everybody.
      */
     targets?: PlayerData[],
-    /**
-     * The flavour pack to use for this vote and its results.
-     * If the flavour pack doesn't exist, it will fire a warning and fallback on the "vote" pack.
-     * If the flavour pack is missing a needed entry, it may fire a warning, depending of the
-     * "doNotWarnOnMissingFlavourEntry" parameter, and fallback on the "vote" pack's entry.
-     * Defaults to the "vote" pack ("vote").
-     */
-    flavour?: string,
-    /** Whether to warn on missing flavour entries or not. Default behavior is to warn (false). */
-    doNotWarnOnMissingFlavourEntry?: boolean,
     /** The timeout, in milliseconds. Defaults to 5 minutes (300 000). */
     timeout?: number,
     /**
@@ -78,6 +68,20 @@ export type VoteConfig = {
     disableNoVote?: boolean,
     /** A method returning a list of rigged votes. The list is one of IDs. Defaults to () => [] (no rig). */
     rig?: (data: VotingData) => Array<{voter: string, target: string | null}>,
+    /**
+     * The flavours to use for this vote and its results.
+     * If the flavour pack doesn't exist, it will fire a warning and fallback on the "vote" pack.
+     * If the flavour pack is missing a needed entry, it may fire a warning, depending of the
+     * "doNotWarnOnMissingFlavourEntry" parameter, and fallback on the "vote" pack's entry.
+     * Defaults to the "vote" pack ("vote").
+     */
+    flavour?: {
+        onWarnTimeout?: (timedout: PlayerData[]) => string,
+        onVote?: (voter: PlayerData, target: PlayerData) => string,
+        onNoVote?: (voter: PlayerData) => string,
+        onNoVoteNotAllowed?: () => string,
+        onCurrentVotes?: (results: Array<{ target: PlayerData | null, count: number }>) => string,
+    },
 };
 
 export type VotingData = {

@@ -17,22 +17,42 @@ export function startVoteFactory(
     sendMessage: (message: string, voters: PlayerData[], sendDirectMessage?: boolean) => void,
 ) {
     return function startVote(config: VoteConfig): Promise<VoteResult> {
+        const targets = config.targets || GetAlivePlayers(context);
+        const fullTimeout = config.timeout || DEFAULT_VOTE_TIMEOUT;
+        const warnTimeout = config.warnTimeout || DEFAULT_VOTE_WARN_TIMEOUT;
+        if (fullTimeout < warnTimeout)
+            throw new TypeError(`The vote timeout ${fullTimeout} is less than the warn timeout ${warnTimeout}`);
+        const flavours = config.flavour || { };
+        const warnTimeoutTextGetter = flavours.onWarnTimeout || ((timedOutVoters: PlayerData[]) =>
+            `${timedOutVoters.map(p => `<@${p.id}>`).join(", ")} : ${moment.duration(warnTimeout).humanize()} remaining before vote ends !`
+        );
+        const voteTextGetter = flavours.onVote || ((voter: PlayerData, target: PlayerData) =>
+            `${voter.nickname} voted for ${target.nickname} !`
+        );
+        const noVoteTextGetter = flavours.onNoVote || ((voter: PlayerData) =>
+            `${voter.nickname} chose not to target anybody.`
+        );
+        const noVoteNotAllowedTextGetter = flavours.onNoVoteNotAllowed || (() =>
+            "The `!s no-vote` command is not allowed here."
+        );
+        const currentVotesTextGetter = flavours.onCurrentVotes || ((results) =>
+            `Current votes are : ${results.map(r => {
+                if (r.target === null)
+                    return `\`No vote\` (${r.count})`;
+                return `${r.target.nickname} (${r.count})`;
+            }).join(", ")}`
+        );
         return new Promise((resolve, reject) => {
             const votingData: VotingData = {};
-            const targets = config.targets || GetAlivePlayers(context);
-            const fullTimeout = config.timeout || DEFAULT_VOTE_TIMEOUT;
-            const warnTimeout = config.warnTimeout || DEFAULT_VOTE_WARN_TIMEOUT;
-            if (fullTimeout < warnTimeout)
-                throw new TypeError(`The vote timeout ${fullTimeout} is less than the warn timeout ${warnTimeout}`);
-
             let ended = false;
             let timeout = timerPromiseGetter(fullTimeout - warnTimeout);
             timeout.then(() => {
                 if (ended) return;
                 const votes = GetResults(config.voters.map(v => v.id), targets.map(t => t.id), votingData);
+                const timedOutVoters = config.voters.filter(v => votes.timedout.some(t => t === v.id));
                 sendMessage(
                     // tslint:disable-next-line:max-line-length
-                    `${votes.timedout.map(id => `<@${id}>`).join(", ")} : ${moment.duration(warnTimeout).humanize()} remaining before vote ends !`,
+                    warnTimeoutTextGetter(timedOutVoters),
                     config.voters, config.sendDirectMessage,
                 );
                 timeout = timerPromiseGetter(warnTimeout);
@@ -72,14 +92,23 @@ export function startVoteFactory(
                             return;
                         }
                         sendMessage(
-                            `${voter.nickname} voted for ${target.nickname} !`,
+                            voteTextGetter(voter, target),
                             config.voters,
                             config.sendDirectMessage,
                         );
                     }
                     else if (reply.targetID === null) {
+                        if (config.disableNoVote) {
+                            sendMessage(
+                                noVoteNotAllowedTextGetter(),
+                                [voter],
+                                config.sendDirectMessage,
+                            );
+                            reject(new Error(`No vote is not allowed here`));
+                            return;
+                        }
                         sendMessage(
-                            `${voter.nickname} chose not to target anybody.`,
+                            noVoteTextGetter(voter),
                             config.voters,
                             config.sendDirectMessage,
                         );
@@ -111,7 +140,7 @@ export function startVoteFactory(
                     else {
                         try {
                             // Get the current progress
-                            const results = GetVoteResults(votingData)
+                            const results: Array<{ target: PlayerData | null, count: number }> = GetVoteResults(votingData)
                             .map(v => {
                                 if (v.userID === null) {
                                     return { target: null, count: v.count };
@@ -123,11 +152,7 @@ export function startVoteFactory(
                                 return { target, count: v.count };
                             });
                             sendMessage(
-                                `Current votes are : ${results.map(r => {
-                                    if (r.target === null)
-                                        return `\`No vote\` (${r.count})`;
-                                    return `${r.target.nickname} (${r.count})`;
-                                }).join(", ")}`,
+                                currentVotesTextGetter(results),
                                 config.voters,
                                 config.sendDirectMessage,
                             );

@@ -1,7 +1,7 @@
 import { PlayerInterface, PlayerData } from "../data/player";
 import { Message } from "../../client/type";
 import { VoteRequest } from "../vote/types";
-import { TargettingPromiseGetter, TargettingHandler, TargettingCommandData } from "./types";
+import { TargettingPromiseGetter, TargettingHandler, TargettingCommandData, InputTargetType } from "./types";
 
 enum TargetRequestResult {
     VALID,
@@ -10,7 +10,7 @@ enum TargetRequestResult {
     INVALID_TARGET,
 }
 
-type TargetRequestCallback = (playerID: string, targetID: string, message: Message) => TargetRequestResult;
+type TargetRequestCallback = (playerID: string, target: InputTargetType, message: Message) => TargetRequestResult;
 
 export function targetEngine(
     playerInterface: PlayerInterface,
@@ -42,7 +42,7 @@ export function targetEngine(
         switch (result) {
             case TargetRequestResult.INVALID_MODE:
                 if (message.private) {
-                    playerInterface[voterID].sendMessage("You must use this command publically.");
+                    playerInterface[voterID].sendMessage("You must use this command publicly.");
                     return;
                 }
                 await tryDeleteMessage(message);
@@ -56,7 +56,7 @@ export function targetEngine(
                 return;
             case TargetRequestResult.INVALID_TARGET:
                 if (message.private) {
-                    playerInterface[voterID].sendMessage(`This player isn't a valid target.`);
+                    playerInterface[voterID].sendMessage(`Invalid command ${message.content} : this player isn't a valid target.`);
                     return;
                 }
                 sendMessage(`This player isn't a valid target.`);
@@ -73,7 +73,7 @@ export function targetEngine(
         shouldBePrivate: boolean,
     ) {
         return new Promise<TargettingCommandData>((resolve, reject) => {
-            subscribeForTargetting(command, (playerID, targetID, message: Message) => {
+            subscribeForTargetting(command, (playerID, target, message: Message) => {
                 // If the vote request is made in the wrong channel.
                 if (message.private !== shouldBePrivate) {
                     reject(TargetRequestResult.INVALID_MODE);
@@ -85,15 +85,24 @@ export function targetEngine(
                     return TargetRequestResult.INVALID_VOTER;
                 }
                 // If the vote request is made towards somebody, and they cannot be targeted.
-                if (targetID !== null
-                    && targetID !== undefined
-                    && !targets.some(t => t.id === targetID)
+                if (target === null
+                    || target === undefined
+                    || target.content === null
+                    || target.content === undefined
                 ) {
                     reject(TargetRequestResult.INVALID_TARGET);
                     return TargetRequestResult.INVALID_TARGET;
                 }
+                const actualTarget = (target.type === "id"
+                    ? targets.filter(t => (target.type === "id" && t.id === target.content))
+                    : targets.filter((t, index) => (target.type === "index" && index === target.content))
+                )[0];
+                if (!actualTarget) {
+                    reject(TargetRequestResult.INVALID_TARGET);
+                    return TargetRequestResult.INVALID_TARGET;
+                }
                 // Otherwise
-                resolve({ playerID, targetID });
+                resolve({ playerID, targetID: actualTarget.id });
                 return TargetRequestResult.VALID;
             });
         });
@@ -102,13 +111,13 @@ export function targetEngine(
     function handleTargettingCommand(
         command: string,
         playerID: string,
-        targetID: string,
+        target: InputTargetType,
         message: Message,
     ) {
         if (!handleTargettingOnce[command])
             return;
         for (const targettingHandler of handleTargettingOnce[command]) {
-            const result = targettingHandler(playerID, targetID, message);
+            const result = targettingHandler(playerID, target, message);
             handleTargettingResult(result, message, playerID);
         }
         handleTargettingOnce[command] = [];

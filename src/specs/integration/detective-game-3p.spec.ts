@@ -13,7 +13,7 @@ describe("For 3 player games with a detective, the test environment", () => {
             ],
             { tists: 1, detectives: 1 },
         );
-        expect(replies.pop()).to.equals("Townspeople won !");
+        expect(replies.pop()).to.equals("general > Townspeople won !");
         expect(mumbles).to.equals(0);
     });
 
@@ -28,7 +28,7 @@ describe("For 3 player games with a detective, the test environment", () => {
             ],
             { tists: 1, detectives: 1 },
         );
-        expect(replies.pop()).to.equals("Townspeople won !");
+        expect(replies.pop()).to.equals("general > Townspeople won !");
         expect(mumbles).to.equals(0);
     });
 
@@ -44,7 +44,7 @@ describe("For 3 player games with a detective, the test environment", () => {
             ],
             { tists: 1, detectives: 1 },
         );
-        expect(replies.pop()).to.equals("Townspeople won !");
+        expect(replies.pop()).to.equals("general > Townspeople won !");
         expect(mumbles).to.equals(0);
     });
 

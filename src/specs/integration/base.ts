@@ -51,6 +51,7 @@ export async function runGame(
     messages: Array<
         { type: "simple", player: number, command: string, private: boolean, original: string }
       | { type: "target", player: number, command: string, target: number, private: boolean, original: string }
+      | { type: "target_pos", player: number, command: string, target: number, private: boolean, original: string }
     >,
     roles: { tists: number, deprogs?: number, detectives?: number },
     params: { allowMumble?: boolean, log?: boolean } = {},
@@ -62,7 +63,7 @@ export async function runGame(
         async (id, message) => replies.push(`${id} > ${message}`),
     );
     for (let i = 0; i < players; i++) {
-        gameCreator.addPlayer(`${ i + 1 }`);
+        gameCreator.addPlayer(`${i + 1}`);
     }
     const createdPlayers = gameCreator.players();
     for (let i = 0; i < roles.tists; i++) {
@@ -81,7 +82,7 @@ export async function runGame(
     if (params.log) {
         console.log(createdPlayers.map(p => `${p.id} ${p.roles[0]}`).join(", "));
     }
-    let sendMessage = async (m: string) => { replies.push(m); };
+    let sendMessage = async (m: string) => { replies.push(`general > ${m}`); };
     let game = Game(
         createdPlayers,
         sendMessage,
@@ -94,6 +95,7 @@ export async function runGame(
     const runningGame = game.start();
     for (const message of messages) {
         await TimerPromise(1);
+        replies.push(`${message.original}`);
         if (message.type === "simple") {
             game.handleCommand(
                 message.command,
@@ -105,13 +107,21 @@ export async function runGame(
             game.handleTargettingCommand(
                 message.command,
                 `${message.player}`,
-                `${message.target}`,
+                { type: "id", content: `${message.target}` },
+                { author: `${message.player}`, private: message.private, content: message.original },
+            );
+        }
+        else if (message.type === "target_pos") {
+            game.handleTargettingCommand(
+                message.command,
+                `${message.player}`,
+                { type: "index", content: message.target },
                 { author: `${message.player}`, private: message.private, content: message.original },
             );
         }
     }
     if (params.log) {
-        console.log(replies.join(", "));
+        console.log(replies.join("\n"));
     }
     await runningGame;
     return { replies, mumbles };

@@ -3,6 +3,25 @@ intro:
     The night has fallen. Vote for a new victim with [command.vote], or skip the vote with [command.no_vote]
     The available targets for tonight are : [targets].
     As a reminder, your colleagues are : [players].
+vote:
+  warnTimeout:
+    - |
+      Hurry up ! Only [time] remaining !
+    - |
+      Only [time] remaining before the vote ends.
+  onVote:
+    - |
+      [player] voted for [target] !
+    - |
+      [player] wants to break [target]'s mind tonight.
+  onNoVote:
+    - |
+      [player] chose not to target anybody.
+    - |
+      [player] would prefer to keep a low profile tonight.
+  onCurrentVotes:
+    - |
+      The current votes are [resultsList]
 action:
   break:
     self:
@@ -10,8 +29,12 @@ action:
         - |
           You pick a mirror, and look at yourself in the eyes. Carefully, you start the process of breaking your own mind.
       2:
-        - |
-          [owner] meets [target] at their house, where they trick them into trance. [target]'s mind quickly gets melted.
+        player:
+          - |
+            [owner] meets [target] at their house, where they trick them into trance. [target]'s mind quickly gets melted.
+        target:
+          - |
+            [owner] meets [target] at their house, where they trick them into trance. [target]'s mind quickly gets melted.
       multi:
         player:
           - |
@@ -31,10 +54,10 @@ action:
 role:
   single:
     - |
-      The game has started ! You're the only hypnotist in town.
+      The game has started ! You are the only hypnotist in town.
   multiple:
     - |
-      The game has started ! you are a hypnotist, along with [players]
+      The game has started ! You are a hypnotist, along with [players]
 reveal:
   - |
     The villagers check [target]'s house out.
@@ -47,10 +70,10 @@ reveal:
   - |
     The villagers check [target]'s house out.
     As they enter, the TV screen flickers on and a huge spiral appears on it. As the whole town begins to stare at it, somebody has the common sense to turn the screen off.
-    It appears [targetNotification] was a hypnotist !
+    It appears [targetMention] was a hypnotist !
   - |
     The villagers check [target]'s house out.
-    [target] definitely liked pocket watches. He must have at least a hundred of them !
+    [target] definitely liked pocket watches. They must have at least a hundred of them !
     It appears [targetMention] was a hypnotist !
   - |
     The villagers check [target]'s house out.

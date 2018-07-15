@@ -6,7 +6,7 @@ describe("For 3 player games with a deprogrammer, the test environment", () => {
         const { replies, mumbles } = await runGame(
             3,
             [
-                { type: "target", command: "vote", player: 1, target: 3, private: true, original: "1>!s vote 2" },
+                { type: "target", command: "vote", player: 1, target: 3, private: true, original: "1>!s vote 3" },
                 { type: "target", command: "save", player: 2, target: 3, private: true, original: "2>!s save 3" },
                 { type: "target", command: "vote", player: 1, target: 2, private: false, original: "1>!s vote 2" },
                 { type: "target", command: "vote", player: 2, target: 1, private: false, original: "2>!s vote 1" },
@@ -14,7 +14,7 @@ describe("For 3 player games with a deprogrammer, the test environment", () => {
             ],
             { tists: 1, deprogs: 1 },
         );
-        expect(replies.pop()).to.equals("Townspeople won !");
+        expect(replies.pop()).to.equals("general > Townspeople won !");
         expect(mumbles).to.equals(0);
     });
 
@@ -22,12 +22,12 @@ describe("For 3 player games with a deprogrammer, the test environment", () => {
         const { replies, mumbles } = await runGame(
             3,
             [
-                { type: "target", command: "vote", player: 1, target: 3, private: true, original: "1>!s vote 2" },
+                { type: "target", command: "vote", player: 1, target: 3, private: true, original: "1>!s vote 3" },
                 { type: "target", command: "break", player: 2, target: 1, private: true, original: "2>!s break 1" },
             ],
             { tists: 1, deprogs: 1 },
         );
-        expect(replies.pop()).to.equals("Townspeople won !");
+        expect(replies.pop()).to.equals("general > Townspeople won !");
         expect(mumbles).to.equals(0);
     });
 
@@ -42,7 +42,7 @@ describe("For 3 player games with a deprogrammer, the test environment", () => {
             ],
             { tists: 1, deprogs: 1 },
         );
-        expect(replies.pop()).to.equals("Townspeople won !");
+        expect(replies.pop()).to.equals("general > Townspeople won !");
         expect(mumbles).to.equals(0);
     });
 
@@ -59,7 +59,7 @@ describe("For 3 player games with a deprogrammer, the test environment", () => {
             ],
             { tists: 1, deprogs: 1 },
         );
-        expect(replies.pop()).to.equals("Townspeople won !");
+        expect(replies.pop()).to.equals("general > Townspeople won !");
         expect(mumbles).to.equals(0);
     });
 
@@ -76,7 +76,7 @@ describe("For 3 player games with a deprogrammer, the test environment", () => {
             ],
             { tists: 1, deprogs: 1 },
         );
-        expect(replies.pop()).to.equals("Townspeople won !");
+        expect(replies.pop()).to.equals("general > Townspeople won !");
         expect(mumbles).to.equals(0);
     });
 
@@ -93,7 +93,7 @@ describe("For 3 player games with a deprogrammer, the test environment", () => {
             ],
             { tists: 1, deprogs: 1 },
         );
-        expect(replies.pop()).to.equals("Townspeople won !");
+        expect(replies.pop()).to.equals("general > Townspeople won !");
         expect(mumbles).to.equals(0);
     });
 });
