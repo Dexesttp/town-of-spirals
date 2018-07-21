@@ -107,7 +107,7 @@ export function Game(
     };
 
     const night: Array<(context: GameContext, tools: GameTools) => Promise<any>> = [];
-    let day: (context: GameContext, tools: GameTools) => Promise<any> = baseDay;
+    let day: (context: GameContext, tools: GameTools) => Promise<any> = baseDay({});
     let checkEnd: (context: GameContext) => Promise<boolean> = baseCheckEnd;
 
     return {

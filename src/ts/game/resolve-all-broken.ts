@@ -10,6 +10,7 @@ export async function resolveAllBroken(
     for (const player of brokenPlayers) {
         player.attributes = player.attributes.filter(a => a !== BROKEN_NIGHT);
         player.attributes.push(BROKEN);
+        // TODO add flavour
         await context.sendMessage(`<@${player.id}> has been broken tonight. They were a ${player.roles.join(", ")}`);
     }
 }
