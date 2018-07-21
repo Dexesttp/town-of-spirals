@@ -89,9 +89,9 @@ export async function runGame(
         gameCreator.playerInterface(),
         async (m) => { mumbles += 1; return !!params.allowMumble; },
     );
-    game.subscribeNightRole(handleHypnotist);
-    game.subscribeNightRole(handleDeprogrammer);
-    game.subscribeNightRole(handleDetective);
+    game.subscribeNightRole(handleHypnotist({}));
+    game.subscribeNightRole(handleDeprogrammer({}));
+    game.subscribeNightRole(handleDetective({}));
     const runningGame = game.start();
     for (const message of messages) {
         await TimerPromise(1);

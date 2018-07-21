@@ -43,5 +43,6 @@
 		}
 	],
 	"tslint.enable": true,
-	"tslint.run": "onType"
+	"tslint.run": "onType",
+	"typescript.tsdk": "node_modules\\typescript\\lib"
 }

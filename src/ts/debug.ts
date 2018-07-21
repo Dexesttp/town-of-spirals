@@ -85,9 +85,9 @@ command.on("start", async(message, text) => {
         gameCreator.playerInterface(),
         async (m) => { console.log(`>Trying to delete message (${m})`); return false; },
     );
-    game.subscribeNightRole(handleHypnotist);
-    game.subscribeNightRole(handleDeprogrammer);
-    game.subscribeNightRole(handleDetective);
+    game.subscribeNightRole(handleHypnotist({}));
+    game.subscribeNightRole(handleDeprogrammer({}));
+    game.subscribeNightRole(handleDetective({}));
     game.start();
     return true;
 });

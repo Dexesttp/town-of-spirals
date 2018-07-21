@@ -61,7 +61,8 @@ command.on("spy-nb", async (message, text) => await channelManager.handleCommand
 command.on("skip", async (message, text) => await channelManager.handleCommand("skip", message, text));
 
 /**
- * Debug commands
+ * Stats commands
  */
+// TODO
 
 client.onMessage(command.messageHandler);

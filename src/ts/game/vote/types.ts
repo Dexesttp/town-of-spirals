@@ -18,6 +18,14 @@ export const VoteResultType = strEnum([
 /** Create a Type */
 export type VoteResultType = keyof typeof VoteResultType;
 
+export type VotingFlavour = {
+    onWarnTimeout?: (timedout: PlayerData[]) => string,
+    onVote?: (voter: PlayerData, target: PlayerData) => string,
+    onNoVote?: (voter: PlayerData) => string,
+    onNoVoteNotAllowed?: () => string,
+    onCurrentVotes?: (results: Array<{ target: PlayerData | null, count: number }>) => string,
+};
+
 export type VoteResult =
 {
     /** If the timeout fired, list of people who didn't vote. */
@@ -59,29 +67,20 @@ export type VoteConfig = {
     warnTimeout?: number,
     /**
      * Whether to use direct messages for voting and results.
-     * This single option changes both the initial voting message (shown only to the voters list via PMs),
-     * the channel for warnings and the allowed reply channels.
+     * This single option changes the initial voting message (shown only to the voters list via PMs),
+     * the channel used for timeout warnings and the allowed reply channels.
      * Defaults to "main channel" (false).
      */
     sendDirectMessage?: boolean,
     /** Whether to disable the "no-vote" option. Defaults to allowed (true). */
     disableNoVote?: boolean,
-    /** A method returning a list of rigged votes. The list is one of IDs. Defaults to () => [] (no rig). */
+    /** A method returning a list of rigged votes. Defaults to () => [] (no rigging). */
     rig?: (data: VotingData) => Array<{voter: string, target: string | null}>,
     /**
      * The flavours to use for this vote and its results.
-     * If the flavour pack doesn't exist, it will fire a warning and fallback on the "vote" pack.
-     * If the flavour pack is missing a needed entry, it may fire a warning, depending of the
-     * "doNotWarnOnMissingFlavourEntry" parameter, and fallback on the "vote" pack's entry.
-     * Defaults to the "vote" pack ("vote").
+     * By default, the flavours will be debug messages. Make sure to change them !
      */
-    flavour?: {
-        onWarnTimeout?: (timedout: PlayerData[]) => string,
-        onVote?: (voter: PlayerData, target: PlayerData) => string,
-        onNoVote?: (voter: PlayerData) => string,
-        onNoVoteNotAllowed?: () => string,
-        onCurrentVotes?: (results: Array<{ target: PlayerData | null, count: number }>) => string,
-    },
+    flavour?: VotingFlavour,
 };
 
 export type VotingData = {

@@ -16,17 +16,23 @@ nightResult:
 startVote:
   - |
     And now the villagers have to choose which of them to... pacify.
-    The remaining villagers are : [targets]
+    The remaining villagers are : [targetList]
     Use [command.vote] to vote, or [command.no_vote] to vote for nobody
 victory:
   hypnotist:
     - |
-      And with their last slaves in their harem, [players] have enthralled all of the village.
+      And with their last slaves in their harem, [playerList] have enthralled all of the village.
       [allMention]
       The game has ended, and the town has fallen to the hypnotists.
-      The hypnotists were : [hypnotists]
+      The hypnotists were : [hypnotistList]
   townies:
-    - |
-      [allMention]
-      The game has ended, and the town is safe from the hypnotists.
-      The hypnotists were : [hypnotists]
+    1:
+      - |
+        [allMention]
+        The game has ended. [playerList] is left as the sole, but safe thinking person in the town.
+        The hypnotists were : [hypnotistList]
+    multi:
+      - |
+        [allMention]
+        The game has ended, and the town is safe from the hypnotists.
+        The hypnotists were : [hypnotistList]

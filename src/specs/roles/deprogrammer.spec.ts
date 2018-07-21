@@ -12,7 +12,7 @@ describe("The deprogrammer role", () => {
     it("Should run properly to completion with no commands used (timeout)", async () => {
         const messages: string[] = [];
         const deprog = { id: "0", roles: [ DEPROGRAMMER_ROLE ], attributes: [], nickname: "0", username: "0" };
-        const results = await handleDeprogrammer(
+        const results = await handleDeprogrammer({}, 1)(
             {
                 players: [ deprog ],
                 playerInterface: {
@@ -27,7 +27,6 @@ describe("The deprogrammer role", () => {
                 getTargettingCommandPromise: () => new Promise(() => { /* NO OP */ }),
                 startVote: () => new Promise(() => { /* NO OP */ }),
             },
-            1,
         );
         expect(results[deprog.id]).to.not.be.undefined;
         expect(results[deprog.id].command).to.equals("timeout");
@@ -37,7 +36,7 @@ describe("The deprogrammer role", () => {
     it("Should run properly to completion by skipping", async () => {
         const messages: string[] = [];
         const deprog = { id: "0", roles: [ DEPROGRAMMER_ROLE ], attributes: [], nickname: "0", username: "0" };
-        const results = await handleDeprogrammer(
+        const results = await handleDeprogrammer({}, 1)(
             {
                 players: [ deprog ],
                 playerInterface: {
@@ -52,7 +51,6 @@ describe("The deprogrammer role", () => {
                 getTargettingCommandPromise: () => new Promise(() => { /* NO OP */ }),
                 startVote: () => new Promise(() => { /* NO OP */ }),
             },
-            1,
         );
         expect(results[deprog.id]).to.not.be.undefined;
         expect(results[deprog.id].command).to.equals("skip");
@@ -63,7 +61,7 @@ describe("The deprogrammer role", () => {
         const messages: string[] = [];
         const deprog = { id: "0", roles: [ DEPROGRAMMER_ROLE ], attributes: [], nickname: "0", username: "0" };
         const savedPlayer = { id: "1", roles: [ ], attributes: [ BROKEN_NIGHT ], nickname: "1", username: "1" };
-        const results = await handleDeprogrammer(
+        const results = await handleDeprogrammer({}, 1)(
             {
                 players: [ deprog, savedPlayer ],
                 playerInterface: {
@@ -82,7 +80,6 @@ describe("The deprogrammer role", () => {
                 },
                 startVote: () => new Promise(() => { /* NO OP */ }),
             },
-            1,
         );
         expect(results[deprog.id]).to.not.be.undefined;
         expect(results[deprog.id].command).to.equals("save");
@@ -96,7 +93,7 @@ describe("The deprogrammer role", () => {
         const messages: string[] = [];
         const deprog = { id: "0", roles: [ DEPROGRAMMER_ROLE ], attributes: [], nickname: "0", username: "0" };
         const healthyPlayer = { id: "1", roles: [ ], attributes: [ ], nickname: "1", username: "1" };
-        const results = await handleDeprogrammer(
+        const results = await handleDeprogrammer({}, 1)(
             {
                 players: [ deprog, healthyPlayer ],
                 playerInterface: {
@@ -115,7 +112,6 @@ describe("The deprogrammer role", () => {
                 },
                 startVote: () => new Promise(() => { /* NO OP */ }),
             },
-            1,
         );
         expect(results[deprog.id]).to.not.be.undefined;
         expect(results[deprog.id].command).to.equals("break");

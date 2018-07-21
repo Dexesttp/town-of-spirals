@@ -1,12 +1,18 @@
 intro:
   - |
-    Time to snoop up on somebody ! Use [command.spy] to spy on a target.
-    You can spy on [targets].
-    You could also go back to sleep with [command.skip]
+    Time to snoop up on somebody ! Use `!s spy` to spy on a target.
+    You can spy on [voteList].
+    You could also go back to sleep with `!s skip`
 action:
   spy:
     - |
       You snoop up around [target]'s house.
+  skip:
+    - |
+      You decide to do nothing and go back to sleep.
+  timeout:
+    - |
+      You stay up all night wondering what to do. The dawn breaks and your opportunities are now gone.
 reveals:
   none:
     - |

@@ -1,12 +1,13 @@
 
 ## TODO
-- [ ] Making it "roughly" work with Discord (ability to create and start games, actual commands, proper mumbling)
+- [X] Making it "roughly" work with Discord (ability to create and start games, actual commands, proper mumbling)
     - [X] Allow people to register for a game
 - [ ] Adding flavours (the fun text that pops up on events) instead of generic/debug text
     - [X] Sort flavours
-    - [ ]
+    - [X] Create flavour loaders and translators
+    - [ ] Bind the game engine to a flavour engine.
 - [ ] Making the Discord management better (guild moderators, allowed channels, etc...)
-    - [-] Register channels for the game
+    - [X] Register channels for the game
     - [ ] Set guild moderators (based on ID & roles)
 - [ ] Working on the "meta game" stuff (mostly stats)
     - [ ] Find the model to store stats in
@@ -35,5 +36,5 @@ Which could prevent people from being broken that night, and maybe even cure sus
 Hypnofetishist => wins by being brainwashed by the town
 Cultist => converts one new member every night, win when all are cultists
 Eldritch => can resist one attempt at brainwashing (day or night)
-Purifier => can "un-break" somebody every two days, so that they can vote during the day and acct during the night. They still count as broken, and if re-broken cannot be purified again.
+Purifier => can "un-break" somebody every two days, so that they can vote during the day and act during the night. They still count as broken, and if re-broken cannot be purified again.
 Subliminalist => sway one person's votes for the next day.

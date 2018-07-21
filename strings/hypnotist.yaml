@@ -1,8 +1,8 @@
 intro:
   - |
     The night has fallen. Vote for a new victim with [command.vote], or skip the vote with [command.no_vote]
-    The available targets for tonight are : [targets].
-    As a reminder, your colleagues are : [players].
+    As a reminder, your colleagues are : [playerList].
+    The available targets for tonight are : [voteList].
 vote:
   warnTimeout:
     - |
@@ -29,12 +29,8 @@ action:
         - |
           You pick a mirror, and look at yourself in the eyes. Carefully, you start the process of breaking your own mind.
       2:
-        player:
-          - |
-            [owner] meets [target] at their house, where they trick them into trance. [target]'s mind quickly gets melted.
-        target:
-          - |
-            [owner] meets [target] at their house, where they trick them into trance. [target]'s mind quickly gets melted.
+        - |
+          [owner] meets [target] at their house, where they trick them into trance. [target]'s mind quickly gets melted.
       multi:
         player:
           - |
@@ -51,11 +47,25 @@ action:
       multi:
         - |
           You sneak to [target]'s house, where you find your fellow tists. With their help, you break [target]'s mind.
+  skip:
+    dissent:
+      - |
+        You and your colleagues keep arguing about whose mind to break. Finally, dawn arrives and your chance to act is gone.
+    noVote:
+      1:
+        - |
+          You decide to skip tonight's opportunity.
+      2:
+        - |
+          You and your colleague decide to skip tonight's opportunity.
+      multi:
+        - |
+          You and your fellow hypnotist colleagues decide to skip tonight's opportunity.
 role:
-  single:
+  1:
     - |
       The game has started ! You are the only hypnotist in town.
-  multiple:
+  multi:
     - |
       The game has started ! You are a hypnotist, along with [players]
 reveal:

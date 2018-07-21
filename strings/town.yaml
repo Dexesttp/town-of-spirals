@@ -30,9 +30,9 @@ brokenDay:
 vote:
   warnTimeout:
     - |
-      [playerList] Hurry up ! Only [time] remaining before the vote ends !
+      [playerMentionList] Hurry up ! Only [time] remaining before the vote ends !
     - |
-      [playerList] Only [time] remaining before the vote ends.
+      [playerMentionList] Only [time] remaining before the vote ends.
   onVote:
     - |
       [player] voted for [target] !

@@ -3,6 +3,7 @@ import { GetAlivePlayers } from "../game/utils/alive-players";
 import { TimerPromise } from "../utils/timer";
 import { GameTools } from "../game/data/tools";
 import { callUntilResolved } from "../utils/promise-until-resolved";
+import { PlayerData } from "../game/data/player";
 
 export const ATTRIBUTES = {
     SPIED: "spied",
@@ -26,65 +27,76 @@ type DetectiveCommandResult = {
 
 export const DETECTIVE_ROLE = "detective";
 
-export async function handleDetective(
-    context: GameContext,
-    tools: GameTools,
+export type DetectiveFlavourList = {
+    intro?: (voteList: string[]) => string,
+    spy?: { [role: string]: (target: PlayerData, roleList: string[]) => string },
+    skip?: () => string,
+    timeout?: () => string,
+};
+
+export function handleDetective(
+    flavour: DetectiveFlavourList,
     timeout = 120000,
 ) {
-    const detectives = GetAlivePlayers(context).filter(p => p.roles.some(r => r === DETECTIVE_ROLE));
-    const results: { [id: string]: DetectiveCommandResult } = {};
-    for (const detective of detectives) {
-        const promises: Array<Promise<DetectiveCommandResult>> = [];
-        const detectiveInterface = context.playerInterface[detective.id];
+    return async (
+        context: GameContext,
+        tools: GameTools,
+    ) => {
+        const detectives = GetAlivePlayers(context).filter(p => p.roles.some(r => r === DETECTIVE_ROLE));
+        const results: { [id: string]: DetectiveCommandResult } = {};
+        for (const detective of detectives) {
+            const promises: Array<Promise<DetectiveCommandResult>> = [];
+            const detectiveInterface = context.playerInterface[detective.id];
+            const targets = GetAlivePlayers(context);
+            const voteList = targets.map((t, i) => `[${i}] ${t.nickname} (${t.username})}`);
+            const getIntroFlavour = flavour.intro || ((voteListInt: string[]) =>
+                `Spy on somebody with \`!s spy\` : ${voteListInt.join(", ")}. Skip the night with \`!s skip\`.`
+            );
+            detectiveInterface.sendMessage(getIntroFlavour(voteList));
 
-        //#region Timeout
-        const timeoutPromise = TimerPromise(timeout).then<DetectiveCommandResult>(r => ({ command: "timeout" }));
-        promises.push(timeoutPromise);
-        //#endregion
+            //#region Timeout
+            const timeoutPromise = TimerPromise(timeout).then<DetectiveCommandResult>(r => ({ command: "timeout" }));
+            promises.push(timeoutPromise);
+            //#endregion
 
-        //#region Spy
-        const targets = GetAlivePlayers(context);
-        const spyPromise = callUntilResolved(() =>
-            tools.getTargettingCommandPromise(COMMANDS.SPY, [detective], targets, true),
-        ).then<DetectiveCommandResult>(r => ({ command: "spy", ...r }));
-        promises.push(spyPromise);
-        // TODO add flavour
-        detectiveInterface.sendMessage(`
-You can spy on somebody with \`!s spy\` if you want :
-${targets.map((t, i) => `[${i}] ${t.nickname} (${t.username})}`)}
-        `);
-        //#endregion
+            //#region Spy
+            const spyPromise = callUntilResolved(() =>
+                tools.getTargettingCommandPromise(COMMANDS.SPY, [detective], targets, true),
+            ).then<DetectiveCommandResult>(r => ({ command: "spy", ...r }));
+            promises.push(spyPromise);
+            //#endregion
 
-        //#region Skip
-        const skipPromise = callUntilResolved(() =>
-            tools.getCommandPromise(COMMANDS.SKIP, [detective], true),
-        ).then<DetectiveCommandResult>(r => ({ command: "skip", playerID: r.playerID }));
-        promises.push(skipPromise);
-        // TODO add flavour
-        detectiveInterface.sendMessage(`You can skip tonight's action with \`!s skip\`.`);
-        //#endregion
+            //#region Skip
+            const skipPromise = callUntilResolved(() =>
+                tools.getCommandPromise(COMMANDS.SKIP, [detective], true),
+            ).then<DetectiveCommandResult>(r => ({ command: "skip", playerID: r.playerID }));
+            promises.push(skipPromise);
+            //#endregion
 
-        const result = await Promise.race(promises);
-        tools.cleanSubscribedCommands();
-        tools.cleanSubscribedTargettingCommands();
+            const result = await Promise.race(promises);
+            tools.cleanSubscribedCommands();
+            tools.cleanSubscribedTargettingCommands();
 
-        results[detective.id] = result;
+            results[detective.id] = result;
 
-        if (result.command === "spy") {
-            const target = context.players.filter(p => p.id === result.targetID)[0];
-            target.attributes.push(ATTRIBUTES.SPIED);
-            // TODO add flavour
-            detectiveInterface.sendMessage(`You spy on ${target.nickname}. They're a ${target.roles.join(", ")}`);
+            if (result.command === "spy") {
+                const target = context.players.filter(p => p.id === result.targetID)[0];
+                target.attributes.push(ATTRIBUTES.SPIED);
+                const roles = target.roles;
+                const getSpyFlavour = (flavour.spy ? flavour.spy[roles.join("_") || "none"] || flavour.spy["unknown"] : undefined)
+                || ((targetInt: PlayerData, roleListInt: string[]) => `${targetInt.nickname} is a ${roleListInt.join(", ")}`);
+                detectiveInterface.sendMessage(getSpyFlavour(target, roles));
+                continue;
+            }
+            if (result.command === "skip") {
+                const getSkipFlavour = flavour.skip || (() => `You didn't do anything.`);
+                detectiveInterface.sendMessage(getSkipFlavour());
+                continue;
+            }
+            const getTimeoutFlavour = flavour.timeout || (() => `Time ran out and you didn't have time to do anything.`);
+            detectiveInterface.sendMessage(getTimeoutFlavour());
             continue;
         }
-        if (result.command === "skip") {
-            // TODO add flavour
-            detectiveInterface.sendMessage(`You didn't do anything.`);
-            continue;
-        }
-        // TODO add flavour
-        detectiveInterface.sendMessage(`Time ran out and you didn't have time to do anything.`);
-        continue;
-    }
-    return results;
+        return results;
+    };
 }

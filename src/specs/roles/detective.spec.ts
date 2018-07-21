@@ -6,7 +6,7 @@ describe("The detective role", () => {
     it("Should run properly to completion with no commands used (timeout)", async () => {
         const messages: string[] = [];
         const detective = { id: "0", roles: [ DETECTIVE_ROLE ], attributes: [], nickname: "0", username: "0" };
-        const results = await handleDetective(
+        const results = await handleDetective({}, 1)(
             {
                 players: [ detective ],
                 playerInterface: {
@@ -21,7 +21,6 @@ describe("The detective role", () => {
                 getTargettingCommandPromise: () => new Promise(() => { /* NO OP */ }),
                 startVote: () => new Promise(() => { /* NO OP */ }),
             },
-            1,
         );
         expect(results[detective.id]).to.not.be.undefined;
         expect(results[detective.id].command).to.equals("timeout");
@@ -31,7 +30,7 @@ describe("The detective role", () => {
     it("Should run properly to completion by skipping", async () => {
         const messages: string[] = [];
         const detective = { id: "0", roles: [ DETECTIVE_ROLE ], attributes: [], nickname: "0", username: "0" };
-        const results = await handleDetective(
+        const results = await handleDetective({}, 1)(
             {
                 players: [ detective ],
                 playerInterface: {
@@ -46,7 +45,6 @@ describe("The detective role", () => {
                 getTargettingCommandPromise: () => new Promise(() => { /* NO OP */ }),
                 startVote: () => new Promise(() => { /* NO OP */ }),
             },
-            1,
         );
         expect(results[detective.id]).to.not.be.undefined;
         expect(results[detective.id].command).to.equals("skip");
@@ -57,7 +55,7 @@ describe("The detective role", () => {
         const messages: string[] = [];
         const detective = { id: "0", roles: [ DETECTIVE_ROLE ], attributes: [], nickname: "0", username: "0" };
         const spiedOnPlayer = { id: "1", roles: [ ], attributes: [ ], nickname: "1", username: "1" };
-        const results = await handleDetective(
+        const results = await handleDetective({}, 1)(
             {
                 players: [ detective, spiedOnPlayer ],
                 playerInterface: {
@@ -73,7 +71,6 @@ describe("The detective role", () => {
                 getTargettingCommandPromise: (command) => new Promise((res) => { res({ playerID: "0", targetID: "1" }); }),
                 startVote: () => new Promise(() => { /* NO OP */ }),
             },
-            1,
         );
         expect(results[detective.id]).to.not.be.undefined;
         expect(results[detective.id].command).to.equals("spy");

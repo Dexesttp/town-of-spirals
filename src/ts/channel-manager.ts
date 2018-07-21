@@ -204,9 +204,9 @@ export function ChannelManager(
                 return true;
             },
         );
-        newData.game.subscribeNightRole(handleHypnotist);
-        newData.game.subscribeNightRole(handleDeprogrammer);
-        newData.game.subscribeNightRole(handleDetective);
+        newData.game.subscribeNightRole(handleHypnotist({}));
+        newData.game.subscribeNightRole(handleDeprogrammer({}));
+        newData.game.subscribeNightRole(handleDetective({}));
         console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message.author.username} started a game in ${channel.name}`);
         newData.game.start();
     }
@@ -219,14 +219,17 @@ export function ChannelManager(
     ) {
         let target = channel.game.context.players.filter(p => p.nickname === text)[0]
             || channel.game.context.players.filter(p => p.username === text)[0]
+            || channel.game.context.players.filter(p => `@${p.nickname}` === text)[0]
+            || channel.game.context.players.filter(p => `@${p.username}` === text)[0]
             || channel.game.context.players.filter(p => `<@${p.id}>` === text)[0];
         if (!target) {
-            message.original.channel.send(`Cannot find target player: ${text}`);
+            message.original.channel.send(`Cannot find target player: ${text} in the current game.`);
             return false;
         }
         channel.game.handleTargettingCommand(command, message.author, { type: "id", content: target.id }, message);
         return true;
     }
+
     async function handleTargetByIndexCommand(
         command: string,
         channel: RunningGameChannelData,
@@ -237,6 +240,7 @@ export function ChannelManager(
         channel.game.handleTargettingCommand(command, message.author, { type: "index", content: +text }, message);
         return true;
     }
+
     async function handleCommand(
         command: string,
         channel: RunningGameChannelData,

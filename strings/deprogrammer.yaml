@@ -3,12 +3,15 @@ intro:
     enabled:
       - |
         You can use [command.break] and your knowledge of conditioning to break somebody's mind'.
-        Possible targets are [targets]
+        Possible targets are [targetList]
   save:
     enabled:
       - |
-        It appears [targets] had their mind broken !
+        It appears [targetList] had their mind broken !
         Use [command.save] to save them.
+    unneeded:
+      - |
+        Nobody seems to need saving tonight.
     disabled:
       - |
         You've lost your un-conditioning gear and can't save any more people.
@@ -31,6 +34,9 @@ actions:
   skip:
     - |
       Convinced that doing nothing for now is the right choice, you go back to sleep.
+  timeout:
+    - |
+      You stay up all night wondering what to do. The dawn breaks and your opportunities are now gone.
 role:
   - |
     The game has started ! You are a deprogrammer.
