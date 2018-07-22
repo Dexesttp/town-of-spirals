@@ -8,15 +8,14 @@ import getRandom from "../utils/rand-from-array";
 
 export const HYPNOTIST_ROLE = "hypnotist";
 
-type HypnotistFlavourBreakTist = (count: number) => (target: PlayerData, owner: PlayerData, count: number) => string;
-type HypnotistFlavourBreak = (count: number) => (target: PlayerData) => string;
+type HypnotistFlavourBreak = (count: number) => (target: PlayerData, owner: PlayerData, count: number) => string;
 type HypnotistFlavourSkip = (count: number) => (playerList: PlayerData[]) => string;
 
 export type HypnotistFlavourList = {
     intro?: (playerList: PlayerData[], voteList: string[]) => string,
     vote?: VotingFlavour,
-    breakTist?: HypnotistFlavourBreakTist,
-    brokenTist?: HypnotistFlavourBreakTist,
+    breakTist?: HypnotistFlavourBreak,
+    brokenTist?: HypnotistFlavourBreak,
     breakOther?: HypnotistFlavourBreak,
     noVote?: HypnotistFlavourSkip,
     dissent?: HypnotistFlavourSkip,
@@ -72,12 +71,13 @@ export function handleHypnotist(
                 return;
             }
 
+            const otherOwner = getRandom(hypnotists, 1)[0];
             const betBreakOtherFlavour = flavours.breakOther || (
                 (count: number) =>
-                (targetInt: PlayerData) =>
+                (targetInt: PlayerData, ownerInt: PlayerData, countInt: number) =>
                 `You broke ${targetInt.nickname}.`
             );
-            hypnotistInterfaces.forEach(f => f.sendMessage(betBreakOtherFlavour(hypnotists.length)(target)));
+            hypnotistInterfaces.forEach(f => f.sendMessage(betBreakOtherFlavour(hypnotists.length)(target, otherOwner, hypnotists.length)));
             return;
         }
 

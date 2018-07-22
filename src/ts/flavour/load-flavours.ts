@@ -9,7 +9,7 @@ export function LoadYamlFile(fileName: string): any {
 }
 
 export const mumbleFlavours: Array<(userName: string, ownerName: string) => string>
-= LoadYamlFile("strings/mumble.yaml").mumble.map((text: string) => (target: string, owner: string) =>
+= LoadYamlFile("strings/classic/mumble.yaml").mumble.map((text: string) => (target: string, owner: string) =>
     text.replace(/\[target\]/ig, target).replace(/\[owner\]/ig, owner),
 );
 

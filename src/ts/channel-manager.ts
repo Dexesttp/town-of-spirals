@@ -8,11 +8,19 @@ import { handleDeprogrammer } from "./roles/deprogrammer";
 import { handleDetective } from "./roles/detective";
 import { ClientMessage } from "./client/type";
 import { BROKEN } from "./game/data/player-states";
-import { unwatchFile } from "fs";
+import { baseDay } from "./game/base-day";
+import { baseResolveAllBroken } from "./game/base-resolve-all-broken";
+import { baseNotifyRoles } from "./game/base-notify-roles";
+import { baseCheckEnd } from "./game/base-check-end";
+import { baseNight } from "./game/base-night";
+import { getFlavourList } from "./flavour/get-flavour-list";
+import getRandom from "./utils/rand-from-array";
 
 type NotStartedGameChannelData = { type: "NOT_STARTED", channel: discord.TextChannel };
 type CreatingGameChannelData = { type: "CREATING", channel: discord.TextChannel, creator: DiscordGameCreator, createdDate: moment.Moment };
 type RunningGameChannelData = { type: "RUNNING", channel: discord.TextChannel, game: GameData, createdDate: moment.Moment };
+
+export const flavourList = getFlavourList();
 
 export type RegisteredGameChannelData =
 NotStartedGameChannelData
@@ -204,11 +212,25 @@ export function ChannelManager(
                 return true;
             },
         );
-        newData.game.subscribeNightRole(handleHypnotist({}));
-        newData.game.subscribeNightRole(handleDeprogrammer({}));
-        newData.game.subscribeNightRole(handleDetective({}));
+
+        const flavour = getRandom(flavourList, 1)[0];
+        newData.game.setDay(baseDay(flavour.baseDay));
+        newData.game.setNight(baseNight(flavour.baseNight));
+        newData.game.setCheckEnd(baseCheckEnd(flavour.checkEnd));
+        newData.game.setNotifyRoles(baseNotifyRoles(flavour.notifyRoles));
+        newData.game.setResolveAllBroken(baseResolveAllBroken(flavour.resolveBroken));
+        newData.game.subscribeNightRole(handleHypnotist(flavour.handleHypnotist));
+        newData.game.subscribeNightRole(handleDeprogrammer(flavour.handleDeprogrammer));
+        newData.game.subscribeNightRole(handleDetective(flavour.handleDetective));
+
         console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message.author.username} started a game in ${channel.name}`);
-        newData.game.start();
+        newData.game.start()
+        .then(() => {
+            // TODO handle stats.
+            delete newData.game;
+            const endData = <NotStartedGameChannelData><RegisteredGameChannelData>newData;
+            endData.type = "NOT_STARTED";
+        });
     }
 
     async function handleTargetByNameCommand(

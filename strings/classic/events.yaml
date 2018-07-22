@@ -31,13 +31,14 @@ brokenNight:
       Surprisingly, nobody got enthralled tonight. Maybe the remaining hypnotists were too busy arguing between themselves.
       The villagers gather around in the center of the village. A single night of respite doesn't mean there's no danger.
 victory:
-  hypnotist:
-    - |
-      And with their last slaves in their harem, [playerList] have enthralled all of the village.
-      [allMention]
-      The game has ended, and the town has fallen to the hypnotists.
-      The hypnotists were : [hypnotistList]
-  townies:
+  hypnotists:
+    multi:
+      - |
+        And with their last slaves in their harem, [playerList] have enthralled all of the village.
+        [allMention]
+        The game has ended, and the town has fallen to the hypnotists.
+        The hypnotists were : [hypnotistList]
+  town:
     1:
       - |
         [allMention]

@@ -1,8 +1,8 @@
 intro:
   - |
     The night has fallen. Vote for a new victim with [command.vote], or skip the vote with [command.no_vote]
-    As a reminder, your colleagues are : [playerList].
-    The available targets for tonight are : [voteList].
+    As a reminder, your colleagues are : [playerList]
+    The available targets for tonight are : [voteList]
 vote:
   warnTimeout:
     - |
@@ -49,8 +49,9 @@ action:
           You sneak to [target]'s house, where you find your fellow tists. With their help, you break [target]'s mind.
   skip:
     dissent:
-      - |
-        You and your colleagues keep arguing about whose mind to break. Finally, dawn arrives and your chance to act is gone.
+      multi:
+        - |
+          You and your colleagues keep arguing about whose mind to break. Finally, dawn arrives and your chance to act is gone.
     noVote:
       1:
         - |

@@ -6,7 +6,7 @@ import { BROKEN } from "./data/player-states";
 import { PlayerData } from "./data/player";
 import getRandom from "../utils/rand-from-array";
 
-export type BaseDayFlavour = {
+export type DayFlavour = {
     intro?: (voteList: string[]) => string,
     vote?: VotingFlavour,
     break?: (target: PlayerData, owner: PlayerData) => string,
@@ -15,7 +15,7 @@ export type BaseDayFlavour = {
 };
 
 export function baseDay(
-    flavour: BaseDayFlavour,
+    flavour: DayFlavour,
 ) {
     return async (
         context: GameContext,

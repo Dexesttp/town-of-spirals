@@ -22,7 +22,7 @@ export function GameCreator(
             const data = {
                 id: author.id,
                 username: author.username,
-                nickname: guildUser.displayName,
+                nickname: guildUser.displayName || author.username,
                 attributes: [],
                 roles: [],
             };

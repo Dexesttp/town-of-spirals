@@ -1,0 +1,44 @@
+intro:
+  - |
+    Time to snoop up on somebody ! Use [command.spy] to spy on a target.
+    You can spy on [voteList].
+    You could also go back to sleep with [command.skip]
+action:
+  spy:
+    none:
+      - |
+        You snoop up around [target]'s house.
+        [target] is at home, sleeping. Either they're very tired or they're just a normal citizen.
+    hypnotist:
+      - |
+        You snoop up around [target]'s house.
+        They're not in, and you can see them coming back after a while - carrying out a weird device.
+        You're pretty sure [target] is a hypnotist.
+    detective:
+      - |
+        You snoop up around [target]'s house.
+        They're not in, and you can see them snooping around another house. Could [target] be a fellow detective ?
+    deprogrammer:
+      - |
+        You snoop up around [target]'s house.
+        The lights in their home are still on.
+        [target] is working on a some device, and you find notes in their bin about "breaking conditioning".
+        You're pretty sure they're a deprogrammer.
+    unknown:
+      - |
+        You snoop up around [target]'s house.
+        [target] is a [roleList]
+  skip:
+    - |
+      You decide to do nothing and go back to sleep.
+  timeout:
+    - |
+      You stay up all night wondering what to do. The dawn breaks and your opportunities are now gone.
+role:
+  - |
+    The game has started ! You are a detective.
+reveal:
+  - |
+    The villagers check [target]'s house out.
+    They find a pair of binoculars, some maps and a half-burnt piece of paper with "Potential hypnotists" written on it - no names can be deciphered, sadly.
+    It appears [targetMention] was a detective.

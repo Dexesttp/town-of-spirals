@@ -3,11 +3,14 @@ intro:
     enabled:
       - |
         You can use [command.break] and your knowledge of conditioning to break somebody's mind'.
-        Possible targets are [targetList]
+        Possible targets are [voteList]
+    disabled:
+      - |
+        You do not see yourself attempting to break a mind again.
   save:
     enabled:
       - |
-        It appears [targetList] had their mind broken !
+        It appears [voteList] had their mind broken !
         Use [command.save] to save them.
     unneeded:
       - |
@@ -18,7 +21,7 @@ intro:
   skip:
     - |
       You can also use [command.skip] to go back to sleep.
-actions:
+action:
   break:
     - |
       You go to [target]'s house.

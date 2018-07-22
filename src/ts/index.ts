@@ -1,11 +1,11 @@
 import * as moment from "moment";
 import { GetClient, discordReplier } from "./client/discord";
-import { ALLOW_MUMBLE, MUMBLE_SHOULD_EDIT, CAN_DELETE_MESSAGES } from "./config";
 import { help } from "./commands/help";
 import { rules } from "./commands/rules";
-import { Message } from "discord.js";
+import { Message, TextChannel } from "discord.js";
 import { GetCommandHandler } from "./client/command-handler";
 import { ChannelManager } from "./channel-manager";
+import * as config from "./config";
 
 moment.relativeTimeThreshold("ss", 1);
 moment.relativeTimeThreshold("s", 60);
@@ -42,6 +42,21 @@ command.on("help", discordReplier(help));
 command.on("rules", discordReplier(rules));
 
 /**
+ * Channel management commands
+ */
+command.on("register", async (message, text) => {
+    if (!config.ADMIN_ID.some(i => message.original.author.id === i)) {
+        return false;
+    }
+    if (message.original.channel.type !== "text") {
+        message.original.channel.send("Use that in a text channel :)");
+        return true;
+    }
+    channelManager.registerChannel(message.original.channel as TextChannel);
+    return true;
+});
+
+/**
  * Game commands
  */
 command.on("create", async (message, text) => { await channelManager.createGame(message.original); return true; });
@@ -63,6 +78,18 @@ command.on("skip", async (message, text) => await channelManager.handleCommand("
 /**
  * Stats commands
  */
-// TODO
+// TODO stats commands
+command.on("stats", async (message, text) => {
+    message.original.channel.send("This command is not implemented yet. Come back later !");
+    return true;
+});
+command.on("leaderboard", async (message, text) => {
+    message.original.channel.send("This command is not implemented yet. Come back later !");
+    return true;
+});
+command.on("gdpr", async (message, text) => {
+    message.original.channel.send("These command is not implemented yet. We don't store stats either yet, so no worries !");
+    return true;
+});
 
 client.onMessage(command.messageHandler);

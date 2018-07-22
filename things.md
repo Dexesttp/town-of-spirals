@@ -18,6 +18,10 @@
 
 ## Ideas
 
+## Stats
+games played, win-loss ratio, number of times you've been a tist, number of times you've been broken, most owned player, player you've been the most owned by and so on
+ A win is +5, a loss is -2
+
 ### Some dialogues
 X has been voted guilty by the town, and is now Broken. Not that they're complaining anymore.
 You got brainwashed! Your mind now belongs to another!
