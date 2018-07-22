@@ -48,7 +48,7 @@ export function handleDetective(
             const promises: Array<Promise<DetectiveCommandResult>> = [];
             const detectiveInterface = context.playerInterface[detective.id];
             const targets = GetAlivePlayers(context);
-            const voteList = targets.map((t, i) => `[${i}] ${t.nickname} (${t.username})}`);
+            const voteList = targets.map((t, i) => `[${i + 1}] ${t.nickname} (${t.username})}`);
             const getIntroFlavour = flavour.intro || ((voteListInt: string[]) =>
                 `Spy on somebody with \`!s spy\` : ${voteListInt.join(", ")}. Skip the night with \`!s skip\`.`
             );

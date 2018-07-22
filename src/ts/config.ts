@@ -21,6 +21,6 @@ export const TOKEN = (() => {
 export const ADMIN_ID: string[] = config.adminList || [ ];
 
 console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Config loaded !`);
-console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Can delete : ${CAN_DELETE_MESSAGES}`);
 console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Allow mumble : ${ALLOW_MUMBLE}`);
-console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Mumble should edit : ${MUMBLE_SHOULD_EDIT}`);
+console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Can delete (deprecated) : ${CAN_DELETE_MESSAGES}`);
+console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Mumble should edit (deprecated) : ${MUMBLE_SHOULD_EDIT}`);

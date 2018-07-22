@@ -15,10 +15,25 @@ import { baseCheckEnd } from "./game/base-check-end";
 import { baseNight } from "./game/base-night";
 import { getFlavourList } from "./flavour/get-flavour-list";
 import getRandom from "./utils/rand-from-array";
+import { TimeoutPromise, TimerPromise } from "./utils/timer";
 
-type NotStartedGameChannelData = { type: "NOT_STARTED", channel: discord.TextChannel };
-type CreatingGameChannelData = { type: "CREATING", channel: discord.TextChannel, creator: DiscordGameCreator, createdDate: moment.Moment };
-type RunningGameChannelData = { type: "RUNNING", channel: discord.TextChannel, game: GameData, createdDate: moment.Moment };
+type NotStartedGameChannelData = {
+    type: "NOT_STARTED",
+    channel: discord.TextChannel,
+};
+type CreatingGameChannelData = {
+    type: "CREATING",
+    channel: discord.TextChannel,
+    createdDate: moment.Moment,
+    creator: DiscordGameCreator,
+    timeout: TimeoutPromise,
+};
+type RunningGameChannelData = {
+    type: "RUNNING",
+    channel: discord.TextChannel,
+    createdDate: moment.Moment,
+    game: GameData,
+};
 
 export const flavourList = getFlavourList();
 
@@ -29,9 +44,19 @@ NotStartedGameChannelData
 
 export function ChannelManager(
     timeBeforeCancelInMinutes = 5,
+    GAME_TIMEOUT = 15 * 60 * 1000,
 ) {
     const MIN_PLAYERS = 4;
     let channelList: RegisteredGameChannelData[] = [];
+
+    function resetGame(data: CreatingGameChannelData) {
+        delete data.createdDate;
+        delete data.creator;
+        if (data.timeout.cancel) data.timeout.cancel();
+        delete data.timeout;
+        const newData = <NotStartedGameChannelData><RegisteredGameChannelData>data;
+        newData.type = "NOT_STARTED";
+    }
 
     function getChannelData(channel: discord.TextChannel): RegisteredGameChannelData | null {
         const data = channelList.filter(c => c.channel.id === channel.id);
@@ -78,6 +103,12 @@ export function ChannelManager(
         newData.type = "CREATING";
         newData.creator = GameCreator();
         newData.createdDate = moment();
+        newData.timeout = TimerPromise(GAME_TIMEOUT);
+        newData.timeout.then(_ => {
+            resetGame(newData);
+            console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Game cancelled in ${data.channel.name} : timeout.`);
+            return channel.send("15 minutes timeout, game cancelled ! Type `!s create to create a new game.`");
+        });
         const player = await newData.creator.addPlayer(message);
         if (!player) {
             console.log(`There was an error (unk 103)`);
@@ -111,12 +142,9 @@ export function ChannelManager(
             await channel.send("The game has been created less than 5 minutes ago, and you can't cancel it yet.");
             return;
         }
-        const newData = <NotStartedGameChannelData><RegisteredGameChannelData>data;
-        delete data.createdDate;
-        delete data.creator;
-        newData.type = "NOT_STARTED";
-        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message.author.username} cancelled a game in ${data.channel.name}`);
-        await channel.send("Game cancelled !");
+        resetGame(data);
+        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Game cancelled in ${data.channel.name} by ${message.author.username}.`);
+        await channel.send("Game cancelled ! Type `!s create` to create a new game.");
         return;
     }
 
@@ -159,6 +187,13 @@ export function ChannelManager(
             await channel.send(`There was an error and we couldn't add you to the game.`);
             return;
         }
+        if (data.timeout.cancel) data.timeout.cancel();
+        data.timeout = TimerPromise(GAME_TIMEOUT);
+        data.timeout.then(_ => {
+            resetGame(data);
+            console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Game cancelled in ${data.channel.name} : timeout.`);
+            return channel.send("15 minutes timeout, game cancelled ! Type `!s create to create a new game.`");
+        });
         console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message.author.username} joined a game in ${data.channel.name}`);
         await channel.send(`${player.nickname} has joined the game. ${data.creator.players().length} player(s) waiting for start !`);
     }
@@ -174,6 +209,7 @@ export function ChannelManager(
             return;
         }
         const player = data.creator.players().filter(p => p.id === message.author.id)[0];
+        await data.creator.removePlayer(message);
         console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message.author.username} left a game in ${data.channel.name}`);
         await data.channel.send(`${player.nickname} has left the game. ${data.creator.players().length} player(s) waiting for start !`);
     }
@@ -198,6 +234,8 @@ export function ChannelManager(
         }
         const channel = userData.channel;
         delete userData.creator;
+        if (userData.timeout.cancel) userData.timeout.cancel();
+        delete userData.timeout;
         const newData = <RunningGameChannelData><RegisteredGameChannelData>userData;
         newData.type = "RUNNING";
         GiveRolesTo(players);
@@ -228,6 +266,7 @@ export function ChannelManager(
         .then(() => {
             // TODO handle stats.
             delete newData.game;
+            delete newData.createdDate;
             const endData = <NotStartedGameChannelData><RegisteredGameChannelData>newData;
             endData.type = "NOT_STARTED";
         });
@@ -243,10 +282,12 @@ export function ChannelManager(
             || channel.game.context.players.filter(p => p.username === text)[0]
             || channel.game.context.players.filter(p => `@${p.nickname}` === text)[0]
             || channel.game.context.players.filter(p => `@${p.username}` === text)[0]
-            || channel.game.context.players.filter(p => `<@${p.id}>` === text)[0];
+            || channel.game.context.players.filter(p => `<@${p.id}>` === text)[0]
+            || channel.game.context.players.filter(p => `<@!${p.id}>` === text)[0];
         if (!target) {
+            console.log(text);
             message.original.channel.send(`Cannot find target player: ${text} in the current game.`);
-            return false;
+            return true;
         }
         channel.game.handleTargettingCommand(command, message.author, { type: "id", content: target.id }, message);
         return true;
@@ -259,7 +300,7 @@ export function ChannelManager(
         text: string,
     ) {
         if (isNaN(+text)) return false;
-        channel.game.handleTargettingCommand(command, message.author, { type: "index", content: +text }, message);
+        channel.game.handleTargettingCommand(command, message.author, { type: "index", content: (+text - 1) }, message);
         return true;
     }
 

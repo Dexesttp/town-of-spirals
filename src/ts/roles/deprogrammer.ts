@@ -70,12 +70,12 @@ export function handleDeprogrammer(
             //#region Break
             const canBreak = !deprogrammer.attributes.some(a => a === ATTRIBUTES.HAS_BROKEN);
             if (canBreak) {
-                const targets = GetAlivePlayers(context).filter(p => !p.attributes.some(a => a === ""));
+                const targets = GetAlivePlayers(context).filter(p => !p.attributes.some(a => a === BROKEN_NIGHT));
                 const breakPromise = callUntilResolved(() =>
                     tools.getTargettingCommandPromise(COMMANDS.BREAK, [deprogrammer], targets, true),
                 ).then<DeprogrammingCommandResult>(r => ({ command: "break", ...r}));
                 promises.push(breakPromise);
-                const voteList = targets.map((t, i) => `[${i}] ${t.nickname} (${t.username})`);
+                const voteList = targets.map((t, i) => `[${i + 1}] ${t.nickname} (${t.username})`);
                 const getIntroBreakEnabled = flavour.intro_break_enabled || ((voteListInt: string[]) =>
                     `You can break somebody with \`!s break\` : ${voteListInt.join(", ")}`
                 );
@@ -98,7 +98,7 @@ export function handleDeprogrammer(
                         tools.getTargettingCommandPromise(COMMANDS.SAVE, [deprogrammer], recentlyBrokenPlayers, true),
                     ).then<DeprogrammingCommandResult>(r => ({ command: "save", ...r }));
                     promises.push(savePromise);
-                    const voteList = recentlyBrokenPlayers.map((t, i) => `[${i}] ${t.nickname} (${t.username})`);
+                    const voteList = recentlyBrokenPlayers.map((t, i) => `[${i + 1}] ${t.nickname} (${t.username})`);
                     const getIntroSaveEnabled = flavour.intro_save_enabled || ((voteListInt: string[]) =>
                         `You can save somebody with \`!s save\` : ${voteListInt.join(", ")}`
                     );

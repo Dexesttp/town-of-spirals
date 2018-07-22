@@ -36,7 +36,7 @@ export function GameCreator(
         },
         async removePlayer(discordMessage: Message) {
             const author = discordMessage.author;
-            if (players.filter(p => p.id === author.id).length) {
+            if (!players.filter(p => p.id === author.id).length) {
                 return false;
             }
             players = players.filter(p => p.id !== author.id);

@@ -37,7 +37,7 @@ export function baseResolveAllBroken(
             player.attributes.push(BROKEN);
             const getBroken = flavour.broken
                 || ((target: PlayerData, ownerInt: PlayerData) => `${player.nickname} has been broken tonight.`);
-            const owner = getRandom(potentialOwners, 0)[0];
+            const owner = getRandom(potentialOwners, 1)[0];
             await context.sendMessage(getBroken(player, owner));
 
             // Reveals

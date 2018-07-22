@@ -2,11 +2,11 @@
 ## TODO
 - [X] Making it "roughly" work with Discord (ability to create and start games, actual commands, proper mumbling)
     - [X] Allow people to register for a game
-- [ ] Adding flavours (the fun text that pops up on events) instead of generic/debug text
+- [X] Adding flavours (the fun text that pops up on events) instead of generic/debug text
     - [X] Sort flavours
     - [X] Create flavour loaders and translators
-    - [ ] Bind the game engine to a flavour engine.
-- [ ] Making the Discord management better (guild moderators, allowed channels, etc...)
+    - [X] Bind the game engine to a flavour engine.
+- [-] Making the Discord management better (guild moderators, allowed channels, etc...)
     - [X] Register channels for the game
     - [ ] Set guild moderators (based on ID & roles)
 - [ ] Working on the "meta game" stuff (mostly stats)

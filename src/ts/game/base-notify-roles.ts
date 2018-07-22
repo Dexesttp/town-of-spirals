@@ -6,6 +6,7 @@ export type NotifyFlavour = {
     roles?: { [role: string]: (player: PlayerData, roleList: string[]) => string},
     none?: (player: PlayerData) => string,
     unknown?: (player: PlayerData, roleList: string[]) => string,
+    start?: (playerList: PlayerData[], hypnotistCount: number) => string,
 };
 
 export function baseNotifyRoles(
@@ -25,5 +26,13 @@ export function baseNotifyRoles(
                 `A new game has started ! You are a ${p.roles.join(", ")}.`
             );
         return context.playerInterface[p.id].sendMessage(getMessage(p, p.roles));
-    })).then(_ => { /* NO OP */ });
+    })).then(_ => {
+        const getStartMessage = flavour.start || (
+            (playerList: PlayerData[], hypnotistCount: number) => `Game started ! There is ${hypnotistCount} hypnotists`
+        );
+        return context.sendMessage(getStartMessage(
+            context.players,
+            context.players.filter(p => p.roles.some(r => r === "hypnotist")).length,
+        ));
+    }).then(_ => { /* NO OP */ });
 }

@@ -31,7 +31,7 @@ export function handleHypnotist(
         const hypnotists = GetAlivePlayers(context).filter(p => p.roles.some(r => r === HYPNOTIST_ROLE));
         const targets = GetAlivePlayers(context).filter(p => !p.attributes.some(a => a === BROKEN_NIGHT));
         const hypnotistInterfaces = hypnotists.map(h => context.playerInterface[h.id]);
-        const voteList = targets.map((t, i) => `[${i}] ${t.nickname} (${t.username})`);
+        const voteList = targets.map((t, i) => `[${i + 1}] ${t.nickname} (${t.username})`);
         const getIntroFlavour = flavours.intro || (
             (playerListInt: PlayerData[], voteListInt: string[]) =>
             `Breaking time ! Choose one person to target with \`!s vote\`. The available targets are : ${voteListInt.join(", ")}`

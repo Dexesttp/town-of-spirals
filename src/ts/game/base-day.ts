@@ -21,7 +21,7 @@ export function baseDay(
         context: GameContext,
         tools: GameTools,
     ) => {
-        const voteList = GetAlivePlayers(context).map((p, i) => `[${i}] ${p.nickname} (${p.username})`);
+        const voteList = GetAlivePlayers(context).map((p, i) => `[${i + 1}] ${p.nickname} (${p.username})`);
         const getIntroFlavour = flavour.intro || ((voteListInt: string[]) => `Tis a new day ! vote with \`!s vote\`.`);
         context.sendMessage(getIntroFlavour(voteList));
         const voteResult = await tools.startVote({

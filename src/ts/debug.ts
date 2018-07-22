@@ -1,7 +1,7 @@
 import * as moment from "moment";
 import { GetCommandHandler } from "./client/command-handler";
 import { GetClient } from "./client/repl";
-import { ALLOW_MUMBLE, MUMBLE_SHOULD_EDIT, CAN_DELETE_MESSAGES } from "./config";
+import { ALLOW_MUMBLE } from "./config";
 import { help } from "./commands/help";
 import { rules } from "./commands/rules";
 import { GameCreator } from "./game-creator/debug";

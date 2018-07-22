@@ -53,6 +53,7 @@ command.on("register", async (message, text) => {
         return true;
     }
     channelManager.registerChannel(message.original.channel as TextChannel);
+    message.original.channel.send("Registered !");
     return true;
 });
 

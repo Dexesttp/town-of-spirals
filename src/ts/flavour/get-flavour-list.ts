@@ -121,7 +121,7 @@ export function getHypnotistFlavour(folderName: string): HypnotistFlavourList {
                     : rawData as string[],
                 1)[0])).replace(/\[hypnotistCount\]/ig, `${count}`),
         ),
-        breakOther: LoadToggledData(data.action.break.self, (rawData: string[], target: PlayerData, owner: PlayerData, count: number) =>
+        breakOther: LoadToggledData(data.action.break.other, (rawData: string[], target: PlayerData, owner: PlayerData, count: number) =>
             FormatOwner(owner, FormatTarget(target, getRandom(rawData, 1)[0])).replace(/\[hypnotistCount\]/ig, `${count}`),
         ),
         dissent: LoadToggledData(
@@ -176,7 +176,6 @@ export function getDetectiveFlavour(folderName: string): DetectiveFlavourList {
 }
 
 export function getFlavourFromFolder(folderName: string): FlavourEntry {
-    // TODO add flavours
     return {
         baseDay: getBaseDayFlavour(folderName),
         baseNight: getBaseNightFlavour(folderName),

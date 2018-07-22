@@ -1,7 +1,7 @@
 startVote:
   - |
     And now the villagers have to choose which of them to... pacify.
-    The remaining villagers are : [targetList]
+    The remaining villagers are : [voteList]
     Use [command.vote] to vote, or [command.no_vote] to vote for nobody
 vote:
   warnTimeout:
