@@ -107,7 +107,7 @@ export function ChannelManager(
         newData.timeout.then(_ => {
             resetGame(newData);
             console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Game cancelled in ${data.channel.name} : timeout.`);
-            return channel.send("15 minutes timeout, game cancelled ! Type `!s create to create a new game.`");
+            return channel.send("15 minutes timeout, game cancelled ! Type `!s create` to create a new game.");
         });
         const player = await newData.creator.addPlayer(message);
         if (!player) {
@@ -192,7 +192,7 @@ export function ChannelManager(
         data.timeout.then(_ => {
             resetGame(data);
             console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Game cancelled in ${data.channel.name} : timeout.`);
-            return channel.send("15 minutes timeout, game cancelled ! Type `!s create to create a new game.`");
+            return channel.send("15 minutes timeout, game cancelled ! Type `!s create` to create a new game.");
         });
         console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message.author.username} joined a game in ${data.channel.name}`);
         await channel.send(`${player.nickname} has joined the game. ${data.creator.players().length} player(s) waiting for start !`);

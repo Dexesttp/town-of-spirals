@@ -24,6 +24,15 @@ export type FlavourEntry = {
 
 export function getBaseDayFlavour(folderName: string): DayFlavour {
     const data = LoadYamlFile(path.join(folderName, "town.yaml"));
+    function loadRoleData(fileName: string) {
+        const intData = LoadYamlFile(path.join(folderName, fileName));
+        return (player: PlayerData, roleList: string[]) => FormatTarget(player, getRandom<string>(intData.reveal, 1)[0]);
+    }
+    const roles: { [role: string]: (player: PlayerData, roleList: string[]) => string } = {};
+    roles[HYPNOTIST_ROLE] = loadRoleData("hypnotist.yaml");
+    roles[DETECTIVE_ROLE] = loadRoleData("detective.yaml");
+    roles[DEPROGRAMMER_ROLE] = loadRoleData("deprogrammer.yaml");
+    const townieData = LoadYamlFile(path.join(folderName, "townie.yaml"));
     return {
         intro: (voteList) => getRandom<string>(data.startVote, 1)[0]
             .replace(/\[voteList\]/ig, voteList.join(" "))
@@ -33,6 +42,9 @@ export function getBaseDayFlavour(folderName: string): DayFlavour {
         break: (target, owner) => FormatOwner(owner, FormatTarget(target, getRandom<string>(data.action.break, 1)[0])),
         dissent: () => getRandom<string>(data.action.skip.dissent, 1)[0],
         noVote: () => getRandom<string>(data.action.skip.noVote, 1)[0],
+        roles,
+        none: (target) => FormatTarget(target, getRandom<string>(townieData.reveal, 1)[0]),
+        unknown: (player, roleList) => `It appears <@${player.id}> was a ${roleList.join(", ")}.`,
     };
 }
 
@@ -60,6 +72,7 @@ export function getCheckEndFlavour(folderName: string): EndingFlavour {
 }
 
 export function getNotifyFlavour(folderName: string): NotifyFlavour {
+    const data = LoadYamlFile(path.join(folderName, "events.yaml"));
     function loadRoleData(fileName: string) {
         const intData = LoadYamlFile(path.join(folderName, fileName));
         return (player: PlayerData, roleList: string[]) => getRandom<string>(intData.role, 1)[0];
@@ -70,6 +83,7 @@ export function getNotifyFlavour(folderName: string): NotifyFlavour {
     roles[DEPROGRAMMER_ROLE] = loadRoleData("deprogrammer.yaml");
     const townieData = LoadYamlFile(path.join(folderName, "townie.yaml"));
     return {
+        start: () => getRandom<string>(data.start, 1)[0],
         roles,
         none: (player) => getRandom<string>(townieData.role, 1)[0],
         unknown: (player, roleList) => `A new game has started ! You are a ${roleList.join(", ")}`,
