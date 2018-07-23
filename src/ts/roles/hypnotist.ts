@@ -54,12 +54,18 @@ export function handleHypnotist(
             target.attributes.push(BROKEN_NIGHT);
             if (hypnotists.some(h => h.id === targetID)) {
                 const otherTists = hypnotists.filter(h => h.id !== targetID);
-                const owner = getRandom(otherTists, 1)[0];
                 const getBrokenTistFlavour = flavours.brokenTist || (
                     (count: number) =>
                     (targetInt: PlayerData, ownerInt: PlayerData, countInt: number) =>
                     `You were broken by ${ownerInt.nickname}.`
                 );
+                if (otherTists.length === 0) {
+                    context.playerInterface[targetID].sendMessage(
+                        getBrokenTistFlavour(hypnotists.length)(target, target, hypnotists.length),
+                    );
+                    return;
+                }
+                const owner = getRandom(otherTists, 1)[0];
                 const getBreakTistFlavour = flavours.breakTist || (
                     (count: number) =>
                     (targetInt: PlayerData, ownerInt: PlayerData, countInt: number) =>

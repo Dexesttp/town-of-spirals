@@ -241,7 +241,10 @@ export function ChannelManager(
         GiveRolesTo(players);
         newData.game = Game(
             players,
-            async (m) => { await channel.send(m); },
+            async (m) => {
+                if (m == null) return;
+                await channel.send(m);
+            },
             creator.playerInterface(),
             async (m) => {
                 const original = (m as ClientMessage<discord.Message>).original;
@@ -285,7 +288,6 @@ export function ChannelManager(
             || channel.game.context.players.filter(p => `<@${p.id}>` === text)[0]
             || channel.game.context.players.filter(p => `<@!${p.id}>` === text)[0];
         if (!target) {
-            console.log(text);
             message.original.channel.send(`Cannot find target player: ${text} in the current game.`);
             return true;
         }

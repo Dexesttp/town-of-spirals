@@ -29,6 +29,7 @@ export function GameCreator(
             players.push(data);
             playerInterface[author.id] = {
                 async sendMessage(message: string) {
+                    if (!message) return;
                     author.sendMessage(message);
                 },
             };

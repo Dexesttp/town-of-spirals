@@ -65,4 +65,16 @@ describe("For 4 player games, the test environment", () => {
         expect(replies.pop()).to.equals("general > Hypnotists won !");
         expect(mumbles).to.equals(0);
     });
+
+    it("Should play a normal game where tist breaks themselves without errors", async () => {
+        const { replies, mumbles } = await runGame(
+            4,
+            [
+                { type: "target", command: "vote", player: 1, target: 1, private: true, original: "1>!s vote 1" },
+            ],
+            { tists: 1 },
+        );
+        expect(replies.pop()).to.equals("general > Townspeople won !");
+        expect(mumbles).to.equals(0);
+    });
 });
