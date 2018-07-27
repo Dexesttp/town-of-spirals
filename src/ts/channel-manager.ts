@@ -16,6 +16,7 @@ import { baseNight } from "./game/base-night";
 import { getFlavourList } from "./flavour/get-flavour-list";
 import getRandom from "./utils/rand-from-array";
 import { TimeoutPromise, TimerPromise } from "./utils/timer";
+import { readFile, writeFile, writeFileSync } from "fs";
 
 type NotStartedGameChannelData = {
     type: "NOT_STARTED",
@@ -47,6 +48,7 @@ export function ChannelManager(
     GAME_TIMEOUT = 15 * 60 * 1000,
 ) {
     const MIN_PLAYERS = 4;
+    const MIN_REVEAL_ROLES = 10;
     let channelList: RegisteredGameChannelData[] = [];
 
     function resetGame(data: CreatingGameChannelData) {
@@ -106,7 +108,7 @@ export function ChannelManager(
         newData.timeout = TimerPromise(GAME_TIMEOUT);
         newData.timeout.then(_ => {
             resetGame(newData);
-            console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Game cancelled in ${data.channel.name} : timeout.`);
+            console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] #${data.channel.name} Game cancelled : timeout.`);
             return channel.send("15 minutes timeout, game cancelled ! Type `!s create` to create a new game.");
         });
         const player = await newData.creator.addPlayer(message);
@@ -114,7 +116,7 @@ export function ChannelManager(
             console.log(`There was an error (unk 103)`);
             return;
         }
-        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message.author.username} created a game in ${newData.channel.name}`);
+        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] #${newData.channel.name} Lobby created by ${message.author.username}.`);
         channel.send(`A new game has been created by ${player.nickname} ! You need at least ${MIN_PLAYERS} people to start it.`);
         channel.send("Type `!s join` to join the game and `!s start` to start !");
     }
@@ -143,7 +145,7 @@ export function ChannelManager(
             return;
         }
         resetGame(data);
-        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Game cancelled in ${data.channel.name} by ${message.author.username}.`);
+        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] #${data.channel.name} Game cancelled by ${message.author.username}.`);
         await channel.send("Game cancelled ! Type `!s create` to create a new game.");
         return;
     }
@@ -191,11 +193,16 @@ export function ChannelManager(
         data.timeout = TimerPromise(GAME_TIMEOUT);
         data.timeout.then(_ => {
             resetGame(data);
-            console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Game cancelled in ${data.channel.name} : timeout.`);
+            console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] #${data.channel.name} Game cancelled : timeout.`);
             return channel.send("15 minutes timeout, game cancelled ! Type `!s create` to create a new game.");
         });
-        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message.author.username} joined a game in ${data.channel.name}`);
-        await channel.send(`${player.nickname} has joined the game. ${data.creator.players().length} player(s) waiting for start !`);
+        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] #${data.channel.name} ${message.author.username} joined the lobby.`);
+        const playerCount = data.creator.players().length;
+        let outMessage = `${player.nickname} has joined the game, ${playerCount} player(s) waiting for start.`;
+        if (playerCount >= MIN_PLAYERS) {
+            outMessage += " Type `!s start` to start the game !";
+        }
+        await channel.send(outMessage);
     }
 
     async function leaveGame(message: discord.Message) {
@@ -210,7 +217,7 @@ export function ChannelManager(
         }
         const player = data.creator.players().filter(p => p.id === message.author.id)[0];
         await data.creator.removePlayer(message);
-        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message.author.username} left a game in ${data.channel.name}`);
+        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] #${data.channel.name} ${message.author.username} left the lobby.`);
         await data.channel.send(`${player.nickname} has left the game. ${data.creator.players().length} player(s) waiting for start !`);
     }
 
@@ -252,6 +259,7 @@ export function ChannelManager(
                 await original.delete();
                 return true;
             },
+            players.length >= MIN_REVEAL_ROLES,
         );
 
         const flavour = getRandom(flavourList, 1)[0];
@@ -264,10 +272,20 @@ export function ChannelManager(
         newData.game.subscribeNightRole(handleDeprogrammer(flavour.handleDeprogrammer));
         newData.game.subscribeNightRole(handleDetective(flavour.handleDetective));
 
-        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message.author.username} started a game in ${channel.name}`);
+        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] #${channel.name} ${message.author.username} started the game !`);
+        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] #${channel.name} (${players.length} players)`);
         newData.game.start()
         .then(() => {
+            console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] #${channel.name} Game ended !`);
             // TODO handle stats.
+            delete newData.game;
+            delete newData.createdDate;
+            const endData = <NotStartedGameChannelData><RegisteredGameChannelData>newData;
+            endData.type = "NOT_STARTED";
+        })
+        .catch(e => {
+            writeFileSync(`log-${moment().format("YYYY-MM-DD-HH-mm-ss")}.json`, JSON.stringify(e));
+            newData.channel.send("The game crashed ! Crash logs have been saved, and you can try to start a new game now hopefully.");
             delete newData.game;
             delete newData.createdDate;
             const endData = <NotStartedGameChannelData><RegisteredGameChannelData>newData;
@@ -281,12 +299,14 @@ export function ChannelManager(
         message: ClientMessage<discord.Message>,
         text: string,
     ) {
-        let target = channel.game.context.players.filter(p => p.nickname === text)[0]
-            || channel.game.context.players.filter(p => p.username === text)[0]
-            || channel.game.context.players.filter(p => `@${p.nickname}` === text)[0]
+        let target = channel.game.context.players.filter(p => `@${p.nickname}` === text)[0]
             || channel.game.context.players.filter(p => `@${p.username}` === text)[0]
             || channel.game.context.players.filter(p => `<@${p.id}>` === text)[0]
-            || channel.game.context.players.filter(p => `<@!${p.id}>` === text)[0];
+            || channel.game.context.players.filter(p => `<@!${p.id}>` === text)[0]
+            || channel.game.context.players.filter(p => p.nickname === text)[0]
+            || channel.game.context.players.filter(p => p.username === text)[0]
+            || channel.game.context.players.filter(p => p.nickname.toUpperCase() === text.toUpperCase())[0]
+            || channel.game.context.players.filter(p => p.username.toUpperCase() === text.toUpperCase())[0];
         if (!target) {
             message.original.channel.send(`Cannot find target player: ${text} in the current game.`);
             return true;
@@ -318,10 +338,13 @@ export function ChannelManager(
 
     return {
         registerChannel(channel: discord.TextChannel) {
+            if (channelList.some(c => c.channel.id === channel.id))
+                return false;
             channelList.push({
                 type: "NOT_STARTED",
                 channel,
             });
+            return true;
         },
         unregisterChannel(channel: discord.TextChannel) {
             channelList = channelList.filter(c => c.channel.id === channel.id);
@@ -337,6 +360,11 @@ export function ChannelManager(
             const playerData = userChannel.game.context.players.filter(p => p.id === message.author)[0];
             if (!playerData) return false;
             return playerData.attributes.some(a => a === BROKEN);
+        },
+        shouldDelete (message: ClientMessage<discord.Message>) {
+            const userChannel = getUserChannel(message.author);
+            if (!userChannel || userChannel.type !== "RUNNING") return false;
+            return !userChannel.game.isDay();
         },
         async handleCommand (command: string, message: ClientMessage<discord.Message>, text: string) {
             const channel = getUserChannel(message.author);

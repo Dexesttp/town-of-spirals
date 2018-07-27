@@ -42,3 +42,7 @@ Cultist => converts one new member every night, win when all are cultists
 Eldritch => can resist one attempt at brainwashing (day or night)
 Purifier => can "un-break" somebody every two days, so that they can vote during the day and act during the night. They still count as broken, and if re-broken cannot be purified again.
 Subliminalist => sway one person's votes for the next day.
+
+you can also just add an independent serial hypnotist at larger counts
+Wait, wouldn't an infected/vampire work in theming ?
+

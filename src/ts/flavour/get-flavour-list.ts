@@ -83,7 +83,10 @@ export function getNotifyFlavour(folderName: string): NotifyFlavour {
     roles[DEPROGRAMMER_ROLE] = loadRoleData("deprogrammer.yaml");
     const townieData = LoadYamlFile(path.join(folderName, "townie.yaml"));
     return {
-        start: () => getRandom<string>(data.start, 1)[0],
+        start: (playerList, hypnotistCount) =>
+            getRandom<string>(data.start, 1)[0]
+            .replace(/\[playerMentionList\]/ig, playerList.map(p => `<@${p.id}>`).join(" "))
+            .replace(/\[hypnotistCount\]/ig, `${hypnotistCount}`),
         roles,
         none: (player) => getRandom<string>(townieData.role, 1)[0],
         unknown: (player, roleList) => `A new game has started ! You are a ${roleList.join(", ")}`,
@@ -179,7 +182,7 @@ export function getDetectiveFlavour(folderName: string): DetectiveFlavourList {
             .replace(/\[roleList\]/ig, roleList.join(", "));
     }
     return {
-        intro: (voteList: string[]) => getRandom<string>(data.intro.break.enabled, 1)[0]
+        intro: (voteList: string[]) => getRandom<string>(data.intro, 1)[0]
             .replace(/\[voteList\]/ig, voteList.join(" "))
             .replace(/\[command\.spy\]/ig, "`!s spy <name>` or `!s spy-nb <number>`")
             .replace(/\[command\.skip\]/ig, "`!s skip`"),

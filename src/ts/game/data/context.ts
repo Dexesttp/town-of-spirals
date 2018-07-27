@@ -4,4 +4,5 @@ export type GameContext = {
     players: PlayerData[],
     playerInterface: PlayerInterface,
     sendMessage: (message: string) => Promise<void>,
+    reveal_roles: boolean,
 };

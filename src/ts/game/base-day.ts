@@ -40,6 +40,8 @@ export function baseDay(
             );
             await context.sendMessage(getBreakFlavour(targetPlayer, owner));
             // Reveals
+            if (!context.reveal_roles)
+                return;
             if (targetPlayer.roles.length === 0) {
                 const getNoneRole = flavour.none
                     || ((target: PlayerData) => `<@${target.id}> was a normal citizen`);

@@ -84,6 +84,7 @@ command.on("start", async(message, text) => {
         async (m) => { console.log(`>${m}`); },
         gameCreator.playerInterface(),
         async (m) => { console.log(`>Trying to delete message (${m})`); return false; },
+        players.length >= 10,
     );
     game.subscribeNightRole(handleHypnotist({}));
     game.subscribeNightRole(handleDeprogrammer({}));

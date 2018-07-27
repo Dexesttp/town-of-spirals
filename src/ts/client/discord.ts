@@ -4,12 +4,15 @@ import * as discord from "discord.js";
 import { Message, ClientMessage } from "./type";
 import { unwatchFile } from "fs";
 
-export function GetClient() {
+export function GetClient(
+    onReadyCB: (client: discord.Client) => void,
+) {
     const client = new discord.Client();
 
     client.on("ready", () => {
         console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Client ready !`);
         client.user.setStatus("online");
+        onReadyCB(client);
     });
     client.on("message", async (message) => {
         if (!config.ADMIN_ID.some(i => message.author.id === i)) {
@@ -119,8 +122,9 @@ export function GetClient() {
             const m = await message.channel.send(flavour);
             const userID = message.author.id;
             const previousMumblesFrom = mumbles.filter(mess => mess.userID === userID && mess.message.deletable);
+            mumbles = mumbles.filter(mess => mess.userID !== userID);
             mumbles.push({ userID, message: m as discord.Message });
-            return Promise.all(previousMumblesFrom.map(p => p.message.delete()));
+            return Promise.all(previousMumblesFrom.map(p => p.message.delete().catch(e => { /* NO OP */ })));
         },
         async tryDeleteMessage(message: Message, timeout?: number) {
             const clientMessage = message as ClientMessage<discord.Message>;

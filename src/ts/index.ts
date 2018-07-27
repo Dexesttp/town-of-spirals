@@ -3,6 +3,7 @@ import { GetClient, discordReplier } from "./client/discord";
 import { help } from "./commands/help";
 import { rules } from "./commands/rules";
 import { Message, TextChannel } from "discord.js";
+import * as discord from "discord.js";
 import { GetCommandHandler } from "./client/command-handler";
 import { ChannelManager } from "./channel-manager";
 import * as config from "./config";
@@ -11,7 +12,33 @@ moment.relativeTimeThreshold("ss", 1);
 moment.relativeTimeThreshold("s", 60);
 moment.relativeTimeThreshold("m", 60);
 
-const client = GetClient();
+const client = GetClient(clientInt => {
+    for (const channelID of config.channelList) {
+        const filteredChannels = clientInt.channels.filter(c => {
+            if (c.id !== channelID) return false;
+            if (c.type !== "text") {
+                console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Could not register channel : ${channelID}`);
+                console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Reason : is not a text channel`);
+                return false;
+            }
+            const tc = <discord.TextChannel>c;
+            if (!tc.members.some(m => m.id === clientInt.user.id)) {
+                console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Could not register channel : ${channelID}`);
+                console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Reason : bot is not a channel member`);
+                return false;
+            }
+            return true;
+        });
+        const channel: discord.TextChannel = (<any> (filteredChannels.first()));
+        if (!channel) {
+            console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Could not register channel : ${channelID}`);
+            console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Reason : not found or not available`);
+            continue;
+        }
+        channelManager.registerChannel(channel);
+        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Registered channel #${channel.name} (${channelID}) successfully !`);
+    }
+});
 const command = GetCommandHandler<Message>((message, text) => message.original.channel.send(text));
 
 const channelManager = ChannelManager();
@@ -19,11 +46,16 @@ const channelManager = ChannelManager();
 /** Mumbling */
 import { mumbleFlavours } from "./flavour/load-flavours";
 import getRandom from "./utils/rand-from-array";
+const nightTimeDelete = false;
 command.onBefore(async message => {
     if (channelManager.shouldMumble(message)) {
         const flavour = getRandom(mumbleFlavours, 1)[0];
         const toSend = flavour(message.original.author.username, "");
         client.mumbleMessage(message.original, toSend);
+        return true;
+    }
+    if (nightTimeDelete && channelManager.shouldDelete(message)) {
+        client.tryDeleteMessage(message);
         return true;
     }
     return false;
@@ -46,14 +78,18 @@ command.on("rules", discordReplier(rules));
  */
 command.on("register", async (message, text) => {
     if (!config.ADMIN_ID.some(i => message.original.author.id === i)) {
-        return false;
+        return true;
     }
     if (message.original.channel.type !== "text") {
         message.original.channel.send("Use that in a text channel :)");
         return true;
     }
-    channelManager.registerChannel(message.original.channel as TextChannel);
-    message.original.channel.send("Registered !");
+    const added = channelManager.registerChannel(message.original.channel as TextChannel);
+    if (added) {
+        message.original.channel.send("Channel registered manually for play ! Use `!s create` to create a game.");
+        return true;
+    }
+    message.original.channel.send("The channel is already registered. Use `!s create` to create a game.");
     return true;
 });
 
@@ -69,11 +105,11 @@ command.on("vote", async (message, text) => await channelManager.handleCommand("
 command.on("vote-nb", async (message, text) => await channelManager.handleCommand("vote-nb", message, text));
 command.on("no-vote", async (message, text) => await channelManager.handleCommand("no-vote", message, text));
 command.on("break", async (message, text) => await channelManager.handleCommand("break", message, text));
-command.on("break-nb", async (message, text) => await channelManager.handleCommand("break", message, text));
+command.on("break-nb", async (message, text) => await channelManager.handleCommand("break-nb", message, text));
 command.on("save", async (message, text) => await channelManager.handleCommand("save", message, text));
-command.on("save-nb", async (message, text) => await channelManager.handleCommand("save", message, text));
+command.on("save-nb", async (message, text) => await channelManager.handleCommand("save-nb", message, text));
 command.on("spy", async (message, text) => await channelManager.handleCommand("spy", message, text));
-command.on("spy-nb", async (message, text) => await channelManager.handleCommand("spy", message, text));
+command.on("spy-nb", async (message, text) => await channelManager.handleCommand("spy-nb", message, text));
 command.on("skip", async (message, text) => await channelManager.handleCommand("skip", message, text));
 
 /**

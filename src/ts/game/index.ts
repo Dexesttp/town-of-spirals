@@ -13,6 +13,7 @@ import { CommandHandler } from "./command/types";
 import { TargettingHandler } from "./targetCommand/types";
 import { baseNotifyRoles } from "./base-notify-roles";
 import { baseNight } from "./base-night";
+import { BROKEN, BROKEN_NIGHT } from "./data/player-states";
 
 enum CommandResult {
     VALID,
@@ -30,19 +31,30 @@ export type GameData = {
     setNotifyRoles: (newNotifyRoles: (context: GameContext, tools: GameTools) => Promise<void>) => void,
     setResolveAllBroken: (newResolveAllBroken: (context: GameContext, tools: GameTools) => Promise<void>) => void,
     subscribeNightRole: (role: (context: GameContext, internalTools: GameTools) => Promise<any>) => void,
-    start: () => Promise<any>,
+    start: () => Promise<Array<{ id: string, alive: boolean, role: string }>>,
+    isDay: () => boolean,
 };
+
+function getStats(context: GameContext) {
+    return context.players.map(p => ({
+        id: p.id,
+        alive: p.attributes.some(a => a === BROKEN || a === BROKEN_NIGHT),
+        role: p.roles.join(", "),
+    }));
+}
 
 export function Game(
     players: PlayerData[],
     sendMessage: (message: string) => Promise<void>,
     playerInterface: PlayerInterface,
     tryDeleteMessage: (message: Message, timeout?: number) => Promise<boolean>,
+    reveal_roles: boolean,
 ): GameData {
     const context: GameContext = {
         players,
         playerInterface,
         sendMessage,
+        reveal_roles,
     };
 
     const {
@@ -110,6 +122,7 @@ export function Game(
     let checkEnd: (context: GameContext, tools: GameTools) => Promise<boolean> = baseCheckEnd({});
     let resolveAllBroken: (context: GameContext, tools: GameTools) => Promise<void> = baseResolveAllBroken({});
 
+    let isDay = false;
     return {
         context,
         handleCommand,
@@ -145,12 +158,18 @@ export function Game(
 
                 if (await checkEnd(context, internalsTools))
                     break;
-
+                isDay = true;
                 await day(context, internalsTools);
+                isDay = false;
 
                 if (await checkEnd(context, internalsTools))
                     break;
             }
+
+            return getStats(context);
+        },
+        isDay () {
+            return isDay;
         },
     };
 }

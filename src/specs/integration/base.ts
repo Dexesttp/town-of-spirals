@@ -88,6 +88,7 @@ export async function runGame(
         sendMessage,
         gameCreator.playerInterface(),
         async (m) => { mumbles += 1; return !!params.allowMumble; },
+        createdPlayers.length > 10,
     );
     game.subscribeNightRole(handleHypnotist({}));
     game.subscribeNightRole(handleDeprogrammer({}));

@@ -20,6 +20,8 @@ export const TOKEN = (() => {
 
 export const ADMIN_ID: string[] = config.adminList || [ ];
 
+export const channelList: string[] = config.channelList || [];
+
 console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Config loaded !`);
 console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Allow mumble : ${ALLOW_MUMBLE}`);
 console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Can delete (deprecated) : ${CAN_DELETE_MESSAGES}`);

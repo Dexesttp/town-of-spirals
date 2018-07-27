@@ -4,19 +4,22 @@ import { HYPNOTIST_ROLE } from "../roles/hypnotist";
 import { DEPROGRAMMER_ROLE } from "../roles/deprogrammer";
 import { DETECTIVE_ROLE } from "../roles/detective";
 
-export function GiveRolesTo(players: PlayerData[]) {
-    const tistsCount = Math.floor(players.length / 3);
-    const tists = getRandom(players, tistsCount);
-    for (const tist of tists)
-        tist.roles.push(HYPNOTIST_ROLE);
-    if (players.length > 3) {
-        const deprogrammers = getRandom(players.filter(p => !p.roles.length), 1);
-        for (const deprogrammer of deprogrammers)
-            deprogrammer.roles.push(DEPROGRAMMER_ROLE);
+function GetRoleAssociations(count: number) {
+    const roles: Array<{ role: string, count: number }> = [];
+    roles.push({ role: HYPNOTIST_ROLE, count: Math.floor(count / 3) });
+    roles.push({ role: DEPROGRAMMER_ROLE, count: 1 });
+    if (count > 5) {
+        roles.push({ role: DETECTIVE_ROLE, count: 1 });
     }
-    if (players.length > 5) {
-        const detectives = getRandom(players.filter(p => !p.roles.length), 1);
-        for (const detective of detectives)
-            detective.roles.push(DETECTIVE_ROLE);
+    return roles;
+}
+
+export function GiveRolesTo(players: PlayerData[]) {
+    const roleAssociations = GetRoleAssociations(players.length);
+    for (const association of roleAssociations) {
+        const roledPlayers = getRandom(players.filter(p => !p.roles.length), association.count);
+        for (const roledPlayer of roledPlayers) {
+            roledPlayer.roles.push(association.role);
+        }
     }
 }
