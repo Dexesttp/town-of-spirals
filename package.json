@@ -13,22 +13,28 @@
     "node": ">= 7.0.0"
   },
   "dependencies": {
+    "assertion-error": "^1.1.0",
+    "color-convert": "^1.9.2",
+    "diff": "^3.5.0",
     "discord.js": "^11.3.2",
+    "esprima": "^4.0.1",
+    "glob": "^7.1.2",
     "js-yaml": "^3.12.0",
     "jsonfile": "^3.0.1",
     "moment": "^2.22.2",
+    "type-detect": "^4.0.8",
     "uws": "^9.148.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.4",
     "@types/js-yaml": "^3.11.2",
     "@types/mocha": "^2.2.48",
-    "@types/node": "^8.10.21",
+    "@types/node": "^8.10.22",
     "chai": "^4.1.2",
-    "mocha": "^3.5.3",
-    "sinon": "^3.3.0",
-    "ts-node": "^3.3.0",
-    "tslint": "^5.10.0",
+    "mocha": "^5.2.0",
+    "sinon": "^6.1.4",
+    "ts-node": "^7.0.0",
+    "tslint": "^5.11.0",
     "typescript": "^3.0.0-rc"
   }
 }
