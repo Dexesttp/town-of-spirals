@@ -7,6 +7,7 @@ import * as discord from "discord.js";
 import { GetCommandHandler } from "./client/command-handler";
 import { ChannelManager } from "./channel-manager";
 import * as config from "./config";
+import logger from "./logging";
 
 moment.relativeTimeThreshold("ss", 1);
 moment.relativeTimeThreshold("s", 60);
@@ -17,26 +18,23 @@ const client = GetClient(clientInt => {
         const filteredChannels = clientInt.channels.filter(c => {
             if (c.id !== channelID) return false;
             if (c.type !== "text") {
-                console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Could not register channel : ${channelID}`);
-                console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Reason : is not a text channel`);
+                logger.basic(`Could not register channel : ${channelID}. Reason : is not a text channel`);
                 return false;
             }
             const tc = <discord.TextChannel>c;
             if (!tc.members.some(m => m.id === clientInt.user.id)) {
-                console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Could not register channel : ${channelID}`);
-                console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Reason : bot is not a channel member`);
+                logger.basic(`Could not register channel : ${channelID}. Reason : bot is not a channel member`);
                 return false;
             }
             return true;
         });
         const channel: discord.TextChannel = (<any> (filteredChannels.first()));
         if (!channel) {
-            console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Could not register channel : ${channelID}`);
-            console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Reason : not found or not available`);
+            logger.basic(`Could not register channel : ${channelID}. Reason : not found or not available`);
             continue;
         }
         channelManager.registerChannel(channel);
-        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Registered channel #${channel.name} (${channelID}) successfully !`);
+        logger.channel(channel.name, `Registered channel successfully ! (${channelID})`);
     }
 });
 const command = GetCommandHandler<Message>((message, text) => message.original.channel.send(text));
@@ -101,15 +99,15 @@ command.on("cancel", async (message, text) => { await channelManager.cancelGame(
 command.on("join", async (message, text) => { await channelManager.joinGame(message.original); return true; });
 command.on("leave", async (message, text) => { await channelManager.leaveGame(message.original); return true; });
 command.on("start", async (message, text) => { await channelManager.startGame(message.original); return true; });
-command.on("vote", async (message, text) => await channelManager.handleCommand("vote", message, text));
-command.on("vote-nb", async (message, text) => await channelManager.handleCommand("vote-nb", message, text));
+command.on("vote", async (message, text) => await channelManager.handleTargetCommandByName("vote", message, text));
+command.on("vote-nb", async (message, text) => await channelManager.handleTargetCommandByIndex("vote", message, text));
 command.on("no-vote", async (message, text) => await channelManager.handleCommand("no-vote", message, text));
-command.on("break", async (message, text) => await channelManager.handleCommand("break", message, text));
-command.on("break-nb", async (message, text) => await channelManager.handleCommand("break-nb", message, text));
-command.on("save", async (message, text) => await channelManager.handleCommand("save", message, text));
-command.on("save-nb", async (message, text) => await channelManager.handleCommand("save-nb", message, text));
-command.on("spy", async (message, text) => await channelManager.handleCommand("spy", message, text));
-command.on("spy-nb", async (message, text) => await channelManager.handleCommand("spy-nb", message, text));
+command.on("break", async (message, text) => await channelManager.handleTargetCommandByName("break", message, text));
+command.on("break-nb", async (message, text) => await channelManager.handleTargetCommandByIndex("break", message, text));
+command.on("save", async (message, text) => await channelManager.handleTargetCommandByName("save", message, text));
+command.on("save-nb", async (message, text) => await channelManager.handleTargetCommandByIndex("save", message, text));
+command.on("spy", async (message, text) => await channelManager.handleTargetCommandByName("spy", message, text));
+command.on("spy-nb", async (message, text) => await channelManager.handleTargetCommandByIndex("spy", message, text));
 command.on("skip", async (message, text) => await channelManager.handleCommand("skip", message, text));
 
 /**

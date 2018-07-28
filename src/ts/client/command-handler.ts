@@ -1,4 +1,4 @@
-import * as moment from "moment";
+import logger from "../logging";
 import { ClientMessage } from "./type";
 
 let COMMAND_MATCHER = /^!s ([^\s]+) ?(.*)$/i;
@@ -33,7 +33,7 @@ export function GetCommandHandler<T>(
             const [, command, text] = match;
             if (logCommands) {
                 // tslint:disable-next-line:max-line-length
-                console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Received command : '${command}' by '${message.author}'${message.private ? " (private)" : ""}`);
+                logger.channel(message.private ? " (private)" : null, `Received command : '${command}' by '${message.author}`);
             }
             for (let handler of handlers) {
                 if (handler.command !== command)

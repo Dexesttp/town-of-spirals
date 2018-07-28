@@ -2,7 +2,7 @@ import * as moment from "moment";
 import * as config from "../config";
 import * as discord from "discord.js";
 import { Message, ClientMessage } from "./type";
-import { unwatchFile } from "fs";
+import logger from "../logging";
 
 export function GetClient(
     onReadyCB: (client: discord.Client) => void,
@@ -10,7 +10,7 @@ export function GetClient(
     const client = new discord.Client();
 
     client.on("ready", () => {
-        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Client ready !`);
+        logger.basic(`Client ready !`);
         client.user.setStatus("online");
         onReadyCB(client);
     });
@@ -24,12 +24,12 @@ export function GetClient(
         if (!message.content.startsWith("!sadmin")) {
             return;
         }
-        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Running admin command : ${message.content}`);
+        logger.basic(`Running admin command : ${message.content}`);
         if (message.content.startsWith("!sadmin clean ")) {
             const qty = +(message.content.substring("!sadmin clean ".length));
             const messages = await message.channel.fetchMessages({ limit: qty });
             messages.forEach(m => { if (m.deletable) m.delete(); });
-            console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Deleted ${messages.size} messages`);
+            logger.basic(`Deleted ${messages.size} messages`);
             return;
         }
         if (message.content === "!sadmin status get") {
@@ -85,13 +85,15 @@ export function GetClient(
             client.user.setStatus("online");
             return;
         }
-        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Unknown command.`);
+        logger.basic(`Unknown command : ${message.content}`);
     });
 
-    console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Logging in client...`);
+    logger.basic(`Starting in client...`);
     client.login(config.TOKEN)
-        .then(_ => console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Client logged in !`))
-        .catch(e => console.error(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Error while logging in : ${e}`) );
+        .catch(e => {
+            logger.basic(`Error while logging in : ${e}`);
+            console.error(e);
+        });
 
     let mumbles: Array<{ userID: string, message: discord.Message }> = [];
     return {
@@ -109,14 +111,11 @@ export function GetClient(
         async mumbleMessage(message: discord.Message, flavour: string) {
             if (message.channel.type === "text") {
                 if (message.deletable) {
-                    await message.delete()
-                        .catch(e => { console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Delete failed.`); });
+                    await message.delete().catch(e => { /* NO OP */ });
                 }
                 else {
-                    console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] Deleting message not possible.`);
-                    console.log(
-                        `[${moment().format("YYYY-MM-DD HH:mm:ss")}]Check perms in '#${(message.channel as discord.TextChannel).name}'`,
-                    );
+                    logger.basic(`Deleting message not possible.`);
+                    logger.basic(`Check perms in '#${(message.channel as discord.TextChannel).name}'`);
                 }
             }
             const m = await message.channel.send(flavour);
