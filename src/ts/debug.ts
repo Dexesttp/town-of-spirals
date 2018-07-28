@@ -1,7 +1,7 @@
 import * as moment from "moment";
 import { GetCommandHandler } from "./client/command-handler";
 import { GetClient } from "./client/repl";
-import { ALLOW_MUMBLE } from "./config";
+import { LOSS_DELETE } from "./config";
 import { help } from "./commands/help";
 import { rules } from "./commands/rules";
 import { GameCreator } from "./game-creator/debug";
@@ -26,7 +26,7 @@ let game: GameData | null = null;
 
 /** Mumbling */
 command.onBefore(async message => {
-    if (ALLOW_MUMBLE
+    if (LOSS_DELETE()
         && game
         && game.context.players.some(
             p => p.id === message.author && p.attributes.some(a => a === BROKEN),

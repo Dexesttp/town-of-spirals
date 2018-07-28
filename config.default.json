@@ -1,8 +1,7 @@
 {
 	"token": "",
-	"canDelete": false,
-	"allowMumble": true,
-	"mumbleShouldEdit": false,
+	"lossDelete": true,
+	"nightDelete": false,
 	"adminList": [],
 	"channelList": []
 }

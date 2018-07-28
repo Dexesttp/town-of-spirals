@@ -14,7 +14,7 @@ moment.relativeTimeThreshold("s", 60);
 moment.relativeTimeThreshold("m", 60);
 
 const client = GetClient(clientInt => {
-    for (const channelID of config.channelList) {
+    for (const channelID of config.CHANNEL_ID_LIST) {
         const filteredChannels = clientInt.channels.filter(c => {
             if (c.id !== channelID) return false;
             if (c.type !== "text") {
@@ -44,15 +44,14 @@ const channelManager = ChannelManager();
 /** Mumbling */
 import { mumbleFlavours } from "./flavour/load-flavours";
 import getRandom from "./utils/rand-from-array";
-const nightTimeDelete = false;
 command.onBefore(async message => {
-    if (channelManager.shouldMumble(message)) {
+    if (config.LOSS_DELETE() && channelManager.shouldMumble(message)) {
         const flavour = getRandom(mumbleFlavours, 1)[0];
         const toSend = flavour(message.original.author.username, "");
         client.mumbleMessage(message.original, toSend);
         return true;
     }
-    if (nightTimeDelete && channelManager.shouldDelete(message)) {
+    if (config.NIGHT_TIME_DELETE() && channelManager.shouldDelete(message)) {
         client.tryDeleteMessage(message);
         return true;
     }
@@ -75,7 +74,7 @@ command.on("rules", discordReplier(rules));
  * Channel management commands
  */
 command.on("register", async (message, text) => {
-    if (!config.ADMIN_ID.some(i => message.original.author.id === i)) {
+    if (!config.ADMIN_ID_LIST.some(i => message.original.author.id === i)) {
         return true;
     }
     if (message.original.channel.type !== "text") {
