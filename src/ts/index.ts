@@ -63,6 +63,10 @@ command.on("mumble", async (message, text) => {
     client.mumbleMessage(message.original, toSend);
     return true;
 });
+command.on("vore", async (message, text) => {
+    client.tryDeleteMessage(message);
+    return true;
+});
 
 /**
  * Help commands

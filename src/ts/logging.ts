@@ -6,7 +6,7 @@ export default {
             console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message}`);
             return;
         }
-        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] {#${name}} ${message}`);
+        console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] [#${name}] ${message}`);
     },
     basic(message: string) {
         console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message}`);

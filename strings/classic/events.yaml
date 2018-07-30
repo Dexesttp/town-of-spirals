@@ -26,6 +26,13 @@ brokenNight:
     - |
       [target] arrived late at the gathering. Their empty eyes and the trail of drool streaming from their mouth answers the town's question before they even have to ask.
       There's nothing special you can see about [target] - except from the lack of thoughts. [owner] decides to bring [target] to their home to take care of them.
+  noOwnerLeft:
+    - |
+      [target] is wandering the surrounding woods with a blank look on their face.
+    - |
+      [target] is sleeping in their bed, with a strange pair of headphones on their head.
+    - |
+      [target] is standing in the middle of the village, with empty eyes and the trail of drool streaming from their mouth.
   none:
     - |
       Surprisingly, nobody got enthralled tonight. Maybe the remaining hypnotists were too busy arguing between themselves.
@@ -48,4 +55,9 @@ victory:
       - |
         [allMention]
         The game has ended, and the town is safe from the hypnotists.
+        The hypnotists were : [hypnotistList]
+  nobody:
+      - |
+        [allMention]
+        The game has ended. The villagers are wandering around in the village, waiting for a lucky soul to claim their new harem. 
         The hypnotists were : [hypnotistList]

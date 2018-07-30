@@ -9,6 +9,7 @@ type EndingFlavourVictory = (count: number)
 export type EndingFlavour = {
     hypnotists?: EndingFlavourVictory,
     town?: EndingFlavourVictory,
+    nobody?: (allPlayerList: PlayerData[], hypnotistList: PlayerData[]) => string,
 };
 
 export function baseCheckEnd (
@@ -21,6 +22,12 @@ export function baseCheckEnd (
         const alivePlayers = GetAlivePlayers(context);
         const tistCount = alivePlayers.filter(p => p.roles.some(r => r === "hypnotist")).length;
         const hypnotists = context.players.filter(p => p.roles.some(r => r === "hypnotist"));
+        if (alivePlayers.length === 0) {
+            const getNoVictory = flavour.nobody
+                || ((allPlayerList: PlayerData[], hypnotistList: PlayerData[]) => "Nobody won !");
+            await context.sendMessage(getNoVictory(context.players, hypnotists));
+            return true;
+        }
         if (tistCount === 0) {
             const getTownVictory = flavour.town
                 || ((count: number) =>

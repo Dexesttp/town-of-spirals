@@ -35,7 +35,7 @@ export function getBaseDayFlavour(folderName: string): DayFlavour {
     const townieData = LoadYamlFile(path.join(folderName, "townie.yaml"));
     return {
         intro: (voteList) => getRandom<string>(data.startVote, 1)[0]
-            .replace(/\[voteList\]/ig, voteList.join(" "))
+            .replace(/\[voteList\]/ig, `\n${voteList.join("\n")}`)
             .replace(/\[command\.vote\]/ig, "`!s vote <name>` or `!s vote-nb <number>`")
             .replace(/\[command\.no_vote\]/ig, "`!s no-vote`"),
         vote: LoadVoteFlavour(data.vote),
@@ -68,6 +68,9 @@ export function getCheckEndFlavour(folderName: string): EndingFlavour {
                 .replace(/\[allMention\]/ig, allPlayerList.map(p => `<@${p.id}>`).join(" "))
                 .replace(/\[hypnotistList\]/ig, hypnotistList.map(p => p.nickname).join(", ")),
         ),
+        nobody: (allPlayerList, hypnotistList) => getRandom<string>(data.victory.nobody, 1)[0]
+            .replace(/\[allMention\]/ig, allPlayerList.map(p => `<@${p.id}>`).join(" "))
+            .replace(/\[hypnotistList\]/ig, hypnotistList.map(p => p.nickname).join(", ")),
     };
 }
 
@@ -107,6 +110,7 @@ export function getResolveBrokenFlavour(folderName: string): ResolveBrokenFlavou
     return {
         intro: () => getRandom<string>(data.newDay, 1)[0],
         broken: (target, owner) => FormatOwner(owner, FormatTarget(target, getRandom<string>(data.brokenNight.event, 1)[0])),
+        noOwnerLeft: (target) => FormatTarget(target, getRandom<string>(data.noOwnerLeft, 1)[0]),
         noBroken: () => getRandom<string>(data.brokenNight.none, 1)[0],
         roles,
         none: (target) => FormatTarget(target, getRandom<string>(townieData.reveal, 1)[0]),
@@ -120,7 +124,7 @@ export function getHypnotistFlavour(folderName: string): HypnotistFlavourList {
         intro: (playerList, voteList) => FormatPlayerList(playerList, getRandom<string>(data.intro, 1)[0]
             .replace(/\[command.vote\]/ig, "`!s vote <name>` or `!s vote-nb <number>`")
             .replace(/\[command\.no_vote\]/ig, "`!s no-vote`"))
-            .replace(/\[voteList\]/ig, voteList.join(" ")),
+            .replace(/\[voteList\]/ig, `\n${voteList.join("\n")}`),
         vote: LoadVoteFlavour(data.vote),
         breakTist: LoadToggledData(data.action.break.self,
             (rawData: { target: string[], player: string[] } | string[], target: PlayerData, owner: PlayerData, count: number) =>
@@ -156,11 +160,11 @@ export function getDeprogrammerFlavour(folderName: string): DeprogrammerFlavourL
     const data = LoadYamlFile(path.join(folderName, "deprogrammer.yaml"));
     return {
         intro_break_enabled: (voteList: string[]) => getRandom<string>(data.intro.break.enabled, 1)[0]
-            .replace(/\[voteList\]/ig, voteList.join(" "))
+            .replace(/\[voteList\]/ig, `\n${voteList.join(" ")}`)
             .replace(/\[command\.break\]/ig, "`!s break <name>` or `!s break-nb <number>`"),
         intro_break_disabled: () => getRandom<string>(data.intro.break.disabled, 1)[0],
         intro_save_enabled: (voteList: string[]) => getRandom<string>(data.intro.save.enabled, 1)[0]
-            .replace(/\[voteList\]/ig, voteList.join(" "))
+            .replace(/\[voteList\]/ig, `\n${voteList.join("\n")}`)
             .replace(/\[command\.save\]/ig, "`!s save <name>` or `!s save-nb <number>`"),
         intro_save_useless: () => getRandom<string>(data.intro.save.unneeded, 1)[0],
         intro_save_disabled: () => getRandom<string>(data.intro.save.disabled, 1)[0],
@@ -183,7 +187,7 @@ export function getDetectiveFlavour(folderName: string): DetectiveFlavourList {
     }
     return {
         intro: (voteList: string[]) => getRandom<string>(data.intro, 1)[0]
-            .replace(/\[voteList\]/ig, voteList.join(" "))
+            .replace(/\[voteList\]/ig, `\n${voteList.join(" ")}`)
             .replace(/\[command\.spy\]/ig, "`!s spy <name>` or `!s spy-nb <number>`")
             .replace(/\[command\.skip\]/ig, "`!s skip`"),
         spy,

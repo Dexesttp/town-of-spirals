@@ -12,6 +12,7 @@ export type ResolveBrokenFlavour = {
     unknown?: (target: PlayerData, roleList: string[]) => string,
     broken?: (target: PlayerData, owner: PlayerData) => string,
     noBroken?: () => string,
+    noOwnerLeft?: (target: PlayerData) => string,
 };
 
 export function baseResolveAllBroken(
@@ -31,14 +32,24 @@ export function baseResolveAllBroken(
             return;
         }
         const potentialOwners = GetAlivePlayers(context).filter(p => !p.attributes.some(a => a === BROKEN_NIGHT));
+
         // Night result
         for (const player of brokenPlayers) {
             player.attributes = player.attributes.filter(a => a !== BROKEN_NIGHT);
             player.attributes.push(BROKEN);
-            const getBroken = flavour.broken
-                || ((target: PlayerData, ownerInt: PlayerData) => `${player.nickname} has been broken tonight.`);
-            const owner = getRandom(potentialOwners, 1)[0];
-            await context.sendMessage(getBroken(player, owner));
+
+            // Broken message.
+            if (potentialOwners.length > 0) {
+                const getBroken = flavour.broken
+                    || ((target: PlayerData, ownerInt: PlayerData) => `${player.nickname} has been broken tonight.`);
+                const owner = getRandom(potentialOwners, 1)[0];
+                await context.sendMessage(getBroken(player, owner));
+            }
+            else {
+                const getNoOwnerLeft = flavour.noOwnerLeft
+                    || ((target: PlayerData) => `${player.nickname} has been broken tonight.`);
+                await context.sendMessage(getNoOwnerLeft(player));
+            }
 
             // Reveals
             if (!context.reveal_roles)
