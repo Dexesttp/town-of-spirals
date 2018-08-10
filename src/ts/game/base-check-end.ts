@@ -5,14 +5,14 @@ import { GameTools } from "./data/tools";
 
 type EndingFlavourVictory = (count: number)
     => (playerList: PlayerData[], allPlayerList: PlayerData[], hypnotistList: PlayerData[])
-    => string;
+        => string;
 export type EndingFlavour = {
     hypnotists?: EndingFlavourVictory,
     town?: EndingFlavourVictory,
     nobody?: (allPlayerList: PlayerData[], hypnotistList: PlayerData[]) => string,
 };
 
-export function baseCheckEnd (
+export function baseCheckEnd(
     flavour: EndingFlavour,
 ) {
     return async (

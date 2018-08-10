@@ -1,8 +1,6 @@
 import { PlayerInterface, PlayerData } from "../data/player";
 import { Message } from "../../client/type";
-import { VoteRequest } from "../vote/types";
 import { CommandHandler, CommandPromiseGetter, CommandData } from "./types";
-
 
 enum CommandResult {
     VALID,
@@ -17,10 +15,10 @@ export function commandEngine(
     tryDeleteMessage: (message: Message, timeout?: number) => Promise<boolean>,
     sendMessage: (message: string) => void,
 ): {
-    getCommandPromise: CommandPromiseGetter,
-    handleCommand: CommandHandler,
-    cleanSubscribedCommands: () => void,
-} {
+        getCommandPromise: CommandPromiseGetter,
+        handleCommand: CommandHandler,
+        cleanSubscribedCommands: () => void,
+    } {
     let commandHandlers: {
         [command: string]: CommandRequestCallback[];
     } = {};

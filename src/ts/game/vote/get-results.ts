@@ -2,10 +2,10 @@ import { VotingData, VoteResult, VoteResultType } from "./types";
 
 export function GetVoteResults(
     votingData: VotingData,
-    riggedVotes?: Array<{voter: string, target: string | null}>,
+    riggedVotes?: Array<{ voter: string, target: string | null }>,
 ) {
     /** list of userID to vote count associations */
-    const results: Array<{userID: string | null, count: number}> = [];
+    const results: Array<{ userID: string | null, count: number }> = [];
     for (let value in votingData) {
         if (votingData.hasOwnProperty(value)) {
             const targetID = votingData[value];
@@ -19,7 +19,7 @@ export function GetVoteResults(
             if (targetValues.length > 0)
                 targetValues[0].count += 1;
             else
-                results.push({userID: actualTargetID, count: 1});
+                results.push({ userID: actualTargetID, count: 1 });
         }
     }
     results.sort((a, b) => b.count - a.count);
@@ -30,7 +30,7 @@ export function GetResults(
     voterIDs: string[],
     targetIDs: string[],
     votingData: VotingData,
-    riggedVotes?: Array<{voter: string, target: string | null}>,
+    riggedVotes?: Array<{ voter: string, target: string | null }>,
 ): VoteResult {
     const results = GetVoteResults(votingData, riggedVotes);
     const timedout = voterIDs.filter(id => votingData[id] === undefined);

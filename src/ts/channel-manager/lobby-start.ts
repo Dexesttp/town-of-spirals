@@ -77,23 +77,23 @@ export function startGame(context: ManagerContext) {
 
         logger.channel(channel.name, `Game started by ${message.author.username} ! (${players.length} players)`);
         newData.game.start()
-        .then(result => {
-            logger.channel(channel.name, `Game ended !`);
-            handleStats(channel, result);
-            delete newData.game;
-            delete newData.createdDate;
-            const endData = <NotStartedGameChannelData><RegisteredGameChannelData>newData;
-            endData.type = "NOT_STARTED";
-        })
-        .catch(e => {
-            logger.channel(channel.name, `Game Cashed :<`);
-            console.error(e);
-            writeFileSync(`log-${moment().format("YYYY-MM-DD-HH-mm-ss")}.json`, JSON.stringify(e));
-            newData.channel.send("The game crashed ! Crash logs have been saved, and you can try to start a new game now hopefully.");
-            delete newData.game;
-            delete newData.createdDate;
-            const endData = <NotStartedGameChannelData><RegisteredGameChannelData>newData;
-            endData.type = "NOT_STARTED";
-        });
+            .then(result => {
+                logger.channel(channel.name, `Game ended !`);
+                handleStats(channel, result);
+                delete newData.game;
+                delete newData.createdDate;
+                const endData = <NotStartedGameChannelData><RegisteredGameChannelData>newData;
+                endData.type = "NOT_STARTED";
+            })
+            .catch(e => {
+                logger.channel(channel.name, `Game Cashed :<`);
+                console.error(e);
+                writeFileSync(`log-${moment().format("YYYY-MM-DD-HH-mm-ss")}.json`, JSON.stringify(e));
+                newData.channel.send("The game crashed ! Crash logs have been saved, and you can try to start a new game now hopefully.");
+                delete newData.game;
+                delete newData.createdDate;
+                const endData = <NotStartedGameChannelData><RegisteredGameChannelData>newData;
+                endData.type = "NOT_STARTED";
+            });
     };
 }

@@ -56,13 +56,13 @@ export function baseResolveAllBroken(
                 continue;
             if (player.roles.length === 0) {
                 const getNoneRole = flavour.none
-                || ((target: PlayerData) => `<@${target.id}> was a normal citizen`);
+                    || ((target: PlayerData) => `<@${target.id}> was a normal citizen`);
                 await context.sendMessage(getNoneRole(player));
                 continue;
             }
             const getRole = (flavour.roles ? flavour.roles[player.roles.join("_")] : undefined)
-            || flavour.unknown
-            || ((target: PlayerData, roleList: string[]) => `<@${target.id}> was a ${roleList.join(", ")}`);
+                || flavour.unknown
+                || ((target: PlayerData, roleList: string[]) => `<@${target.id}> was a ${roleList.join(", ")}`);
             await context.sendMessage(getRole(player, player.roles));
         }
     };

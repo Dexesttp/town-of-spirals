@@ -73,7 +73,7 @@ export function handleDeprogrammer(
                 const targets = GetAlivePlayers(context).filter(p => !p.attributes.some(a => a === BROKEN_NIGHT));
                 const breakPromise = callUntilResolved(() =>
                     tools.getTargettingCommandPromise(COMMANDS.BREAK, [deprogrammer], targets, true),
-                ).then<DeprogrammingCommandResult>(r => ({ command: "break", ...r}));
+                ).then<DeprogrammingCommandResult>(r => ({ command: "break", ...r }));
                 promises.push(breakPromise);
                 const voteList = targets.map((t, i) => `[${i + 1}] ${t.nickname} (${t.username})`);
                 const getIntroBreakEnabled = flavour.intro_break_enabled || ((voteListInt: string[]) =>

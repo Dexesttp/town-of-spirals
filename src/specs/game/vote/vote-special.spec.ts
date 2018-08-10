@@ -6,21 +6,21 @@ import { expect } from "chai";
 describe("The Vote engine", () => {
     it("Should ignore a changed vote after the vote is closed", async () => {
         const startVote = startVoteFactory(
-            { players: [], playerInterface: {}, sendMessage: async () => {} },
+            { players: [], playerInterface: {}, sendMessage: async () => { } },
             (t) => TimerPromise(1),
             function* (v, t, shouldBePrivate) {
-                yield Promise.resolve<VoteRequest>({voterID: "test_vote1", targetID: "test_target1"});
-                yield Promise.resolve<VoteRequest>({voterID: "test_vote1", targetID: "test_target2"});
+                yield Promise.resolve<VoteRequest>({ voterID: "test_vote1", targetID: "test_target1" });
+                yield Promise.resolve<VoteRequest>({ voterID: "test_vote1", targetID: "test_target2" });
             },
             (m, voters, toEveryone) => { /* NO OP */ },
         );
         const result = await startVote({
             voters: [
-                {id: "test_vote1", attributes: [], roles: [], nickname: "Test Voter 1", username: ""},
+                { id: "test_vote1", attributes: [], roles: [], nickname: "Test Voter 1", username: "" },
             ],
             targets: [
-                {id: "test_target1", attributes: [], roles: [], nickname: "Test Target 1", username: ""},
-                {id: "test_target2", attributes: [], roles: [], nickname: "Test Target 2", username: ""},
+                { id: "test_target1", attributes: [], roles: [], nickname: "Test Target 1", username: "" },
+                { id: "test_target2", attributes: [], roles: [], nickname: "Test Target 2", username: "" },
             ],
         });
         expect(result).to.have.deep.property("type", VoteResultType.UNANIMITY);
@@ -30,23 +30,23 @@ describe("The Vote engine", () => {
 
     it("Should accept a changed vote before the vote is closed", async () => {
         const startVote = startVoteFactory(
-            { players: [], playerInterface: {}, sendMessage: async () => {} },
+            { players: [], playerInterface: {}, sendMessage: async () => { } },
             (t) => TimerPromise(1),
             function* (v, t, shouldBePrivate) {
-                yield Promise.resolve<VoteRequest>({voterID: "test_vote1", targetID: "test_target1"});
-                yield Promise.resolve<VoteRequest>({voterID: "test_vote1", targetID: "test_target2"});
-                yield Promise.resolve<VoteRequest>({voterID: "test_vote2", targetID: "test_target2"});
+                yield Promise.resolve<VoteRequest>({ voterID: "test_vote1", targetID: "test_target1" });
+                yield Promise.resolve<VoteRequest>({ voterID: "test_vote1", targetID: "test_target2" });
+                yield Promise.resolve<VoteRequest>({ voterID: "test_vote2", targetID: "test_target2" });
             },
             (m, voters, toEveryone) => { /* NO OP */ },
         );
         const result = await startVote({
             voters: [
-                {id: "test_vote1", attributes: [], roles: [], nickname: "Test Voter 1", username: ""},
-                {id: "test_vote2", attributes: [], roles: [], nickname: "Test Voter 2", username: ""},
+                { id: "test_vote1", attributes: [], roles: [], nickname: "Test Voter 1", username: "" },
+                { id: "test_vote2", attributes: [], roles: [], nickname: "Test Voter 2", username: "" },
             ],
             targets: [
-                {id: "test_target1", attributes: [], roles: [], nickname: "Test Target 1", username: ""},
-                {id: "test_target2", attributes: [], roles: [], nickname: "Test Target 2", username: ""},
+                { id: "test_target1", attributes: [], roles: [], nickname: "Test Target 1", username: "" },
+                { id: "test_target2", attributes: [], roles: [], nickname: "Test Target 2", username: "" },
             ],
         });
         expect(result).to.have.deep.property("type", VoteResultType.UNANIMITY);
@@ -56,22 +56,22 @@ describe("The Vote engine", () => {
 
     it("Should accept a changed vote before the vote is closed if there's a timeout", async () => {
         const startVote = startVoteFactory(
-            { players: [], playerInterface: {}, sendMessage: async () => {} },
+            { players: [], playerInterface: {}, sendMessage: async () => { } },
             (t) => TimerPromise(1),
             function* (v, t, shouldBePrivate) {
-                yield Promise.resolve<VoteRequest>({voterID: "test_vote1", targetID: "test_target1"});
-                yield Promise.resolve<VoteRequest>({voterID: "test_vote1", targetID: "test_target2"});
+                yield Promise.resolve<VoteRequest>({ voterID: "test_vote1", targetID: "test_target1" });
+                yield Promise.resolve<VoteRequest>({ voterID: "test_vote1", targetID: "test_target2" });
             },
             (m, voters, toEveryone) => { /* NO OP */ },
         );
         const result = await startVote({
             voters: [
-                {id: "test_vote1", attributes: [], roles: [], nickname: "Test Voter 1", username: ""},
-                {id: "test_vote2", attributes: [], roles: [], nickname: "Test Voter 2", username: ""},
+                { id: "test_vote1", attributes: [], roles: [], nickname: "Test Voter 1", username: "" },
+                { id: "test_vote2", attributes: [], roles: [], nickname: "Test Voter 2", username: "" },
             ],
             targets: [
-                {id: "test_target1", attributes: [], roles: [], nickname: "Test Target 1", username: ""},
-                {id: "test_target2", attributes: [], roles: [], nickname: "Test Target 2", username: ""},
+                { id: "test_target1", attributes: [], roles: [], nickname: "Test Target 1", username: "" },
+                { id: "test_target2", attributes: [], roles: [], nickname: "Test Target 2", username: "" },
             ],
         });
         expect(result).to.have.deep.property("type", VoteResultType.MAJORITY);
@@ -81,21 +81,21 @@ describe("The Vote engine", () => {
 
     it("Should handle a wrong vote then a good vote", async () => {
         const startVote = startVoteFactory(
-            { players: [], playerInterface: {}, sendMessage: async () => {} },
+            { players: [], playerInterface: {}, sendMessage: async () => { } },
             (t) => TimerPromise(1),
             function* (v, t, shouldBePrivate) {
                 yield Promise.reject<VoteRequest>("test");
-                yield Promise.resolve<VoteRequest>({voterID: "test_vote1", targetID: "test_target1"});
+                yield Promise.resolve<VoteRequest>({ voterID: "test_vote1", targetID: "test_target1" });
             },
             (m, voters, toEveryone) => { /* NO OP */ },
         );
         const result = await startVote({
             voters: [
-                {id: "test_vote1", attributes: [], roles: [], nickname: "Test Voter 1", username: ""},
+                { id: "test_vote1", attributes: [], roles: [], nickname: "Test Voter 1", username: "" },
             ],
             targets: [
-                {id: "test_target1", attributes: [], roles: [], nickname: "Test Target 1", username: ""},
-                {id: "test_target2", attributes: [], roles: [], nickname: "Test Target 2", username: ""},
+                { id: "test_target1", attributes: [], roles: [], nickname: "Test Target 1", username: "" },
+                { id: "test_target2", attributes: [], roles: [], nickname: "Test Target 2", username: "" },
             ],
         });
         expect(result).to.have.deep.property("type", VoteResultType.UNANIMITY);
@@ -105,23 +105,23 @@ describe("The Vote engine", () => {
 
     it("Should handle a good vote, a wrong vote then another good vote", async () => {
         const startVote = startVoteFactory(
-            { players: [], playerInterface: {}, sendMessage: async () => {} },
+            { players: [], playerInterface: {}, sendMessage: async () => { } },
             (t) => TimerPromise(1),
             function* (v, t, shouldBePrivate) {
-                yield Promise.resolve<VoteRequest>({voterID: "test_vote1", targetID: "test_target1"});
+                yield Promise.resolve<VoteRequest>({ voterID: "test_vote1", targetID: "test_target1" });
                 yield Promise.reject<VoteRequest>("test");
-                yield Promise.resolve<VoteRequest>({voterID: "test_vote2", targetID: "test_target2"});
+                yield Promise.resolve<VoteRequest>({ voterID: "test_vote2", targetID: "test_target2" });
             },
             (m, voters, toEveryone) => { /* NO OP */ },
         );
         const result = await startVote({
             voters: [
-                {id: "test_vote1", attributes: [], roles: [], nickname: "Test Voter 1", username: ""},
-                {id: "test_vote2", attributes: [], roles: [], nickname: "Test Voter 2", username: ""},
+                { id: "test_vote1", attributes: [], roles: [], nickname: "Test Voter 1", username: "" },
+                { id: "test_vote2", attributes: [], roles: [], nickname: "Test Voter 2", username: "" },
             ],
             targets: [
-                {id: "test_target1", attributes: [], roles: [], nickname: "Test Target 1", username: ""},
-                {id: "test_target2", attributes: [], roles: [], nickname: "Test Target 2", username: ""},
+                { id: "test_target1", attributes: [], roles: [], nickname: "Test Target 1", username: "" },
+                { id: "test_target2", attributes: [], roles: [], nickname: "Test Target 2", username: "" },
             ],
         });
         expect(result).to.have.deep.property("type", VoteResultType.TIE);
@@ -131,7 +131,7 @@ describe("The Vote engine", () => {
 
     it("Should handle only wrong votes", async () => {
         const startVote = startVoteFactory(
-            { players: [], playerInterface: {}, sendMessage: async () => {} },
+            { players: [], playerInterface: {}, sendMessage: async () => { } },
             (t) => TimerPromise(1),
             function* (v, t, shouldBePrivate) {
                 yield Promise.reject<VoteRequest>("test1");
@@ -142,11 +142,11 @@ describe("The Vote engine", () => {
         );
         const result = await startVote({
             voters: [
-                {id: "test_vote1", attributes: [], roles: [], nickname: "Test Voter 1", username: ""},
+                { id: "test_vote1", attributes: [], roles: [], nickname: "Test Voter 1", username: "" },
             ],
             targets: [
-                {id: "test_target1", attributes: [], roles: [], nickname: "Test Target 1", username: ""},
-                {id: "test_target2", attributes: [], roles: [], nickname: "Test Target 2", username: ""},
+                { id: "test_target1", attributes: [], roles: [], nickname: "Test Target 1", username: "" },
+                { id: "test_target2", attributes: [], roles: [], nickname: "Test Target 2", username: "" },
             ],
         });
         expect(result).to.have.deep.property("type", VoteResultType.TIE);
@@ -156,22 +156,22 @@ describe("The Vote engine", () => {
 
     it("Should handle a wrong vote, a good vote then ignore a remaining wrong vote", async () => {
         const startVote = startVoteFactory(
-            { players: [], playerInterface: {}, sendMessage: async () => {} },
+            { players: [], playerInterface: {}, sendMessage: async () => { } },
             (t) => TimerPromise(1),
             function* (v, t, shouldBePrivate) {
                 yield Promise.reject<VoteRequest>("test1");
-                yield Promise.resolve<VoteRequest>({voterID: "test_vote1", targetID: "test_target1"});
+                yield Promise.resolve<VoteRequest>({ voterID: "test_vote1", targetID: "test_target1" });
                 yield Promise.reject<VoteRequest>("test3");
             },
             (m, voters, toEveryone) => { /* NO OP */ },
         );
         const result = await startVote({
             voters: [
-                {id: "test_vote1", attributes: [], roles: [], nickname: "Test Voter 1", username: ""},
+                { id: "test_vote1", attributes: [], roles: [], nickname: "Test Voter 1", username: "" },
             ],
             targets: [
-                {id: "test_target1", attributes: [], roles: [], nickname: "Test Target 1", username: ""},
-                {id: "test_target2", attributes: [], roles: [], nickname: "Test Target 2", username: ""},
+                { id: "test_target1", attributes: [], roles: [], nickname: "Test Target 1", username: "" },
+                { id: "test_target2", attributes: [], roles: [], nickname: "Test Target 2", username: "" },
             ],
         });
         expect(result).to.have.deep.property("type", VoteResultType.UNANIMITY);
@@ -181,23 +181,23 @@ describe("The Vote engine", () => {
 
     it("Should handle a wrong vote, a good vote then a wrong vote", async () => {
         const startVote = startVoteFactory(
-            { players: [], playerInterface: {}, sendMessage: async () => {} },
+            { players: [], playerInterface: {}, sendMessage: async () => { } },
             (t) => TimerPromise(1),
             function* (v, t, shouldBePrivate) {
                 yield Promise.reject<VoteRequest>("test1");
-                yield Promise.resolve<VoteRequest>({voterID: "test_vote1", targetID: "test_target1"});
+                yield Promise.resolve<VoteRequest>({ voterID: "test_vote1", targetID: "test_target1" });
                 yield Promise.reject<VoteRequest>("test3");
             },
             (m, voters, toEveryone) => { /* NO OP */ },
         );
         const result = await startVote({
             voters: [
-                {id: "test_vote1", attributes: [], roles: [], nickname: "Test Voter 1", username: ""},
-                {id: "test_vote2", attributes: [], roles: [], nickname: "Test Voter 2", username: ""},
+                { id: "test_vote1", attributes: [], roles: [], nickname: "Test Voter 1", username: "" },
+                { id: "test_vote2", attributes: [], roles: [], nickname: "Test Voter 2", username: "" },
             ],
             targets: [
-                {id: "test_target1", attributes: [], roles: [], nickname: "Test Target 1", username: ""},
-                {id: "test_target2", attributes: [], roles: [], nickname: "Test Target 2", username: ""},
+                { id: "test_target1", attributes: [], roles: [], nickname: "Test Target 1", username: "" },
+                { id: "test_target2", attributes: [], roles: [], nickname: "Test Target 2", username: "" },
             ],
         });
         expect(result).to.have.deep.property("type", VoteResultType.MAJORITY);

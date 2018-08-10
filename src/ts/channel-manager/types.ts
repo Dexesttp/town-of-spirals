@@ -23,9 +23,9 @@ export type RunningGameChannelData = {
 };
 
 export type RegisteredGameChannelData =
-NotStartedGameChannelData
-| CreatingGameChannelData
-| RunningGameChannelData;
+    NotStartedGameChannelData
+    | CreatingGameChannelData
+    | RunningGameChannelData;
 
 export type ManagerContext = {
     channelList: RegisteredGameChannelData[],

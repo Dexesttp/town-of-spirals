@@ -3,7 +3,7 @@ import { GameTools } from "./data/tools";
 import { GameContext } from "./data/context";
 
 export type NotifyFlavour = {
-    roles?: { [role: string]: (player: PlayerData, roleList: string[]) => string},
+    roles?: { [role: string]: (player: PlayerData, roleList: string[]) => string },
     none?: (player: PlayerData) => string,
     unknown?: (player: PlayerData, roleList: string[]) => string,
     start?: (playerList: PlayerData[], hypnotistCount: number) => string,

@@ -5,10 +5,10 @@ import { expect } from "chai";
 describe("The detective role", () => {
     it("Should run properly to completion with no commands used (timeout)", async () => {
         const messages: string[] = [];
-        const detective = { id: "0", roles: [ DETECTIVE_ROLE ], attributes: [], nickname: "0", username: "0" };
+        const detective = { id: "0", roles: [DETECTIVE_ROLE], attributes: [], nickname: "0", username: "0" };
         const results = await handleDetective({}, 1)(
             {
-                players: [ detective ],
+                players: [detective],
                 playerInterface: {
                     "0": { sendMessage: async (message) => { messages.push(message); } },
                 },
@@ -29,10 +29,10 @@ describe("The detective role", () => {
 
     it("Should run properly to completion by skipping", async () => {
         const messages: string[] = [];
-        const detective = { id: "0", roles: [ DETECTIVE_ROLE ], attributes: [], nickname: "0", username: "0" };
+        const detective = { id: "0", roles: [DETECTIVE_ROLE], attributes: [], nickname: "0", username: "0" };
         const results = await handleDetective({}, 1)(
             {
-                players: [ detective ],
+                players: [detective],
                 playerInterface: {
                     "0": { sendMessage: async (message) => { messages.push(message); } },
                 },
@@ -53,11 +53,11 @@ describe("The detective role", () => {
 
     it("Should run properly to completion by spying on somebody", async () => {
         const messages: string[] = [];
-        const detective = { id: "0", roles: [ DETECTIVE_ROLE ], attributes: [], nickname: "0", username: "0" };
-        const spiedOnPlayer = { id: "1", roles: [ ], attributes: [ ], nickname: "1", username: "1" };
+        const detective = { id: "0", roles: [DETECTIVE_ROLE], attributes: [], nickname: "0", username: "0" };
+        const spiedOnPlayer = { id: "1", roles: [], attributes: [], nickname: "1", username: "1" };
         const results = await handleDetective({}, 1)(
             {
-                players: [ detective, spiedOnPlayer ],
+                players: [detective, spiedOnPlayer],
                 playerInterface: {
                     "0": { sendMessage: async (message) => { messages.push(message); } },
                     "1": { sendMessage: async (message) => { /* */ } },

@@ -72,7 +72,7 @@ command.on("leave", async (message, text) => {
     return true;
 });
 
-command.on("start", async(message, text) => {
+command.on("start", async (message, text) => {
     const players = gameCreator.players();
     if (players.length < 4) {
         console.log(`Not enough players to start (current : ${players.length}, need: ${4})`);

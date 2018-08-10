@@ -1,6 +1,5 @@
 import { PlayerInterface, PlayerData } from "../data/player";
 import { Message } from "../../client/type";
-import { VoteRequest } from "../vote/types";
 import { TargettingPromiseGetter, TargettingHandler, TargettingCommandData, InputTargetType } from "./types";
 
 enum TargetRequestResult {
@@ -17,10 +16,10 @@ export function targetEngine(
     tryDeleteMessage: (message: Message, timeout?: number) => Promise<boolean>,
     sendMessage: (message: string) => void,
 ): {
-    getTargettingCommandPromise: TargettingPromiseGetter,
-    handleTargettingCommand: TargettingHandler,
-    cleanSubscribedTargettingCommands: () => void,
-} {
+        getTargettingCommandPromise: TargettingPromiseGetter,
+        handleTargettingCommand: TargettingHandler,
+        cleanSubscribedTargettingCommands: () => void,
+    } {
     let handleTargettingOnce: {
         [command: string]: TargetRequestCallback[];
     } = {};

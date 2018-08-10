@@ -34,7 +34,7 @@ export function handleHypnotist(
         const voteList = targets.map((t, i) => `[${i + 1}] ${t.nickname} (${t.username})`);
         const getIntroFlavour = flavours.intro || (
             (playerListInt: PlayerData[], voteListInt: string[]) =>
-            `Breaking time ! Choose one person to target with \`!s vote\`. The available targets are : ${voteListInt.join(", ")}`
+                `Breaking time ! Choose one person to target with \`!s vote\`. The available targets are : ${voteListInt.join(", ")}`
         );
         hypnotistInterfaces.forEach(f => f.sendMessage(getIntroFlavour(hypnotists, voteList)));
 
@@ -56,8 +56,8 @@ export function handleHypnotist(
                 const otherTists = hypnotists.filter(h => h.id !== targetID);
                 const getBrokenTistFlavour = flavours.brokenTist || (
                     (count: number) =>
-                    (targetInt: PlayerData, ownerInt: PlayerData, countInt: number) =>
-                    `You were broken by ${ownerInt.nickname}.`
+                        (targetInt: PlayerData, ownerInt: PlayerData, countInt: number) =>
+                            `You were broken by ${ownerInt.nickname}.`
                 );
                 if (otherTists.length === 0) {
                     context.playerInterface[targetID].sendMessage(
@@ -68,8 +68,8 @@ export function handleHypnotist(
                 const owner = getRandom(otherTists, 1)[0];
                 const getBreakTistFlavour = flavours.breakTist || (
                     (count: number) =>
-                    (targetInt: PlayerData, ownerInt: PlayerData, countInt: number) =>
-                    `You broke ${targetInt.nickname}.`
+                        (targetInt: PlayerData, ownerInt: PlayerData, countInt: number) =>
+                            `You broke ${targetInt.nickname}.`
                 );
                 context.playerInterface[targetID].sendMessage(getBrokenTistFlavour(hypnotists.length)(target, owner, hypnotists.length));
                 otherTists.map(h => context.playerInterface[h.id])
@@ -80,8 +80,8 @@ export function handleHypnotist(
             const otherOwner = getRandom(hypnotists, 1)[0];
             const betBreakOtherFlavour = flavours.breakOther || (
                 (count: number) =>
-                (targetInt: PlayerData, ownerInt: PlayerData, countInt: number) =>
-                `You broke ${targetInt.nickname}.`
+                    (targetInt: PlayerData, ownerInt: PlayerData, countInt: number) =>
+                        `You broke ${targetInt.nickname}.`
             );
             hypnotistInterfaces.forEach(f => f.sendMessage(betBreakOtherFlavour(hypnotists.length)(target, otherOwner, hypnotists.length)));
             return;

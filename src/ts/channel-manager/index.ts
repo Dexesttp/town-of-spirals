@@ -79,7 +79,7 @@ export function ChannelManager() {
             if (!channel || channel.type !== "RUNNING") return false;
             return await handleTargetByIndexCommand(command, channel, message, text);
         },
-        async handleCommand (command: string, message: ClientMessage<discord.Message>, text: string) {
+        async handleCommand(command: string, message: ClientMessage<discord.Message>, text: string) {
             const channel = getUserChannel(contextExt)(message.author);
             if (!channel || channel.type !== "RUNNING") return false;
             return await handleCommand(command, channel, message, text);

@@ -19,8 +19,8 @@ export function joinGame(context: ManagerContext) {
             const playerList = (userData.type === "CREATING"
                 ? userData.creator.players()
                 : userData.type === "RUNNING"
-                ? userData.game.context.players
-                : []);
+                    ? userData.game.context.players
+                    : []);
             const playerData = playerList.filter(p => p.id === message.author.id)[0];
             if (data !== userData) {
                 await channel.send(`You already joined another game, ${playerData.nickname}.`);

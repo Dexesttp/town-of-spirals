@@ -11,10 +11,10 @@ import { expect } from "chai";
 describe("The deprogrammer role", () => {
     it("Should run properly to completion with no commands used (timeout)", async () => {
         const messages: string[] = [];
-        const deprog = { id: "0", roles: [ DEPROGRAMMER_ROLE ], attributes: [], nickname: "0", username: "0" };
+        const deprog = { id: "0", roles: [DEPROGRAMMER_ROLE], attributes: [], nickname: "0", username: "0" };
         const results = await handleDeprogrammer({}, 1)(
             {
-                players: [ deprog ],
+                players: [deprog],
                 playerInterface: {
                     "0": { sendMessage: async (message) => { messages.push(message); } },
                 },
@@ -35,10 +35,10 @@ describe("The deprogrammer role", () => {
 
     it("Should run properly to completion by skipping", async () => {
         const messages: string[] = [];
-        const deprog = { id: "0", roles: [ DEPROGRAMMER_ROLE ], attributes: [], nickname: "0", username: "0" };
+        const deprog = { id: "0", roles: [DEPROGRAMMER_ROLE], attributes: [], nickname: "0", username: "0" };
         const results = await handleDeprogrammer({}, 1)(
             {
-                players: [ deprog ],
+                players: [deprog],
                 playerInterface: {
                     "0": { sendMessage: async (message) => { messages.push(message); } },
                 },
@@ -59,11 +59,11 @@ describe("The deprogrammer role", () => {
 
     it("Should run properly to completion by saving somebody", async () => {
         const messages: string[] = [];
-        const deprog = { id: "0", roles: [ DEPROGRAMMER_ROLE ], attributes: [], nickname: "0", username: "0" };
-        const savedPlayer = { id: "1", roles: [ ], attributes: [ BROKEN_NIGHT ], nickname: "1", username: "1" };
+        const deprog = { id: "0", roles: [DEPROGRAMMER_ROLE], attributes: [], nickname: "0", username: "0" };
+        const savedPlayer = { id: "1", roles: [], attributes: [BROKEN_NIGHT], nickname: "1", username: "1" };
         const results = await handleDeprogrammer({}, 1)(
             {
-                players: [ deprog, savedPlayer ],
+                players: [deprog, savedPlayer],
                 playerInterface: {
                     "0": { sendMessage: async (message) => { messages.push(message); } },
                     "1": { sendMessage: async (message) => { /* */ } },
@@ -91,11 +91,11 @@ describe("The deprogrammer role", () => {
 
     it("Should run properly to completion by breaking somebody", async () => {
         const messages: string[] = [];
-        const deprog = { id: "0", roles: [ DEPROGRAMMER_ROLE ], attributes: [], nickname: "0", username: "0" };
-        const healthyPlayer = { id: "1", roles: [ ], attributes: [ ], nickname: "1", username: "1" };
+        const deprog = { id: "0", roles: [DEPROGRAMMER_ROLE], attributes: [], nickname: "0", username: "0" };
+        const healthyPlayer = { id: "1", roles: [], attributes: [], nickname: "1", username: "1" };
         const results = await handleDeprogrammer({}, 1)(
             {
-                players: [ deprog, healthyPlayer ],
+                players: [deprog, healthyPlayer],
                 playerInterface: {
                     "0": { sendMessage: async (message) => { messages.push(message); } },
                     "1": { sendMessage: async (message) => { /* */ } },

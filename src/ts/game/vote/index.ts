@@ -13,7 +13,7 @@ export function startVoteFactory(
     context: GameContext,
     timerPromiseGetter: (timeout: number) => TimeoutPromise,
     // tslint:disable-next-line:max-line-length
-    voteGenerator: (voters: PlayerData[], targets: PlayerData[], shouldBePrivate: boolean) => IterableIterator<Promise<{voterID: string, targetID: string | null | undefined}>>,
+    voteGenerator: (voters: PlayerData[], targets: PlayerData[], shouldBePrivate: boolean) => IterableIterator<Promise<{ voterID: string, targetID: string | null | undefined }>>,
     sendMessage: (message: string, voters: PlayerData[], sendDirectMessage?: boolean) => void,
 ) {
     return function startVote(config: VoteConfig): Promise<VoteResult> {
@@ -22,7 +22,7 @@ export function startVoteFactory(
         const warnTimeout = config.warnTimeout || DEFAULT_VOTE_WARN_TIMEOUT;
         if (fullTimeout < warnTimeout)
             throw new TypeError(`The vote timeout ${fullTimeout} is less than the warn timeout ${warnTimeout}`);
-        const flavours = config.flavour || { };
+        const flavours = config.flavour || {};
         const warnTimeoutTextGetter = flavours.onWarnTimeout || ((timedOutVoters: PlayerData[]) =>
             `${timedOutVoters.map(p => `<@${p.id}>`).join(", ")} : ${moment.duration(warnTimeout).humanize()} remaining before vote ends !`
         );
@@ -67,14 +67,14 @@ export function startVoteFactory(
                     );
                     resolve(riggedVoteResult);
                 })
-                .catch(() => {/* NO OP */});
+                    .catch(() => {/* NO OP */ });
             })
-            .catch(() => {/* NO OP */});
+                .catch(() => {/* NO OP */ });
 
             // Get all the votes sent by the players.
             const iterator = voteGenerator(config.voters, targets, !!config.sendDirectMessage);
             const handleVote = (
-                reply?: {voterID: string, targetID: string | null | undefined},
+                reply?: { voterID: string, targetID: string | null | undefined },
             ) => {
                 // Break now if the vote is already ended.
                 if (ended) return;
@@ -141,16 +141,16 @@ export function startVoteFactory(
                         try {
                             // Get the current progress
                             const results: Array<{ target: PlayerData | null, count: number }> = GetVoteResults(votingData)
-                            .map(v => {
-                                if (v.userID === null) {
-                                    return { target: null, count: v.count };
-                                }
-                                const target = targets.filter(t => t.id === v.userID)[0];
-                                if (!target) {
-                                    throw new Error(`Vote target ${v.userID} is not a valid target.`);
-                                }
-                                return { target, count: v.count };
-                            });
+                                .map(v => {
+                                    if (v.userID === null) {
+                                        return { target: null, count: v.count };
+                                    }
+                                    const target = targets.filter(t => t.id === v.userID)[0];
+                                    if (!target) {
+                                        throw new Error(`Vote target ${v.userID} is not a valid target.`);
+                                    }
+                                    return { target, count: v.count };
+                                });
                             sendMessage(
                                 currentVotesTextGetter(results),
                                 config.voters,

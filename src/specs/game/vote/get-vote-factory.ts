@@ -6,7 +6,7 @@ export function GetVoteFactory(
     votes: VoteRequest[],
 ) {
     return startVoteFactory(
-        { players: [], playerInterface: {}, sendMessage: async () => {} },
+        { players: [], playerInterface: {}, sendMessage: async () => { } },
         (t) => TimerPromise(1),
         function* (v, t, shouldBePrivate) {
             for (const vote of votes) {

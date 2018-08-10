@@ -28,7 +28,7 @@ const client = GetClient(clientInt => {
             }
             return true;
         });
-        const channel: discord.TextChannel = (<any> (filteredChannels.first()));
+        const channel: discord.TextChannel = (<any>(filteredChannels.first()));
         if (!channel) {
             logger.basic(`Could not register channel : ${channelID}. Reason : not found or not available`);
             continue;

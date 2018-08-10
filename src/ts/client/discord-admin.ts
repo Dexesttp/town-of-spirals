@@ -42,8 +42,8 @@ export async function runAdmin(client: discord.Client, message: discord.Message)
     }
     if (message.content === "!sadmin guilds") {
         message.channel.send(formatEmit(`Known guilds :\n${client.guilds.map(g => {
-                return `${g.name} {${g.owner.nickname} / ${g.owner.user.username} / ${g.owner.user.tag}}`;
-            }).filter(v => !!v).join("\n")}
+            return `${g.name} {${g.owner.nickname} / ${g.owner.user.username} / ${g.owner.user.tag}}`;
+        }).filter(v => !!v).join("\n")}
         `));
         return;
     }

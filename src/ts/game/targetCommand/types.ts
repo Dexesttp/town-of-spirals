@@ -1,5 +1,4 @@
 import { PlayerData } from "../data/player";
-import { VoteRequest } from "../vote/types";
 import { Message } from "../../client/type";
 
 export type TargettingPromiseGetter = (

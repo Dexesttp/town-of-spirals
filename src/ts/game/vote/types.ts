@@ -1,6 +1,6 @@
 import { PlayerData } from "../data/player";
 
-function strEnum<T extends string>(o: T[]): {[K in T]: K} {
+function strEnum<T extends string>(o: T[]): { [K in T]: K } {
     return o.reduce((res, key) => {
         res[key] = key;
         return res;
@@ -27,26 +27,26 @@ export type VotingFlavour = {
 };
 
 export type VoteResult =
-{
-    /** If the timeout fired, list of people who didn't vote. */
-    timedout: string[],
-    /** Type of the vote result */
-    type: "MAJORITY_NO_VOTE" | "UNANIMITY_NO_VOTE",
-} | {
-    /** The tied targets. A "null" value represents a "no-vote" entry in the tie. */
-    targets: Array<string | null>,
-    /** If the timeout fired, list of people who didn't vote. */
-    timedout: string[],
-    /** Type of the vote result */
-    type: "TIE",
-} | {
-    /** The vote target */
-    target: string,
-    /** If the timeout fired, list of people who didn't vote. */
-    timedout: string[],
-    /** Type of the vote result */
-    type: "MAJORITY" | "UNANIMITY",
-};
+    {
+        /** If the timeout fired, list of people who didn't vote. */
+        timedout: string[],
+        /** Type of the vote result */
+        type: "MAJORITY_NO_VOTE" | "UNANIMITY_NO_VOTE",
+    } | {
+        /** The tied targets. A "null" value represents a "no-vote" entry in the tie. */
+        targets: Array<string | null>,
+        /** If the timeout fired, list of people who didn't vote. */
+        timedout: string[],
+        /** Type of the vote result */
+        type: "TIE",
+    } | {
+        /** The vote target */
+        target: string,
+        /** If the timeout fired, list of people who didn't vote. */
+        timedout: string[],
+        /** Type of the vote result */
+        type: "MAJORITY" | "UNANIMITY",
+    };
 
 export type VoteConfig = {
     /** The voters. */
@@ -75,7 +75,7 @@ export type VoteConfig = {
     /** Whether to disable the "no-vote" option. Defaults to allowed (true). */
     disableNoVote?: boolean,
     /** A method returning a list of rigged votes. Defaults to () => [] (no rigging). */
-    rig?: (data: VotingData) => Array<{voter: string, target: string | null}>,
+    rig?: (data: VotingData) => Array<{ voter: string, target: string | null }>,
     /**
      * The flavours to use for this vote and its results.
      * By default, the flavours will be debug messages. Make sure to change them !

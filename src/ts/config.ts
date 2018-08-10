@@ -1,7 +1,6 @@
 import * as jsonfile from "jsonfile";
 import * as fs from "fs";
 import logger from "./logging";
-import { ClientUserChannelOverride } from "discord.js";
 
 const defaultConfig = jsonfile.readFileSync("config.default.json");
 if (!fs.existsSync("config.json")) {
@@ -9,11 +8,11 @@ if (!fs.existsSync("config.json")) {
 }
 const config = jsonfile.readFileSync("config.json");
 
-export const ADMIN_ID_LIST: string[] = config.adminList || [ ];
+export const ADMIN_ID_LIST: string[] = config.adminList || [];
 export const CHANNEL_ID_LIST: string[] = config.channelList || [];
 export const TOKEN = (() => {
     if (config.token)
-    return config.token;
+        return config.token;
     throw new Error("There's no 'token' attribute in config.json ! Please add your bot token.");
 })();
 

@@ -88,8 +88,8 @@ export function getNotifyFlavour(folderName: string): NotifyFlavour {
     return {
         start: (playerList, hypnotistCount) =>
             getRandom<string>(data.start, 1)[0]
-            .replace(/\[playerMentionList\]/ig, playerList.map(p => `<@${p.id}>`).join(" "))
-            .replace(/\[hypnotistCount\]/ig, `${hypnotistCount}`),
+                .replace(/\[playerMentionList\]/ig, playerList.map(p => `<@${p.id}>`).join(" "))
+                .replace(/\[hypnotistCount\]/ig, `${hypnotistCount}`),
         roles,
         none: (player) => getRandom<string>(townieData.role, 1)[0],
         unknown: (player, roleList) => `A new game has started ! You are a ${roleList.join(", ")}`,
@@ -130,17 +130,17 @@ export function getHypnotistFlavour(folderName: string): HypnotistFlavourList {
             (rawData: { target: string[], player: string[] } | string[], target: PlayerData, owner: PlayerData, count: number) =>
                 FormatOwner(owner, FormatTarget(target, getRandom<string>(
                     (<any>rawData).player
-                    ? (<any>rawData).player as string[]
-                    : rawData as string[],
-                1)[0])).replace(/\[hypnotistCount\]/ig, `${count}`),
+                        ? (<any>rawData).player as string[]
+                        : rawData as string[],
+                    1)[0])).replace(/\[hypnotistCount\]/ig, `${count}`),
         ),
         brokenTist: LoadToggledData(data.action.break.self,
             (rawData: { target: string[], player: string[] } | string[], target: PlayerData, owner: PlayerData, count: number) =>
                 FormatOwner(owner, FormatTarget(target, getRandom<string>(
                     (<any>rawData).target
-                    ? (<any>rawData).target as string[]
-                    : rawData as string[],
-                1)[0])).replace(/\[hypnotistCount\]/ig, `${count}`),
+                        ? (<any>rawData).target as string[]
+                        : rawData as string[],
+                    1)[0])).replace(/\[hypnotistCount\]/ig, `${count}`),
         ),
         breakOther: LoadToggledData(data.action.break.other, (rawData: string[], target: PlayerData, owner: PlayerData, count: number) =>
             FormatOwner(owner, FormatTarget(target, getRandom(rawData, 1)[0])).replace(/\[hypnotistCount\]/ig, `${count}`),
@@ -179,7 +179,7 @@ export function getDeprogrammerFlavour(folderName: string): DeprogrammerFlavourL
 
 export function getDetectiveFlavour(folderName: string): DetectiveFlavourList {
     const data = LoadYamlFile(path.join(folderName, "detective.yaml"));
-    const spy: {[role: string]: (target: PlayerData, roleList: string[]) => string} = {};
+    const spy: { [role: string]: (target: PlayerData, roleList: string[]) => string } = {};
     for (const key of Object.keys(data.action.spy)) {
         const reveal = data.action.spy[key];
         spy[key] = (target, roleList) => FormatTarget(target, getRandom<string>(reveal, 1)[0])

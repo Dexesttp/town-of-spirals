@@ -50,9 +50,9 @@ export async function runGame(
     players: number,
     messages: Array<
         { type: "simple", player: number, command: string, private: boolean, original: string }
-      | { type: "target", player: number, command: string, target: number, private: boolean, original: string }
-      | { type: "target_pos", player: number, command: string, target: number, private: boolean, original: string }
-    >,
+        | { type: "target", player: number, command: string, target: number, private: boolean, original: string }
+        | { type: "target_pos", player: number, command: string, target: number, private: boolean, original: string }
+        >,
     roles: { tists: number, deprogs?: number, detectives?: number },
     params: { allowMumble?: boolean, log?: boolean } = {},
 ) {

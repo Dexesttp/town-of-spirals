@@ -85,7 +85,7 @@ export function handleDetective(
                 target.attributes.push(ATTRIBUTES.SPIED);
                 const roles = target.roles;
                 const getSpyFlavour = (flavour.spy ? flavour.spy[roles.join("_") || "none"] || flavour.spy["unknown"] : undefined)
-                || ((targetInt: PlayerData, roleListInt: string[]) => `${targetInt.nickname} is a ${roleListInt.join(", ")}`);
+                    || ((targetInt: PlayerData, roleListInt: string[]) => `${targetInt.nickname} is a ${roleListInt.join(", ")}`);
                 detectiveInterface.sendMessage(getSpyFlavour(target, roles));
                 continue;
             }

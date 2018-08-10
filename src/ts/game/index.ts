@@ -77,17 +77,17 @@ export function Game(
         while (true) {
             yield Promise.race([
                 getTargettingCommandPromise("vote", voters, targets, shouldBePrivate)
-                .then(r => {
-                    cleanSubscribedCommands();
-                    cleanSubscribedTargettingCommands();
-                    return {voterID: r.playerID, targetID: r.targetID};
-                }),
+                    .then(r => {
+                        cleanSubscribedCommands();
+                        cleanSubscribedTargettingCommands();
+                        return { voterID: r.playerID, targetID: r.targetID };
+                    }),
                 getCommandPromise("no-vote", voters, shouldBePrivate)
-                .then(r => {
-                    cleanSubscribedCommands();
-                    cleanSubscribedTargettingCommands();
-                    return {voterID: r.playerID, targetID: null};
-                }),
+                    .then(r => {
+                        cleanSubscribedCommands();
+                        cleanSubscribedTargettingCommands();
+                        return { voterID: r.playerID, targetID: null };
+                    }),
             ]);
         }
     }
@@ -168,7 +168,7 @@ export function Game(
 
             return getStats(context);
         },
-        isDay () {
+        isDay() {
             return isDay;
         },
     };
