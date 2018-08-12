@@ -4,6 +4,7 @@ import { handleDeprogrammer, DEPROGRAMMER_ROLE } from "../../ts/roles/deprogramm
 import { handleDetective, DETECTIVE_ROLE } from "../../ts/roles/detective";
 import { Game } from "../../ts/game";
 import { TimerPromise } from "../../ts/utils/timer";
+import { checkEndWithJester, JESTER_ROLE } from "../../ts/roles/jester";
 
 export function GameCreator(
     privateMessage: (id: string, message: string) => void,
@@ -53,7 +54,7 @@ export async function runGame(
         | { type: "target", player: number, command: string, target: number, private: boolean, original: string }
         | { type: "target_pos", player: number, command: string, target: number, private: boolean, original: string }
         >,
-    roles: { tists: number, deprogs?: number, detectives?: number },
+    roles: { tists: number, deprogs?: number, detectives?: number, jesters?: number },
     params: { allowMumble?: boolean, log?: boolean } = {},
 ) {
     const replies: string[] = [];
@@ -79,6 +80,11 @@ export async function runGame(
             createdPlayers[i + roles.tists + (roles.deprogs || 0)].roles.push(DETECTIVE_ROLE);
         }
     }
+    if (roles.jesters) {
+        for (let i = 0; i < roles.jesters; i++) {
+            createdPlayers[i + roles.tists + (roles.deprogs || 0) + (roles.detectives || 0)].roles.push(JESTER_ROLE);
+        }
+    }
     if (params.log) {
         console.log(createdPlayers.map(p => `${p.id} ${p.roles[0]}`).join(", "));
     }
@@ -93,6 +99,7 @@ export async function runGame(
     game.subscribeNightRole(handleHypnotist({}));
     game.subscribeNightRole(handleDeprogrammer({}));
     game.subscribeNightRole(handleDetective({}));
+    game.setCheckEnd(checkEndWithJester({}, {}));
     const runningGame = game.start();
     for (const message of messages) {
         await TimerPromise(1);

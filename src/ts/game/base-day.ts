@@ -2,7 +2,7 @@ import { GameContext } from "./data/context";
 import { GameTools } from "./data/tools";
 import { GetAlivePlayers } from "./utils/alive-players";
 import { VoteResultType, VotingFlavour } from "./vote/types";
-import { BROKEN } from "./data/player-states";
+import { BROKEN, BROKEN_DAY } from "./data/player-states";
 import { PlayerData } from "./data/player";
 import getRandom from "../utils/rand-from-array";
 
@@ -34,6 +34,7 @@ export function baseDay(
         if (voteResult.type === VoteResultType.MAJORITY || voteResult.type === VoteResultType.UNANIMITY) {
             const targetPlayer = context.players.filter(p => p.id === voteResult.target)[0];
             targetPlayer.attributes.push(BROKEN);
+            targetPlayer.attributes.push(BROKEN_DAY);
             const owner = getRandom(GetAlivePlayers(context), 1)[0];
             const getBreakFlavour = flavour.break || ((playerInt: PlayerData, ownerInt: PlayerData) =>
                 `${playerInt.nickname} was chosen to be broken.`

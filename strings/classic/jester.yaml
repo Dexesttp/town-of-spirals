@@ -1,0 +1,19 @@
+role:
+  - |
+    The game has started ! You are a hypnofetishist (your win condition is to get broken by a day vote).
+victory:
+  multi:
+    - |
+      [allMention]
+      The game has ended, and [playerList] are now the one person who could truly consider victorious. Despite what everybody else says.
+      The hypnotists were : [hypnotistList]
+reveal_day:
+  - |
+    [target] managed to get themselves broken on the hypnotic chair.
+    They moan and writhe while the chair breaks their mind apart.
+    It appears [targetMention] was a hypnofetishist !
+reveal:
+  - |
+    The villagers check [target]'s house out.
+    They find a... love letter to the brainwashing chair ? Good thing we never let them close to it...
+    It appears [targetMention] was a hypnofetishist !

@@ -1,4 +1,5 @@
 import { getFlavourFromFolder } from "./flavour/get-flavour-list";
+import { JESTER_ROLE } from "./roles/jester";
 
 const flavours = getFlavourFromFolder("strings/classic/");
 
@@ -49,9 +50,18 @@ console.log(tistBreakFlav ? tistBreakFlav(3)(
     2,
 ) : "Not found");
 
-console.log("Test victory");
-const { hypnotists, town } = flavours.checkEnd;
+console.log("Test : jester");
+const { roles: bdRoles } = flavours.baseDay;
+console.log(bdRoles ? bdRoles[JESTER_ROLE]({ id: "", nickname: "", roles: [], attributes: [], username: ""}, []) : "Not found");
+const { roles: rbRoles } = flavours.resolveBroken;
+console.log(rbRoles ? rbRoles[JESTER_ROLE]({ id: "", nickname: "", roles: [], attributes: [], username: ""}, []) : "Not found");
+
+console.log("Test : victory");
+const { hypnotists, town, nobody } = flavours.checkEnd;
 console.log(hypnotists ? hypnotists(1)([], [], []) : "Not found");
 console.log(hypnotists ? hypnotists(2)([], [], []) : "Not found");
 console.log(town ? town(1)([], [], []) : "Not found");
 console.log(town ? town(2)([], [], []) : "Not found");
+console.log(nobody ? nobody([], []) : "Not found");
+const { jester } = flavours.handleJester;
+console.log(jester ? jester(1)([], [], []) : "Not found");

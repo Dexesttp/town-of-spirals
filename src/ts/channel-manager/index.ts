@@ -24,8 +24,8 @@ export function ChannelManager() {
     ) {
         let target = channel.game.context.players.filter(p => `@${p.nickname}` === text)[0]
             || channel.game.context.players.filter(p => `@${p.username}` === text)[0]
-            || channel.game.context.players.filter(p => `<@${p.id}>` === text)[0]
             || channel.game.context.players.filter(p => `<@!${p.id}>` === text)[0]
+            || channel.game.context.players.filter(p => `<@${p.id}>` === text)[0]
             || channel.game.context.players.filter(p => p.nickname === text)[0]
             || channel.game.context.players.filter(p => p.username === text)[0]
             || channel.game.context.players.filter(p => p.nickname.toUpperCase() === text.toUpperCase())[0]

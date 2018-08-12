@@ -19,6 +19,7 @@ import { writeFileSync } from "fs";
 import { Game } from "../game";
 import { getFlavourList } from "../flavour/get-flavour-list";
 import { handleStats } from "./statistics";
+import { checkEndWithJester } from "../roles/jester";
 
 export const flavourList = getFlavourList();
 
@@ -68,7 +69,7 @@ export function startGame(context: ManagerContext) {
         const flavour = getRandom(flavourList, 1)[0];
         newData.game.setDay(baseDay(flavour.baseDay));
         newData.game.setNight(baseNight(flavour.baseNight));
-        newData.game.setCheckEnd(baseCheckEnd(flavour.checkEnd));
+        newData.game.setCheckEnd(checkEndWithJester(flavour.checkEnd, flavour.handleJester));
         newData.game.setNotifyRoles(baseNotifyRoles(flavour.notifyRoles));
         newData.game.setResolveAllBroken(baseResolveAllBroken(flavour.resolveBroken));
         newData.game.subscribeNightRole(handleHypnotist(flavour.handleHypnotist));

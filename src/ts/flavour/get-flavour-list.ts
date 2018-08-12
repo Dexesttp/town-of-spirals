@@ -10,6 +10,7 @@ import { LoadYamlFile, LoadVoteFlavour, FormatOwner, FormatTarget, LoadToggledDa
 import * as path from "path";
 import getRandom from "../utils/rand-from-array";
 import { PlayerData } from "../game/data/player";
+import { JesterEndingFlavour, JESTER_ROLE } from "../roles/jester";
 
 export type FlavourEntry = {
     baseDay: DayFlavour,
@@ -20,6 +21,7 @@ export type FlavourEntry = {
     handleHypnotist: HypnotistFlavourList,
     handleDeprogrammer: DeprogrammerFlavourList,
     handleDetective: DetectiveFlavourList,
+    handleJester: JesterEndingFlavour,
 };
 
 export function getBaseDayFlavour(folderName: string): DayFlavour {
@@ -32,6 +34,8 @@ export function getBaseDayFlavour(folderName: string): DayFlavour {
     roles[HYPNOTIST_ROLE] = loadRoleData("hypnotist.yaml");
     roles[DETECTIVE_ROLE] = loadRoleData("detective.yaml");
     roles[DEPROGRAMMER_ROLE] = loadRoleData("deprogrammer.yaml");
+    roles[JESTER_ROLE] = (player: PlayerData, roleList: string[]) =>
+        FormatTarget(player, getRandom<string>(LoadYamlFile(path.join(folderName, "jester.yaml")).reveal_day, 1)[0]);
     const townieData = LoadYamlFile(path.join(folderName, "townie.yaml"));
     return {
         intro: (voteList) => getRandom<string>(data.startVote, 1)[0]
@@ -84,6 +88,7 @@ export function getNotifyFlavour(folderName: string): NotifyFlavour {
     roles[HYPNOTIST_ROLE] = loadRoleData("hypnotist.yaml");
     roles[DETECTIVE_ROLE] = loadRoleData("detective.yaml");
     roles[DEPROGRAMMER_ROLE] = loadRoleData("deprogrammer.yaml");
+    roles[JESTER_ROLE] = loadRoleData("jester.yaml");
     const townieData = LoadYamlFile(path.join(folderName, "townie.yaml"));
     return {
         start: (playerList, hypnotistCount) =>
@@ -106,11 +111,12 @@ export function getResolveBrokenFlavour(folderName: string): ResolveBrokenFlavou
     roles[HYPNOTIST_ROLE] = loadRoleData("hypnotist.yaml");
     roles[DETECTIVE_ROLE] = loadRoleData("detective.yaml");
     roles[DEPROGRAMMER_ROLE] = loadRoleData("deprogrammer.yaml");
+    roles[JESTER_ROLE] = loadRoleData("jester.yaml");
     const townieData = LoadYamlFile(path.join(folderName, "townie.yaml"));
     return {
         intro: () => getRandom<string>(data.newDay, 1)[0],
         broken: (target, owner) => FormatOwner(owner, FormatTarget(target, getRandom<string>(data.brokenNight.event, 1)[0])),
-        noOwnerLeft: (target) => FormatTarget(target, getRandom<string>(data.noOwnerLeft, 1)[0]),
+        noOwnerLeft: (target) => FormatTarget(target, getRandom<string>(data.brokenNight.noOwnerLeft, 1)[0]),
         noBroken: () => getRandom<string>(data.brokenNight.none, 1)[0],
         roles,
         none: (target) => FormatTarget(target, getRandom<string>(townieData.reveal, 1)[0]),
@@ -196,6 +202,17 @@ export function getDetectiveFlavour(folderName: string): DetectiveFlavourList {
     };
 }
 
+export function getJesterFlavour(folderName: string): JesterEndingFlavour {
+    const data = LoadYamlFile(path.join(folderName, "jester.yaml"));
+    return {
+        jester: LoadToggledData(data.victory, (rawData: string[], playerList, allPlayerList, hypnotistList) =>
+            FormatPlayerList(playerList, getRandom(rawData, 1)[0])
+            .replace(/\[allMention\]/ig, allPlayerList.map(p => `<@${p.id}>`).join(" "))
+            .replace(/\[hypnotistList\]/ig, hypnotistList.map(p => p.nickname).join(", ")),
+        ),
+    }
+}
+
 export function getFlavourFromFolder(folderName: string): FlavourEntry {
     return {
         baseDay: getBaseDayFlavour(folderName),
@@ -206,6 +223,7 @@ export function getFlavourFromFolder(folderName: string): FlavourEntry {
         handleHypnotist: getHypnotistFlavour(folderName),
         handleDeprogrammer: getDeprogrammerFlavour(folderName),
         handleDetective: getDetectiveFlavour(folderName),
+        handleJester: getJesterFlavour(folderName),
     };
 }
 

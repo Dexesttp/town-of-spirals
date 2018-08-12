@@ -36,7 +36,7 @@ action:
       You stay up all night wondering what to do. The dawn breaks and your opportunities are now gone.
 role:
   - |
-    The game has started ! You are a detective.
+    The game has started ! You are a detective (you are a good citizen who can spy on people at night).
 reveal:
   - |
     The villagers check [target]'s house out.

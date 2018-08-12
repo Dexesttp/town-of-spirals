@@ -3,6 +3,8 @@ import getRandom from "../utils/rand-from-array";
 import { HYPNOTIST_ROLE } from "../roles/hypnotist";
 import { DEPROGRAMMER_ROLE } from "../roles/deprogrammer";
 import { DETECTIVE_ROLE } from "../roles/detective";
+import { METHODS } from "http";
+import { JESTER_ROLE } from "../roles/jester";
 
 function GetRoleAssociations(count: number) {
     const roles: Array<{ role: string, count: number }> = [];
@@ -10,6 +12,9 @@ function GetRoleAssociations(count: number) {
     roles.push({ role: DEPROGRAMMER_ROLE, count: 1 });
     if (count > 5) {
         roles.push({ role: DETECTIVE_ROLE, count: 1 });
+    }
+    if (Math.random() > .3) {
+        roles.push({ role: JESTER_ROLE, count: 1 });
     }
     return roles;
 }
