@@ -3,14 +3,16 @@ import { getLeaderboardInternal, StatsData } from "../../ts/statistics";
 
 describe("Retrieving leaderboard", () => {
     it("Should show no results if there is no stats", () => {
-        const stats: StatsData = { excluded: [], saved: {} };
+        const stats: StatsData = { excluded: [], names: {}, saved: {} };
         const lb = getLeaderboardInternal(stats);
         expect(lb.length).to.equals(0);
     });
     it("Should show a single result if there is one player", () => {
         const stats: StatsData = {
-            excluded: [], saved: {
-                "test1": { name: "Test Name 1", wins: 5, losses: 3, roles: { "role1": 2, "role2": 6 } },
+            excluded: [], names: {
+                "test1": { username: "Test Username 1", nickname: "Test Name 1" },
+            }, saved: {
+                "test1": { wins: 5, losses: 3, roles: { "role1": 2, "role2": 6 } },
             },
         };
         const lb = getLeaderboardInternal(stats);
@@ -21,11 +23,16 @@ describe("Retrieving leaderboard", () => {
     });
     it("Should show an ordered list of results if there is several players", () => {
         const stats: StatsData = {
-            excluded: [], saved: {
-                "test1": { name: "Test Name 1", wins: 5, losses: 3, roles: { "role1": 2, "role2": 6 } },
-                "test2": { name: "Test Name 2", wins: 10, losses: 3, roles: { "role1": 2, "role2": 6 } },
-                "test3": { name: "Test Name 3", wins: 2, losses: 3, roles: { "role1": 2, "role2": 6 } },
-                "test4": { name: "Test Name 4", wins: 4, losses: 3, roles: { "role1": 2, "role2": 6 } },
+            excluded: [], names: {
+                "test1": { username: "Test Username 1", nickname: "Test Name 1" },
+                "test2": { username: "Test Username 2", nickname: "Test Name 2" },
+                "test3": { username: "Test Username 3", nickname: "Test Name 3" },
+                "test4": { username: "Test Username 4", nickname: "Test Name 4" },
+            }, saved: {
+                "test1": { wins: 5, losses: 3, roles: { "role1": 2, "role2": 6 } },
+                "test2": { wins: 10, losses: 3, roles: { "role1": 2, "role2": 6 } },
+                "test3": { wins: 2, losses: 3, roles: { "role1": 2, "role2": 6 } },
+                "test4": { wins: 4, losses: 3, roles: { "role1": 2, "role2": 6 } },
             },
         };
         const lb = getLeaderboardInternal(stats);

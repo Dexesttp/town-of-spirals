@@ -48,9 +48,18 @@ export async function getPlayerStatsFromMessage(message: ClientMessage<discord.M
         message.original.channel.send(`Could not find player with ID or name : ${data.name}`);
         return true;
     }
-    logger.basic(`Showing stats for ${data.name}`);
-    message.original.channel.send(`Stats for ${data.name} :
-    Wins : ${data.wins} - Losses : ${data.losses}
-    Roles played : ${data.roles.map(r => `${r.role} (${r.count})`).join(", ")}`);
+    if (data.type === "result") {
+        logger.basic(`Showing stats for ${data.name}`);
+        message.original.channel.send(`Stats for ${data.name} :
+        Wins : ${data.wins} - Losses : ${data.losses}
+        Roles played : ${data.roles.map(r => `${r.role} (${r.count})`).join(", ")}`);
+        return true;
+    }
+    logger.basic(`Showing multiple stats for ${data.data.map(d => d.name).join(", ")}`);
+    message.original.channel.send(`Stats matching ${data.data[0].name} :
+    ${data.data
+        .map(d => `Wins : ${d.wins} - Losses : ${d.losses} - Roles : ${d.roles.map(r => `${r.role} (${r.count})`).join(", ")}`)
+        .join("\n")
+    }`);
     return true;
 }

@@ -2,7 +2,7 @@ import * as discord from "discord.js";
 import { writeFileSync } from "fs";
 import * as moment from "moment";
 import { ClientMessage } from "../client/type";
-import { getFlavourList } from "../flavour/get-flavour-list";
+import { FlavourEntry } from "../flavour/get-flavour-list";
 import { Game } from "../game";
 import { GiveRolesTo } from "../game-creator/give-roles-to";
 import { baseDay } from "../game/base-day";
@@ -20,10 +20,9 @@ import { MIN_PLAYERS, MIN_REVEAL_ROLES } from "./constants";
 import { ManagerContext, NotStartedGameChannelData, RegisteredGameChannelData, RunningGameChannelData } from "./types";
 import { getUserChannel } from "./utils";
 
-export const flavourList = getFlavourList();
-
 export function startGame(
     context: ManagerContext,
+    flavourList: FlavourEntry[],
     updateStats: (channel: discord.TextChannel, result: GameResult) => void,
 ) {
     return async (message: discord.Message) => {
@@ -52,6 +51,7 @@ export function startGame(
         const newData = <RunningGameChannelData><RegisteredGameChannelData>userData;
         newData.type = "RUNNING";
         GiveRolesTo(players);
+        newData.flavour = getRandom(flavourList, 1)[0];
         newData.game = Game(
             players,
             async (m) => {
@@ -67,17 +67,15 @@ export function startGame(
             },
             players.length >= MIN_REVEAL_ROLES,
         );
-
-        const flavour = getRandom(flavourList, 1)[0];
-        newData.game.setDay(baseDay(flavour.baseDay));
-        newData.game.setNight(baseNight(flavour.baseNight));
-        newData.game.setCheckEnd(checkEndWithJester(flavour.checkEnd, flavour.handleJester));
-        newData.game.setNotifyRoles(baseNotifyRoles(flavour.notifyRoles));
-        newData.game.setResolveAllBroken(baseResolveAllBroken(flavour.resolveBroken));
+        newData.game.setDay(baseDay(newData.flavour.baseDay));
+        newData.game.setNight(baseNight(newData.flavour.baseNight));
+        newData.game.setCheckEnd(checkEndWithJester(newData.flavour.checkEnd, newData.flavour.handleJester));
+        newData.game.setNotifyRoles(baseNotifyRoles(newData.flavour.notifyRoles));
+        newData.game.setResolveAllBroken(baseResolveAllBroken(newData.flavour.resolveBroken));
         newData.game.setGetStats(statsWithJester());
-        newData.game.subscribeNightRole(handleHypnotist(flavour.handleHypnotist));
-        newData.game.subscribeNightRole(handleDeprogrammer(flavour.handleDeprogrammer));
-        newData.game.subscribeNightRole(handleDetective(flavour.handleDetective));
+        newData.game.subscribeNightRole(handleHypnotist(newData.flavour.handleHypnotist));
+        newData.game.subscribeNightRole(handleDeprogrammer(newData.flavour.handleDeprogrammer));
+        newData.game.subscribeNightRole(handleDetective(newData.flavour.handleDetective));
 
         logger.channel(channel.name, `Game started by ${message.author.username} ! (${players.length} players)`);
         newData.game.start()

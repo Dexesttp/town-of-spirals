@@ -63,12 +63,8 @@ action:
         - |
           You and your fellow hypnotist colleagues decide to skip tonight's opportunity.
 role:
-  1:
-    - |
-      The game has started ! You are the only hypnotist in town.
-  multi:
-    - |
-      The game has started ! You are a hypnotist, along with [players]
+  - |
+    The game has started ! You are a hypnotist.
 reveal:
   - |
     The villagers check [target]'s house out.

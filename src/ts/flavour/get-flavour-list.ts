@@ -12,17 +12,29 @@ import { JesterEndingFlavour, JESTER_ROLE } from "../roles/jester";
 import getRandom from "../utils/rand-from-array";
 import { FormatOwner, FormatPlayerList, FormatTarget, LoadToggledData, LoadVoteFlavour, LoadYamlFile } from "./load-flavours";
 
+type MumbleFlavour = Array<(userName: string, ownerName: string) => string>;
+
 export type FlavourEntry = {
     baseDay: DayFlavour,
     baseNight: NightFlavour,
     checkEnd: EndingFlavour,
     notifyRoles: NotifyFlavour,
     resolveBroken: ResolveBrokenFlavour,
+    mumble: MumbleFlavour,
     handleHypnotist: HypnotistFlavourList,
     handleDeprogrammer: DeprogrammerFlavourList,
     handleDetective: DetectiveFlavourList,
     handleJester: JesterEndingFlavour,
 };
+
+
+export function getMumbleFlavour(folderName: string): MumbleFlavour {
+    const data = LoadYamlFile(path.join(folderName, "mumble.yaml"));
+    return data.mumble.map((text: string) => (target: string, owner: string) =>
+        text.replace(/\[target\]/ig, target).replace(/\[owner\]/ig, owner),
+    );
+}
+
 
 export function getBaseDayFlavour(folderName: string): DayFlavour {
     const data = LoadYamlFile(path.join(folderName, "town.yaml"));
@@ -207,8 +219,8 @@ export function getJesterFlavour(folderName: string): JesterEndingFlavour {
     return {
         jester: LoadToggledData(data.victory, (rawData: string[], playerList, allPlayerList, hypnotistList) =>
             FormatPlayerList(playerList, getRandom(rawData, 1)[0])
-            .replace(/\[allMention\]/ig, allPlayerList.map(p => `<@${p.id}>`).join(" "))
-            .replace(/\[hypnotistList\]/ig, hypnotistList.map(p => p.nickname).join(", ")),
+                .replace(/\[allMention\]/ig, allPlayerList.map(p => `<@${p.id}>`).join(" "))
+                .replace(/\[hypnotistList\]/ig, hypnotistList.map(p => p.nickname).join(", ")),
         ),
     };
 }
@@ -220,6 +232,7 @@ export function getFlavourFromFolder(folderName: string): FlavourEntry {
         checkEnd: getCheckEndFlavour(folderName),
         notifyRoles: getNotifyFlavour(folderName),
         resolveBroken: getResolveBrokenFlavour(folderName),
+        mumble: getMumbleFlavour(folderName),
         handleHypnotist: getHypnotistFlavour(folderName),
         handleDeprogrammer: getDeprogrammerFlavour(folderName),
         handleDetective: getDetectiveFlavour(folderName),

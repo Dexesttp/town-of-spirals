@@ -8,7 +8,7 @@ import { discordReplier, GetClient } from "./client/discord";
 import { help } from "./commands/help";
 import { rules } from "./commands/rules";
 import * as config from "./config";
-import { mumbleFlavours } from "./flavour/load-flavours";
+import { getFlavourList } from "./flavour/get-flavour-list";
 import logger from "./logging";
 import { updateExcludedInternal } from "./statistics";
 import { getStatsFromFile, saveStatsToFile } from "./statistics/file";
@@ -49,7 +49,8 @@ const channelManager = ChannelManager();
 /** Mumbling */
 command.onBefore(async message => {
     if (config.LOSS_DELETE() && channelManager.shouldMumble(message)) {
-        const flavour = getRandom(mumbleFlavours, 1)[0];
+        const flavourItem = channelManager.getFlavourFrom(message);
+        const flavour = getRandom(flavourItem.mumble, 1)[0];
         const toSend = flavour(message.original.author.username, "");
         client.mumbleMessage(message.original, toSend);
         return true;
@@ -61,13 +62,10 @@ command.onBefore(async message => {
     return false;
 });
 command.on("mumble", async (message, text) => {
-    const flavour = getRandom(mumbleFlavours, 1)[0];
+    const flavourItem = getRandom(getFlavourList(), 1)[0];
+    const flavour = getRandom(flavourItem.mumble, 1)[0];
     const toSend = flavour(message.original.author.username, "");
     client.mumbleMessage(message.original, toSend);
-    return true;
-});
-command.on("vore", async (message, text) => {
-    client.tryDeleteMessage(message);
     return true;
 });
 
@@ -141,6 +139,7 @@ command.on("gdpr", async (message, text) => {
         message.original.channel.send("Disabled saving stats successfully.");
         return true;
     }
+    message.original.channel.send("Use `!s gdpr enable` (allow stats) or `!s gdpr disable` (do not store stats)");
     return true;
 });
 

@@ -1,5 +1,7 @@
 import * as discord from "discord.js";
 import { ClientMessage } from "../client/type";
+import { getFlavourList } from "../flavour/get-flavour-list";
+import getRandom from "../utils/rand-from-array";
 import { registerChannel } from "./channel-register";
 import { unregisterChannel } from "./channel-unregister";
 import { shouldDelete, shouldMumble } from "./game-state";
@@ -13,6 +15,8 @@ import { ManagerContext, RunningGameChannelData } from "./types";
 import { getUserChannel } from "./utils";
 
 export function ChannelManager() {
+    const flavourList = getFlavourList();
+
     const contextExt: ManagerContext = {
         channelList: [],
     };
@@ -66,10 +70,15 @@ export function ChannelManager() {
         createGame: createGame(contextExt),
         joinGame: joinGame(contextExt),
         leaveGame: leaveGame(contextExt),
-        startGame: startGame(contextExt, updateStats(contextExt)),
+        startGame: startGame(contextExt, flavourList, updateStats(contextExt)),
         cancelGame: cancelGame(contextExt),
         shouldMumble: shouldMumble(contextExt),
         shouldDelete: shouldDelete(contextExt),
+        getFlavourFrom(message: ClientMessage<discord.Message>) {
+            const userChannel = getUserChannel(contextExt)(message.author);
+            if (!userChannel || userChannel.type !== "RUNNING") return getRandom(getFlavourList(), 1)[0];
+            return userChannel.flavour;
+        },
         async handleTargetCommandByName(command: string, message: ClientMessage<discord.Message>, text: string) {
             const channel = getUserChannel(contextExt)(message.author);
             if (!channel || channel.type !== "RUNNING") return false;

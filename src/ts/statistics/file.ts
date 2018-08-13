@@ -4,8 +4,8 @@ import { StatsData } from ".";
 import { STATS_FILE_PATH } from "../config";
 
 export function getStatsFromFile(): StatsData {
-    if (!STATS_FILE_PATH) return { excluded: [], saved: {} };
-    if (!fs.existsSync(STATS_FILE_PATH)) return { excluded: [], saved: {} };
+    if (!STATS_FILE_PATH) return { excluded: [], names: {}, saved: {} };
+    if (!fs.existsSync(STATS_FILE_PATH)) return { excluded: [], names: {}, saved: {} };
     return jsonfile.readFileSync(STATS_FILE_PATH) as StatsData;
 }
 
@@ -14,5 +14,5 @@ export function saveStatsToFile(data: StatsData) {
     if (fs.existsSync(STATS_FILE_PATH)) {
         fs.unlinkSync(STATS_FILE_PATH);
     }
-    fs.writeFileSync(STATS_FILE_PATH, JSON.stringify(data));
+    jsonfile.writeFileSync(STATS_FILE_PATH, data, {spaces: 2, EOL: "\r\n"});
 }

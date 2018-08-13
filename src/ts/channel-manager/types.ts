@@ -1,5 +1,6 @@
 import * as discord from "discord.js";
 import * as moment from "moment";
+import { FlavourEntry } from "../flavour/get-flavour-list";
 import { GameData } from "../game";
 import { DiscordGameCreator } from "../game-creator/discord";
 import { TimeoutPromise } from "../utils/timer";
@@ -20,6 +21,7 @@ export type RunningGameChannelData = {
     channel: discord.TextChannel,
     createdDate: moment.Moment,
     game: GameData,
+    flavour: FlavourEntry,
 };
 
 export type RegisteredGameChannelData =
