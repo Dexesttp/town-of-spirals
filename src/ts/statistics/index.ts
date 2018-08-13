@@ -1,5 +1,5 @@
-import { GameResult } from "../game";
 import { PlayerData } from "../game/data/player";
+import { GameResult } from "../game/data/context";
 
 export type StatsDataEntry = {
     name: string,

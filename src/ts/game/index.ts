@@ -7,21 +7,13 @@ import { baseNotifyRoles } from "./base-notify-roles";
 import { baseResolveAllBroken } from "./base-resolve-all-broken";
 import { commandEngine } from "./command";
 import { CommandHandler } from "./command/types";
-import { GameContext } from "./data/context";
+import { GameContext, GameResult } from "./data/context";
 import { PlayerData, PlayerInterface } from "./data/player";
-import { BROKEN, BROKEN_NIGHT } from "./data/player-states";
 import { GameTools } from "./data/tools";
 import { targetEngine } from "./targetCommand";
 import { TargettingHandler } from "./targetCommand/types";
 import { startVoteFactory } from "./vote";
-
-enum CommandResult {
-    VALID,
-    INVALID_MODE,
-    INVALID_VOTER,
-}
-
-export type GameResult = Array<{ id: string, alive: boolean, role: string }>;
+import { baseGetStats } from "./base-game-stats";
 
 export type GameData = {
     context: GameContext,
@@ -32,18 +24,11 @@ export type GameData = {
     setCheckEnd: (newCheckEnd: (context: GameContext, tools: GameTools) => Promise<boolean>) => void,
     setNotifyRoles: (newNotifyRoles: (context: GameContext, tools: GameTools) => Promise<void>) => void,
     setResolveAllBroken: (newResolveAllBroken: (context: GameContext, tools: GameTools) => Promise<void>) => void,
+    setGetStats: (newGetStats: (context: GameContext) => GameResult) => void,
     subscribeNightRole: (role: (context: GameContext, internalTools: GameTools) => Promise<any>) => void,
     start: () => Promise<GameResult>,
     isDay: () => boolean,
 };
-
-function getStats(context: GameContext) {
-    return context.players.map(p => ({
-        id: p.id,
-        alive: p.attributes.some(a => a === BROKEN || a === BROKEN_NIGHT),
-        role: p.roles.join(", "),
-    }));
-}
 
 export function Game(
     players: PlayerData[],
@@ -123,6 +108,7 @@ export function Game(
     let night: (context: GameContext, tools: GameTools) => Promise<void> = baseNight({});
     let checkEnd: (context: GameContext, tools: GameTools) => Promise<boolean> = baseCheckEnd({});
     let resolveAllBroken: (context: GameContext, tools: GameTools) => Promise<void> = baseResolveAllBroken({});
+    let getStats: (context: GameContext) => GameResult = baseGetStats();
 
     let isDay = false;
     return {
@@ -143,6 +129,9 @@ export function Game(
         },
         setResolveAllBroken(newResolveAllBroken: (context: GameContext, tools: GameTools) => Promise<void>) {
             resolveAllBroken = newResolveAllBroken;
+        },
+        setGetStats(newGetStats: (context: GameContext) => GameResult) {
+            getStats = newGetStats;
         },
         subscribeNightRole(role: (context: GameContext, tools: GameTools) => Promise<any>) {
             nightRoles.push(role);

@@ -1,6 +1,6 @@
 import * as discord from "discord.js";
 import { ClientMessage } from "../client/type";
-import { GameResult } from "../game";
+import { GameResult } from "../game/data/context";
 import logger from "../logging";
 import { getLeaderboardInternal, getUserStatsInternal, updateStatsInternal } from "../statistics";
 import { getStatsFromFile, saveStatsToFile } from "../statistics/file";

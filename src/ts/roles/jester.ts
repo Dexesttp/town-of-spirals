@@ -1,7 +1,7 @@
 import { EndingFlavour, EndingFlavourVictory } from "../game/base-check-end";
-import { GameContext } from "../game/data/context";
+import { GameContext, GameResult } from "../game/data/context";
 import { PlayerData } from "../game/data/player";
-import { BROKEN_DAY } from "../game/data/player-states";
+import { BROKEN_DAY, BROKEN, BROKEN_NIGHT } from "../game/data/player-states";
 import { GameTools } from "../game/data/tools";
 import { GetAlivePlayers } from "../game/utils/alive-players";
 import { HYPNOTIST_ROLE } from "./hypnotist";
@@ -11,6 +11,25 @@ export const JESTER_ROLE = "jester";
 export type JesterEndingFlavour = {
     jester?: EndingFlavourVictory,
 };
+
+export function statsWithJester() {
+    return (context: GameContext): GameResult => {
+        const brokenJesterDay = context.players
+            .filter(p => p.roles.some(r => r === JESTER_ROLE) && p.attributes.some(a => a === BROKEN_DAY));
+        if (brokenJesterDay.length > 0) {
+            return context.players.map(p => ({
+                id: p.id,
+                alive: brokenJesterDay.some(b => b.id === p.id),
+                role: p.roles.join(", "),
+            }));
+        }
+        return context.players.map(p => ({
+            id: p.id,
+            alive: p.attributes.some(a => a === BROKEN || a === BROKEN_NIGHT),
+            role: p.roles.join(", "),
+        }));
+    };
+}
 
 export function checkEndWithJester(
     flavour: EndingFlavour,
