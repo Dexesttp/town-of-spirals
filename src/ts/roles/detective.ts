@@ -1,9 +1,9 @@
 import { GameContext } from "../game/data/context";
-import { GetAlivePlayers } from "../game/utils/alive-players";
-import { TimerPromise } from "../utils/timer";
-import { GameTools } from "../game/data/tools";
-import { callUntilResolved } from "../utils/promise-until-resolved";
 import { PlayerData } from "../game/data/player";
+import { GameTools } from "../game/data/tools";
+import { GetAlivePlayers } from "../game/utils/alive-players";
+import { callUntilResolved } from "../utils/promise-until-resolved";
+import { TimerPromise } from "../utils/timer";
 
 export const ATTRIBUTES = {
     SPIED: "spied",

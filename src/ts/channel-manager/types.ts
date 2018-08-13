@@ -1,8 +1,8 @@
 import * as discord from "discord.js";
 import * as moment from "moment";
-import { TimeoutPromise } from "../utils/timer";
-import { DiscordGameCreator } from "../game-creator/discord";
 import { GameData } from "../game";
+import { DiscordGameCreator } from "../game-creator/discord";
+import { TimeoutPromise } from "../utils/timer";
 
 export type NotStartedGameChannelData = {
     type: "NOT_STARTED",

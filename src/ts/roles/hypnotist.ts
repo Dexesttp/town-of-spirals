@@ -1,9 +1,9 @@
 import { GameContext } from "../game/data/context";
+import { PlayerData } from "../game/data/player";
+import { BROKEN_NIGHT } from "../game/data/player-states";
+import { GameTools } from "../game/data/tools";
 import { GetAlivePlayers } from "../game/utils/alive-players";
 import { VoteResultType, VotingFlavour } from "../game/vote/types";
-import { GameTools } from "../game/data/tools";
-import { BROKEN_NIGHT } from "../game/data/player-states";
-import { PlayerData } from "../game/data/player";
 import getRandom from "../utils/rand-from-array";
 
 export const HYPNOTIST_ROLE = "hypnotist";

@@ -1,9 +1,9 @@
-import { GameContext } from "../game/data/context";
-import { GetAlivePlayers } from "../game/utils/alive-players";
-import { PlayerData } from "../game/data/player";
-import { GameTools } from "../game/data/tools";
 import { EndingFlavour, EndingFlavourVictory } from "../game/base-check-end";
+import { GameContext } from "../game/data/context";
+import { PlayerData } from "../game/data/player";
 import { BROKEN_DAY } from "../game/data/player-states";
+import { GameTools } from "../game/data/tools";
+import { GetAlivePlayers } from "../game/utils/alive-players";
 import { HYPNOTIST_ROLE } from "./hypnotist";
 
 export const JESTER_ROLE = "jester";

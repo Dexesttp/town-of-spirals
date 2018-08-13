@@ -1,7 +1,7 @@
-import * as yaml from "js-yaml";
 import { readFileSync } from "fs";
-import { VotingFlavour } from "../game/vote/types";
+import * as yaml from "js-yaml";
 import { PlayerData } from "../game/data/player";
+import { VotingFlavour } from "../game/vote/types";
 import getRandom from "../utils/rand-from-array";
 
 export function LoadYamlFile(fileName: string): any {

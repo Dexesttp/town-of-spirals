@@ -1,6 +1,6 @@
-import { PlayerInterface, PlayerData } from "../data/player";
 import { Message } from "../../client/type";
-import { CommandHandler, CommandPromiseGetter, CommandData } from "./types";
+import { PlayerData, PlayerInterface } from "../data/player";
+import { CommandData, CommandHandler, CommandPromiseGetter } from "./types";
 
 enum CommandResult {
     VALID,

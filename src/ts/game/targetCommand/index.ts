@@ -1,6 +1,6 @@
-import { PlayerInterface, PlayerData } from "../data/player";
 import { Message } from "../../client/type";
-import { TargettingPromiseGetter, TargettingHandler, TargettingCommandData, InputTargetType } from "./types";
+import { PlayerData, PlayerInterface } from "../data/player";
+import { InputTargetType, TargettingCommandData, TargettingHandler, TargettingPromiseGetter } from "./types";
 
 enum TargetRequestResult {
     VALID,

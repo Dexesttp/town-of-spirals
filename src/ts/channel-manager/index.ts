@@ -1,15 +1,16 @@
 import * as discord from "discord.js";
 import { ClientMessage } from "../client/type";
-import { RunningGameChannelData, ManagerContext } from "./types";
-import { getUserChannel } from "./utils";
 import { registerChannel } from "./channel-register";
 import { unregisterChannel } from "./channel-unregister";
-import { leaveGame } from "./lobby-leave";
-import { joinGame } from "./lobby-join";
-import { startGame } from "./lobby-start";
-import { createGame } from "./lobby-create";
-import { cancelGame } from "./lobby-cancel";
 import { shouldDelete, shouldMumble } from "./game-state";
+import { cancelGame } from "./lobby-cancel";
+import { createGame } from "./lobby-create";
+import { joinGame } from "./lobby-join";
+import { leaveGame } from "./lobby-leave";
+import { startGame } from "./lobby-start";
+import { updateStats } from "./statistics";
+import { ManagerContext, RunningGameChannelData } from "./types";
+import { getUserChannel } from "./utils";
 
 export function ChannelManager() {
     const contextExt: ManagerContext = {
@@ -65,7 +66,7 @@ export function ChannelManager() {
         createGame: createGame(contextExt),
         joinGame: joinGame(contextExt),
         leaveGame: leaveGame(contextExt),
-        startGame: startGame(contextExt),
+        startGame: startGame(contextExt, updateStats(contextExt)),
         cancelGame: cancelGame(contextExt),
         shouldMumble: shouldMumble(contextExt),
         shouldDelete: shouldDelete(contextExt),

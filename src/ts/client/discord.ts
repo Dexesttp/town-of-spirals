@@ -1,8 +1,8 @@
-import * as config from "../config";
 import * as discord from "discord.js";
-import { Message, ClientMessage } from "./type";
+import * as config from "../config";
 import logger from "../logging";
 import { runAdmin } from "./discord-admin";
+import { ClientMessage, Message } from "./type";
 
 export function GetClient(
     onReadyCB: (client: discord.Client) => void,

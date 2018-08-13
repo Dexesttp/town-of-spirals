@@ -1,9 +1,9 @@
-import { GameContext } from "./data/context";
-import { BROKEN_NIGHT, BROKEN } from "./data/player-states";
-import { GameTools } from "./data/tools";
-import { PlayerData } from "./data/player";
-import { GetAlivePlayers } from "./utils/alive-players";
 import getRandom from "../utils/rand-from-array";
+import { GameContext } from "./data/context";
+import { PlayerData } from "./data/player";
+import { BROKEN, BROKEN_NIGHT } from "./data/player-states";
+import { GameTools } from "./data/tools";
+import { GetAlivePlayers } from "./utils/alive-players";
 
 export type ResolveBrokenFlavour = {
     intro?: () => string,

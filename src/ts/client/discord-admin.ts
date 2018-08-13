@@ -1,5 +1,5 @@
-import * as moment from "moment";
 import * as discord from "discord.js";
+import * as moment from "moment";
 import * as config from "../config";
 import logger from "../logging";
 

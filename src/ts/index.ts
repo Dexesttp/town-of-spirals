@@ -1,13 +1,18 @@
+import * as discord from "discord.js";
+import { Message, TextChannel } from "discord.js";
 import * as moment from "moment";
-import { GetClient, discordReplier } from "./client/discord";
+import { ChannelManager } from "./channel-manager";
+import { getLeaderboard, getPlayerStatsFromMessage } from "./channel-manager/statistics";
+import { GetCommandHandler } from "./client/command-handler";
+import { discordReplier, GetClient } from "./client/discord";
 import { help } from "./commands/help";
 import { rules } from "./commands/rules";
-import { Message, TextChannel } from "discord.js";
-import * as discord from "discord.js";
-import { GetCommandHandler } from "./client/command-handler";
-import { ChannelManager } from "./channel-manager";
 import * as config from "./config";
+import { mumbleFlavours } from "./flavour/load-flavours";
 import logger from "./logging";
+import { updateExcludedInternal } from "./statistics";
+import { getStatsFromFile, saveStatsToFile } from "./statistics/file";
+import getRandom from "./utils/rand-from-array";
 
 moment.relativeTimeThreshold("ss", 1);
 moment.relativeTimeThreshold("s", 60);
@@ -42,8 +47,6 @@ const command = GetCommandHandler<Message>((message, text) => message.original.c
 const channelManager = ChannelManager();
 
 /** Mumbling */
-import { mumbleFlavours } from "./flavour/load-flavours";
-import getRandom from "./utils/rand-from-array";
 command.onBefore(async message => {
     if (config.LOSS_DELETE() && channelManager.shouldMumble(message)) {
         const flavour = getRandom(mumbleFlavours, 1)[0];
@@ -116,17 +119,28 @@ command.on("skip", async (message, text) => await channelManager.handleCommand("
 /**
  * Stats commands
  */
-// TODO stats commands
-command.on("stats", async (message, text) => {
-    message.original.channel.send("This command is not implemented yet. Come back later !");
-    return true;
-});
-command.on("leaderboard", async (message, text) => {
-    message.original.channel.send("This command is not implemented yet. Come back later !");
-    return true;
-});
+command.on("lb", getLeaderboard);
+command.on("leaderboard", getLeaderboard);
+command.on("stats", getPlayerStatsFromMessage);
 command.on("gdpr", async (message, text) => {
-    message.original.channel.send("These command is not implemented yet. We don't store stats either yet, so no worries !");
+    if (!message.private) {
+        message.original.channel.send("The GDPR commands must be used as PMs to the bot.");
+        return true;
+    }
+    if (text === "enable") {
+        const data = getStatsFromFile();
+        updateExcludedInternal(data, message.author, false);
+        saveStatsToFile(data);
+        message.original.channel.send("Enabled saving stats successfully. Welcome back !");
+        return true;
+    }
+    if (text === "disable") {
+        const data = getStatsFromFile();
+        updateExcludedInternal(data, message.author, true);
+        saveStatsToFile(data);
+        message.original.channel.send("Disabled saving stats successfully.");
+        return true;
+    }
     return true;
 });
 

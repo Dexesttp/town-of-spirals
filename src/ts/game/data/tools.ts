@@ -1,6 +1,6 @@
 import { CommandPromiseGetter } from "../command/types";
 import { TargettingPromiseGetter } from "../targetCommand/types";
-import { VoteResult, VoteConfig } from "../vote/types";
+import { VoteConfig, VoteResult } from "../vote/types";
 
 export type GameTools = {
     getCommandPromise: CommandPromiseGetter,

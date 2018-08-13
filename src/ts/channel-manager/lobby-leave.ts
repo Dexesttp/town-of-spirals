@@ -1,7 +1,7 @@
 import * as discord from "discord.js";
+import logger from "../logging";
 import { ManagerContext } from "./types";
 import { getUserChannel } from "./utils";
-import logger from "../logging";
 
 export function leaveGame(context: ManagerContext) {
     return async (message: discord.Message) => {

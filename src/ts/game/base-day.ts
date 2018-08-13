@@ -1,10 +1,10 @@
+import getRandom from "../utils/rand-from-array";
 import { GameContext } from "./data/context";
+import { PlayerData } from "./data/player";
+import { BROKEN, BROKEN_DAY } from "./data/player-states";
 import { GameTools } from "./data/tools";
 import { GetAlivePlayers } from "./utils/alive-players";
 import { VoteResultType, VotingFlavour } from "./vote/types";
-import { BROKEN, BROKEN_DAY } from "./data/player-states";
-import { PlayerData } from "./data/player";
-import getRandom from "../utils/rand-from-array";
 
 export type DayFlavour = {
     intro?: (voteList: string[]) => string,

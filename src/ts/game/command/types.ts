@@ -1,5 +1,5 @@
-import { PlayerData } from "../data/player";
 import { Message } from "../../client/type";
+import { PlayerData } from "../data/player";
 
 export type CommandPromiseGetter = (
     command: string,

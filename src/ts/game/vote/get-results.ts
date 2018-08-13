@@ -1,4 +1,4 @@
-import { VotingData, VoteResult, VoteResultType } from "./types";
+import { VoteResult, VoteResultType, VotingData } from "./types";
 
 export function GetVoteResults(
     votingData: VotingData,

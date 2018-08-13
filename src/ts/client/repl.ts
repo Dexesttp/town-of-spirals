@@ -1,6 +1,5 @@
 import * as moment from "moment";
 import * as readline from "readline";
-import { GetCommandHandler } from "./command-handler";
 import { ClientMessage, Message } from "./type";
 
 let COMMAND_PREFIX = () => `[${moment().format("HH:mm:ss")}] `;

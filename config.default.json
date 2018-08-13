@@ -3,5 +3,6 @@
 	"lossDelete": true,
 	"nightDelete": false,
 	"adminList": [],
-	"channelList": []
+	"channelList": [],
+	"statsFilePath": "stats.json"
 }

@@ -1,16 +1,16 @@
+import * as path from "path";
+import { EndingFlavour } from "../game/base-check-end";
 import { DayFlavour } from "../game/base-day";
 import { NightFlavour } from "../game/base-night";
-import { EndingFlavour } from "../game/base-check-end";
 import { NotifyFlavour } from "../game/base-notify-roles";
 import { ResolveBrokenFlavour } from "../game/base-resolve-all-broken";
-import { HypnotistFlavourList, HYPNOTIST_ROLE } from "../roles/hypnotist";
+import { PlayerData } from "../game/data/player";
 import { DeprogrammerFlavourList, DEPROGRAMMER_ROLE } from "../roles/deprogrammer";
 import { DetectiveFlavourList, DETECTIVE_ROLE } from "../roles/detective";
-import { LoadYamlFile, LoadVoteFlavour, FormatOwner, FormatTarget, LoadToggledData, FormatPlayerList } from "./load-flavours";
-import * as path from "path";
-import getRandom from "../utils/rand-from-array";
-import { PlayerData } from "../game/data/player";
+import { HypnotistFlavourList, HYPNOTIST_ROLE } from "../roles/hypnotist";
 import { JesterEndingFlavour, JESTER_ROLE } from "../roles/jester";
+import getRandom from "../utils/rand-from-array";
+import { FormatOwner, FormatPlayerList, FormatTarget, LoadToggledData, LoadVoteFlavour, LoadYamlFile } from "./load-flavours";
 
 export type FlavourEntry = {
     baseDay: DayFlavour,
@@ -210,7 +210,7 @@ export function getJesterFlavour(folderName: string): JesterEndingFlavour {
             .replace(/\[allMention\]/ig, allPlayerList.map(p => `<@${p.id}>`).join(" "))
             .replace(/\[hypnotistList\]/ig, hypnotistList.map(p => p.nickname).join(", ")),
         ),
-    }
+    };
 }
 
 export function getFlavourFromFolder(folderName: string): FlavourEntry {

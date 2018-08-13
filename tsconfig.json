@@ -1,12 +1,12 @@
 {
 	"compilerOptions": {
-		"outDir": "build/",
-		"target": "es2015",
-		"rootDir": "src/",
-		"moduleResolution": "node",
-		"module": "commonjs",
 		"watch": true,
 		"sourceMap": true,
+		"rootDir": "src/",
+		"outDir": "build/",
+		"target": "es2015",
+		"moduleResolution": "node",
+		"module": "commonjs",
 		"strict": true
 	}
 }

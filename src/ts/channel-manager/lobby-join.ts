@@ -1,9 +1,9 @@
 import * as discord from "discord.js";
 import logger from "../logging";
-import { ManagerContext } from "./types";
-import { getChannelData, getUserChannel, resetGame } from "./utils";
 import { TimerPromise } from "../utils/timer";
 import { LOBBY_TIMEOUT, MIN_PLAYERS } from "./constants";
+import { ManagerContext } from "./types";
+import { getChannelData, getUserChannel, resetGame } from "./utils";
 
 export function joinGame(context: ManagerContext) {
     return async (message: discord.Message) => {

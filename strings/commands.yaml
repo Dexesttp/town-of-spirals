@@ -21,14 +21,14 @@ help: |
   `!s cancel-vote` - Resets your current vote to none. The voting round will not finish until you have voted.
   detective-only : `!s spy`
   deprogrammer-only: `!s save`, `!s break`, `!s skip`
-      **=== Stats commands ===** (not implemented yet)
+      **=== Stats commands ===**
   `!s stats` Show your own statistics
-  `!s leaderboard` Show the win/loss leaderboard
+  `!s stats <name/id>` Show statistics for <name/id>
+  `!s leaderboard` (or `!s lb`) Show the win leaderboard
   Note : in accordance with the GDPR ruling, you have access to special commands to manage how we handle your data.
   Note 2 : the stats are only used for server swag so that's pretty stupid but hey rules are rules and I don't wanna get sued.
-  `!s gdpr deny` Your upcoming stats will not be saved.
-  `!s gdpr allow` Allow tracking your player stats again.
-  `!s gdpr forget` Remove all data about you. 
+  `!s gdpr disable` Forget all stats about you. Your upcoming stats will not be saved.
+  `!s gdpr enable` Allow tracking your player stats again.
 gdpr: |
   Be aware that this bot stores player stats (for the leaderboards and such things). If you wish to opt-out of that, please use `!s gdpr deny`.
   You can also use `!s gdpr forget` : This will erase your stats _and_ remove the dnt info, so you will receive the GDPR message + your stats will not be saved if you play again !

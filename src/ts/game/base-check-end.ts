@@ -1,7 +1,7 @@
 import { GameContext } from "./data/context";
-import { GetAlivePlayers } from "./utils/alive-players";
 import { PlayerData } from "./data/player";
 import { GameTools } from "./data/tools";
+import { GetAlivePlayers } from "./utils/alive-players";
 
 export type EndingFlavourVictory = (count: number)
     => (playerList: PlayerData[], allPlayerList: PlayerData[], hypnotistList: PlayerData[])

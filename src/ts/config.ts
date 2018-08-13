@@ -1,5 +1,6 @@
 import * as jsonfile from "jsonfile";
 import * as fs from "fs";
+import * as path from "path";
 import logger from "./logging";
 
 const defaultConfig = jsonfile.readFileSync("config.default.json");
@@ -10,6 +11,8 @@ const config = jsonfile.readFileSync("config.json");
 
 export const ADMIN_ID_LIST: string[] = config.adminList || [];
 export const CHANNEL_ID_LIST: string[] = config.channelList || [];
+const statsFilePath = config.statsFilePath || defaultConfig.statsFilePath;
+export const STATS_FILE_PATH: string | undefined = statsFilePath ? statsFilePath : undefined;
 export const TOKEN = (() => {
     if (config.token)
         return config.token;

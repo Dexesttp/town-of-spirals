@@ -1,29 +1,30 @@
 import * as discord from "discord.js";
+import { writeFileSync } from "fs";
 import * as moment from "moment";
-import logger from "../logging";
-import { ManagerContext, RunningGameChannelData, RegisteredGameChannelData, NotStartedGameChannelData } from "./types";
-import { getUserChannel } from "./utils";
-import { MIN_PLAYERS, MIN_REVEAL_ROLES } from "./constants";
-import { GiveRolesTo } from "../game-creator/give-roles-to";
 import { ClientMessage } from "../client/type";
-import getRandom from "../utils/rand-from-array";
+import { getFlavourList } from "../flavour/get-flavour-list";
+import { Game, GameResult } from "../game";
+import { GiveRolesTo } from "../game-creator/give-roles-to";
 import { baseDay } from "../game/base-day";
 import { baseNight } from "../game/base-night";
-import { baseCheckEnd } from "../game/base-check-end";
 import { baseNotifyRoles } from "../game/base-notify-roles";
 import { baseResolveAllBroken } from "../game/base-resolve-all-broken";
-import { handleHypnotist } from "../roles/hypnotist";
+import logger from "../logging";
 import { handleDeprogrammer } from "../roles/deprogrammer";
 import { handleDetective } from "../roles/detective";
-import { writeFileSync } from "fs";
-import { Game } from "../game";
-import { getFlavourList } from "../flavour/get-flavour-list";
-import { handleStats } from "./statistics";
+import { handleHypnotist } from "../roles/hypnotist";
 import { checkEndWithJester } from "../roles/jester";
+import getRandom from "../utils/rand-from-array";
+import { MIN_PLAYERS, MIN_REVEAL_ROLES } from "./constants";
+import { ManagerContext, NotStartedGameChannelData, RegisteredGameChannelData, RunningGameChannelData } from "./types";
+import { getUserChannel } from "./utils";
 
 export const flavourList = getFlavourList();
 
-export function startGame(context: ManagerContext) {
+export function startGame(
+    context: ManagerContext,
+    updateStats: (channel: discord.TextChannel, result: GameResult) => void,
+) {
     return async (message: discord.Message) => {
         const userData = getUserChannel(context)(message.author.id);
         if (userData === null) return;
@@ -80,7 +81,7 @@ export function startGame(context: ManagerContext) {
         newData.game.start()
             .then(result => {
                 logger.channel(channel.name, `Game ended !`);
-                handleStats(channel, result);
+                updateStats(channel, result);
                 delete newData.game;
                 delete newData.createdDate;
                 const endData = <NotStartedGameChannelData><RegisteredGameChannelData>newData;

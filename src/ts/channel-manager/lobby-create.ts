@@ -1,11 +1,11 @@
 import * as discord from "discord.js";
 import * as moment from "moment";
+import { GameCreator } from "../game-creator/discord";
 import logger from "../logging";
-import { ManagerContext, CreatingGameChannelData, RegisteredGameChannelData } from "./types";
-import { getChannelData, resetGame } from "./utils";
 import { TimerPromise } from "../utils/timer";
 import { LOBBY_TIMEOUT, MIN_PLAYERS } from "./constants";
-import { GameCreator } from "../game-creator/discord";
+import { CreatingGameChannelData, ManagerContext, RegisteredGameChannelData } from "./types";
+import { getChannelData, resetGame } from "./utils";
 
 export function createGame(context: ManagerContext) {
     return async (message: discord.Message) => {

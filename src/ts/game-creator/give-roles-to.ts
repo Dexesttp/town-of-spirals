@@ -1,10 +1,9 @@
 import { PlayerData } from "../game/data/player";
-import getRandom from "../utils/rand-from-array";
-import { HYPNOTIST_ROLE } from "../roles/hypnotist";
 import { DEPROGRAMMER_ROLE } from "../roles/deprogrammer";
 import { DETECTIVE_ROLE } from "../roles/detective";
-import { METHODS } from "http";
+import { HYPNOTIST_ROLE } from "../roles/hypnotist";
 import { JESTER_ROLE } from "../roles/jester";
+import getRandom from "../utils/rand-from-array";
 
 function GetRoleAssociations(count: number) {
     const roles: Array<{ role: string, count: number }> = [];

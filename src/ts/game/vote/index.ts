@@ -1,10 +1,10 @@
 import * as moment from "moment";
-import { PlayerData } from "../data/player";
-import { VoteConfig, VoteResult, VotingData } from "./types";
 import { TimeoutPromise } from "../../utils/timer";
-import { GetResults, GetVoteResults } from "./get-results";
 import { GameContext } from "../data/context";
+import { PlayerData } from "../data/player";
 import { GetAlivePlayers } from "../utils/alive-players";
+import { GetResults, GetVoteResults } from "./get-results";
+import { VoteConfig, VoteResult, VotingData } from "./types";
 
 const DEFAULT_VOTE_TIMEOUT = 300000; // 5 minutes
 const DEFAULT_VOTE_WARN_TIMEOUT = 30000; // 30s

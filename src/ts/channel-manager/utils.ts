@@ -1,10 +1,5 @@
 import * as discord from "discord.js";
-import {
-    RegisteredGameChannelData,
-    CreatingGameChannelData,
-    NotStartedGameChannelData,
-    ManagerContext,
-} from "./types";
+import { CreatingGameChannelData, ManagerContext, NotStartedGameChannelData, RegisteredGameChannelData } from "./types";
 
 export function resetGame(data: CreatingGameChannelData) {
     delete data.createdDate;

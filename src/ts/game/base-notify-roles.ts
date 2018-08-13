@@ -1,6 +1,6 @@
+import { GameContext } from "./data/context";
 import { PlayerData } from "./data/player";
 import { GameTools } from "./data/tools";
-import { GameContext } from "./data/context";
 
 export type NotifyFlavour = {
     roles?: { [role: string]: (player: PlayerData, roleList: string[]) => string },

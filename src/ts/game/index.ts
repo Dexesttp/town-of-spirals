@@ -1,25 +1,27 @@
+import { Message } from "../client/type";
+import { TimerPromise } from "../utils/timer";
+import { baseCheckEnd } from "./base-check-end";
+import { baseDay } from "./base-day";
+import { baseNight } from "./base-night";
+import { baseNotifyRoles } from "./base-notify-roles";
+import { baseResolveAllBroken } from "./base-resolve-all-broken";
+import { commandEngine } from "./command";
+import { CommandHandler } from "./command/types";
 import { GameContext } from "./data/context";
 import { PlayerData, PlayerInterface } from "./data/player";
-import { startVoteFactory } from "./vote";
-import { TimerPromise } from "../utils/timer";
-import { Message } from "../client/type";
-import { targetEngine } from "./targetCommand";
-import { commandEngine } from "./command";
-import { GameTools } from "./data/tools";
-import { baseResolveAllBroken } from "./base-resolve-all-broken";
-import { baseDay } from "./base-day";
-import { baseCheckEnd } from "./base-check-end";
-import { CommandHandler } from "./command/types";
-import { TargettingHandler } from "./targetCommand/types";
-import { baseNotifyRoles } from "./base-notify-roles";
-import { baseNight } from "./base-night";
 import { BROKEN, BROKEN_NIGHT } from "./data/player-states";
+import { GameTools } from "./data/tools";
+import { targetEngine } from "./targetCommand";
+import { TargettingHandler } from "./targetCommand/types";
+import { startVoteFactory } from "./vote";
 
 enum CommandResult {
     VALID,
     INVALID_MODE,
     INVALID_VOTER,
 }
+
+export type GameResult = Array<{ id: string, alive: boolean, role: string }>;
 
 export type GameData = {
     context: GameContext,
@@ -31,7 +33,7 @@ export type GameData = {
     setNotifyRoles: (newNotifyRoles: (context: GameContext, tools: GameTools) => Promise<void>) => void,
     setResolveAllBroken: (newResolveAllBroken: (context: GameContext, tools: GameTools) => Promise<void>) => void,
     subscribeNightRole: (role: (context: GameContext, internalTools: GameTools) => Promise<any>) => void,
-    start: () => Promise<Array<{ id: string, alive: boolean, role: string }>>,
+    start: () => Promise<GameResult>,
     isDay: () => boolean,
 };
 
