@@ -1,3 +1,4 @@
+import { PREFIX } from "../client/command-handler";
 import { GameContext } from "../game/data/context";
 import { PlayerData } from "../game/data/player";
 import { GameTools } from "../game/data/tools";
@@ -57,9 +58,9 @@ export function handleDetective(
       const getIntroFlavour =
         flavour.intro ||
         ((voteListInt: string[]) =>
-          `Spy on somebody with \`!s spy\` : ${voteListInt.join(
+          `Spy on somebody with \`${PREFIX} spy\` : ${voteListInt.join(
             ", "
-          )}. Skip the night with \`!s skip\`.`);
+          )}. Skip the night with \`${PREFIX} skip\`.`);
       detectiveInterface.sendMessage(getIntroFlavour(voteList));
 
       //#region Timeout

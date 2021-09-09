@@ -1,5 +1,6 @@
 import { runGame } from "./base";
 import { expect } from "chai";
+import { PREFIX } from "../../ts/client/command-handler";
 
 describe("For 4 player games, the test environment", () => {
   it("Should play a normal game where town wins without errors", async () => {
@@ -12,7 +13,7 @@ describe("For 4 player games, the test environment", () => {
           player: 1,
           target: 2,
           private: true,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
         {
           type: "target",
@@ -20,7 +21,7 @@ describe("For 4 player games, the test environment", () => {
           player: 3,
           target: 1,
           private: false,
-          original: "3>!s vote 1",
+          original: `3>${PREFIX} vote 1`,
         },
         {
           type: "target",
@@ -28,7 +29,7 @@ describe("For 4 player games, the test environment", () => {
           player: 4,
           target: 1,
           private: false,
-          original: "4>!s vote 1",
+          original: `4>${PREFIX} vote 1`,
         },
         {
           type: "target",
@@ -36,7 +37,7 @@ describe("For 4 player games, the test environment", () => {
           player: 1,
           target: 3,
           private: false,
-          original: "1>!s vote 3",
+          original: `1>${PREFIX} vote 3`,
         },
       ],
       { tists: 1 }
@@ -55,7 +56,7 @@ describe("For 4 player games, the test environment", () => {
           player: 1,
           target: 2,
           private: true,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
         {
           type: "target",
@@ -63,7 +64,7 @@ describe("For 4 player games, the test environment", () => {
           player: 3,
           target: 4,
           private: false,
-          original: "3>!s vote 1",
+          original: `3>${PREFIX} vote 1`,
         },
         {
           type: "target",
@@ -71,7 +72,7 @@ describe("For 4 player games, the test environment", () => {
           player: 4,
           target: 3,
           private: false,
-          original: "4>!s vote 1",
+          original: `4>${PREFIX} vote 1`,
         },
         {
           type: "target",
@@ -79,7 +80,7 @@ describe("For 4 player games, the test environment", () => {
           player: 1,
           target: 4,
           private: false,
-          original: "1>!s vote 3",
+          original: `1>${PREFIX} vote 3`,
         },
         {
           type: "target",
@@ -87,7 +88,7 @@ describe("For 4 player games, the test environment", () => {
           player: 1,
           target: 3,
           private: true,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
       ],
       { tists: 1 }
@@ -106,7 +107,7 @@ describe("For 4 player games, the test environment", () => {
           player: 1,
           target: 2,
           private: true,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
         {
           type: "target",
@@ -114,14 +115,14 @@ describe("For 4 player games, the test environment", () => {
           player: 3,
           target: 4,
           private: false,
-          original: "3>!s vote 1",
+          original: `3>${PREFIX} vote 1`,
         },
         {
           type: "simple",
           command: "no-vote",
           player: 4,
           private: false,
-          original: "4>!s no-vote",
+          original: `4>${PREFIX} no-vote`,
         },
         {
           type: "target",
@@ -129,7 +130,7 @@ describe("For 4 player games, the test environment", () => {
           player: 1,
           target: 4,
           private: false,
-          original: "1>!s vote 3",
+          original: `1>${PREFIX} vote 3`,
         },
         {
           type: "target",
@@ -137,7 +138,7 @@ describe("For 4 player games, the test environment", () => {
           player: 1,
           target: 3,
           private: true,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
       ],
       { tists: 1 }
@@ -156,7 +157,7 @@ describe("For 4 player games, the test environment", () => {
           player: 1,
           target: 2,
           private: true,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
         {
           type: "target",
@@ -164,7 +165,7 @@ describe("For 4 player games, the test environment", () => {
           player: 4,
           target: 2,
           private: true,
-          original: "4>!s vote 2",
+          original: `4>${PREFIX} vote 2`,
         },
         {
           type: "target",
@@ -172,7 +173,7 @@ describe("For 4 player games, the test environment", () => {
           player: 3,
           target: 4,
           private: false,
-          original: "3>!s vote 1",
+          original: `3>${PREFIX} vote 1`,
         },
         {
           type: "target",
@@ -180,7 +181,7 @@ describe("For 4 player games, the test environment", () => {
           player: 4,
           target: 3,
           private: false,
-          original: "4>!s vote 1",
+          original: `4>${PREFIX} vote 1`,
         },
         {
           type: "target",
@@ -188,7 +189,7 @@ describe("For 4 player games, the test environment", () => {
           player: 1,
           target: 4,
           private: false,
-          original: "1>!s vote 3",
+          original: `1>${PREFIX} vote 3`,
         },
         {
           type: "target",
@@ -196,7 +197,7 @@ describe("For 4 player games, the test environment", () => {
           player: 1,
           target: 3,
           private: true,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
       ],
       { tists: 1 }
@@ -215,7 +216,7 @@ describe("For 4 player games, the test environment", () => {
           player: 1,
           target: 1,
           private: true,
-          original: "1>!s vote 1",
+          original: `1>${PREFIX} vote 1`,
         },
       ],
       { tists: 1 }

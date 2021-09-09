@@ -1,3 +1,4 @@
+import { PREFIX } from "../client/command-handler";
 import { GameContext } from "../game/data/context";
 import { PlayerData } from "../game/data/player";
 import { BROKEN_NIGHT } from "../game/data/player-states";
@@ -42,7 +43,7 @@ export function handleHypnotist(flavours: HypnotistFlavourList) {
     const getIntroFlavour =
       flavours.intro ||
       ((playerListInt: PlayerData[], voteListInt: string[]) =>
-        `Breaking time ! Choose one person to target with \`!s vote\`. The available targets are : ${voteListInt.join(
+        `Breaking time ! Choose one person to target with \`${PREFIX} vote\`. The available targets are : ${voteListInt.join(
           ", "
         )}`);
     hypnotistInterfaces.forEach((f) =>

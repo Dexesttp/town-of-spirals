@@ -1,3 +1,4 @@
+import { PREFIX } from "../client/command-handler";
 import getRandom from "../utils/rand-from-array";
 import { GameContext } from "./data/context";
 import { PlayerData } from "./data/player";
@@ -26,7 +27,8 @@ export function baseDay(flavour: DayFlavour) {
     );
     const getIntroFlavour =
       flavour.intro ||
-      ((voteListInt: string[]) => `Tis a new day ! vote with \`!s vote\`.`);
+      ((voteListInt: string[]) =>
+        `Tis a new day ! vote with \`${PREFIX} vote\`.`);
     context.sendMessage(getIntroFlavour(voteList));
     const voteResult = await tools.startVote({
       voters: GetAlivePlayers(context),

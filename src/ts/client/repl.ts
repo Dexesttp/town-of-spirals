@@ -1,5 +1,6 @@
 import * as moment from "moment";
 import * as readline from "readline";
+import { PREFIX } from "./command-handler";
 import { ClientMessage, Message } from "./type";
 
 let COMMAND_PREFIX = () => `[${moment().format("HH:mm:ss")}] `;
@@ -16,11 +17,15 @@ export function GetClient() {
       const match = AUTHOR_MATCHER.exec(line);
       if (match) {
         const [, author, mode, command, text] = match;
-        const hits = getCommands().filter((c) => `!s ${c}`.startsWith(command));
+        const hits = getCommands().filter((c) =>
+          `${PREFIX} ${c}`.startsWith(command)
+        );
         return [
           hits.length
-            ? hits.map((c) => `${author}${mode}>!s ${c}${text || ""}`)
-            : getCommands().map((c) => `${author}${mode}>!s ${c}${text || ""}`),
+            ? hits.map((c) => `${author}${mode}>${PREFIX} ${c}${text || ""}`)
+            : getCommands().map(
+                (c) => `${author}${mode}>${PREFIX} ${c}${text || ""}`
+              ),
           line,
         ];
       }

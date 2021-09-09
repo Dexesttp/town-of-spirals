@@ -1,5 +1,6 @@
 import { runGame } from "./base";
 import { expect } from "chai";
+import { PREFIX } from "../../ts/client/command-handler";
 
 describe("For 4 player games using positions, the test environment", () => {
   it("Should play a normal game where town wins without errors", async () => {
@@ -12,7 +13,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 1,
           target: 1,
           private: true,
-          original: "1>!s vote-nb 1",
+          original: `1>${PREFIX} vote-nb 1`,
         },
         {
           type: "target_pos",
@@ -20,7 +21,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 3,
           target: 0,
           private: false,
-          original: "3>!s vote-nb 0",
+          original: `3>${PREFIX} vote-nb 0`,
         },
         {
           type: "target_pos",
@@ -28,7 +29,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 4,
           target: 0,
           private: false,
-          original: "4>!s vote-nb 0",
+          original: `4>${PREFIX} vote-nb 0`,
         },
         {
           type: "target_pos",
@@ -36,7 +37,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 1,
           target: 2,
           private: false,
-          original: "1>!s vote-nb 2",
+          original: `1>${PREFIX} vote-nb 2`,
         },
       ],
       { tists: 1 }
@@ -55,7 +56,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 1,
           target: 1,
           private: true,
-          original: "1>!s vote-nb 1",
+          original: `1>${PREFIX} vote-nb 1`,
         },
         {
           type: "target_pos",
@@ -63,7 +64,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 3,
           target: 2,
           private: false,
-          original: "3>!s vote-nb 2",
+          original: `3>${PREFIX} vote-nb 2`,
         },
         {
           type: "target_pos",
@@ -71,7 +72,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 4,
           target: 0,
           private: false,
-          original: "4>!s vote-nb 0",
+          original: `4>${PREFIX} vote-nb 0`,
         },
         {
           type: "target_pos",
@@ -79,7 +80,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 1,
           target: 2,
           private: false,
-          original: "1>!s vote-nb 2",
+          original: `1>${PREFIX} vote-nb 2`,
         },
         {
           type: "target_pos",
@@ -87,7 +88,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 1,
           target: 1,
           private: true,
-          original: "1>!s vote-nb 1",
+          original: `1>${PREFIX} vote-nb 1`,
         },
       ],
       { tists: 1 }
@@ -106,7 +107,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 1,
           target: 1,
           private: true,
-          original: "1>!s vote-nb 1",
+          original: `1>${PREFIX} vote-nb 1`,
         },
         {
           type: "target_pos",
@@ -114,14 +115,14 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 3,
           target: 2,
           private: false,
-          original: "3>!s vote-nb 2",
+          original: `3>${PREFIX} vote-nb 2`,
         },
         {
           type: "simple",
           command: "no-vote",
           player: 4,
           private: false,
-          original: "4>!s no-vote",
+          original: `4>${PREFIX} no-vote`,
         },
         {
           type: "target_pos",
@@ -129,7 +130,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 1,
           target: 2,
           private: false,
-          original: "1>!s vote-nb 2",
+          original: `1>${PREFIX} vote-nb 2`,
         },
         {
           type: "target_pos",
@@ -137,7 +138,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 1,
           target: 1,
           private: true,
-          original: "1>!s vote-nb 1",
+          original: `1>${PREFIX} vote-nb 1`,
         },
       ],
       { tists: 1 }
@@ -156,7 +157,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 4,
           target: 0,
           private: true,
-          original: "4>!s vote-nb 0",
+          original: `4>${PREFIX} vote-nb 0`,
         },
         {
           type: "target_pos",
@@ -164,7 +165,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 1,
           target: 1,
           private: true,
-          original: "1>!s vote-nb 1",
+          original: `1>${PREFIX} vote-nb 1`,
         },
         {
           type: "target_pos",
@@ -172,7 +173,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 3,
           target: 2,
           private: false,
-          original: "3>!s vote-nb 2",
+          original: `3>${PREFIX} vote-nb 2`,
         },
         {
           type: "target_pos",
@@ -180,7 +181,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 4,
           target: 0,
           private: false,
-          original: "4>!s vote-nb 0",
+          original: `4>${PREFIX} vote-nb 0`,
         },
         {
           type: "target_pos",
@@ -188,7 +189,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 1,
           target: 2,
           private: false,
-          original: "1>!s vote-nb 2",
+          original: `1>${PREFIX} vote-nb 2`,
         },
         {
           type: "target_pos",
@@ -196,7 +197,7 @@ describe("For 4 player games using positions, the test environment", () => {
           player: 1,
           target: 1,
           private: true,
-          original: "1>!s vote-nb 1",
+          original: `1>${PREFIX} vote-nb 1`,
         },
       ],
       { tists: 1 }

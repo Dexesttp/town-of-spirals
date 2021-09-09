@@ -1,5 +1,6 @@
 import { runGame } from "./base";
 import { expect } from "chai";
+import { PREFIX } from "../../ts/client/command-handler";
 
 describe("For games with a deprogrammer, the test environment", () => {
   it("Should play a normal 3 player game where town wins + deprog saves without errors", async () => {
@@ -12,7 +13,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 1,
           target: 3,
           private: true,
-          original: "1>!s vote 3",
+          original: `1>${PREFIX} vote 3`,
         },
         {
           type: "target",
@@ -20,7 +21,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 2,
           target: 3,
           private: true,
-          original: "2>!s save 3",
+          original: `2>${PREFIX} save 3`,
         },
         {
           type: "target",
@@ -28,7 +29,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 1,
           target: 2,
           private: false,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
         {
           type: "target",
@@ -36,7 +37,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 2,
           target: 1,
           private: false,
-          original: "2>!s vote 1",
+          original: `2>${PREFIX} vote 1`,
         },
         {
           type: "target",
@@ -44,7 +45,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 3,
           target: 1,
           private: false,
-          original: "3>!s vote 1",
+          original: `3>${PREFIX} vote 1`,
         },
       ],
       { tists: 1, deprogs: 1 }
@@ -63,7 +64,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 1,
           target: 3,
           private: true,
-          original: "1>!s vote 3",
+          original: `1>${PREFIX} vote 3`,
         },
         {
           type: "target",
@@ -71,7 +72,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 2,
           target: 1,
           private: true,
-          original: "2>!s break 1",
+          original: `2>${PREFIX} break 1`,
         },
       ],
       { tists: 1, deprogs: 1 }
@@ -90,14 +91,14 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 1,
           target: 3,
           private: true,
-          original: "1>!s vote 3",
+          original: `1>${PREFIX} vote 3`,
         },
         {
           type: "simple",
           command: "skip",
           player: 2,
           private: true,
-          original: "2>!s skip",
+          original: `2>${PREFIX} skip`,
         },
         {
           type: "target",
@@ -105,7 +106,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 1,
           target: 1,
           private: false,
-          original: "1>!s vote 1",
+          original: `1>${PREFIX} vote 1`,
         },
         {
           type: "target",
@@ -113,7 +114,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 2,
           target: 1,
           private: false,
-          original: "2>!s vote 1",
+          original: `2>${PREFIX} vote 1`,
         },
       ],
       { tists: 1, deprogs: 1 }
@@ -132,7 +133,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 1,
           target: 3,
           private: true,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
         {
           type: "target",
@@ -140,7 +141,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 2,
           target: 2,
           private: true,
-          original: "2>!s save 2",
+          original: `2>${PREFIX} save 2`,
         },
         {
           type: "target",
@@ -148,7 +149,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 2,
           target: 3,
           private: true,
-          original: "2>!s save 3",
+          original: `2>${PREFIX} save 3`,
         },
         {
           type: "target",
@@ -156,7 +157,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 1,
           target: 2,
           private: false,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
         {
           type: "target",
@@ -164,7 +165,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 2,
           target: 1,
           private: false,
-          original: "2>!s vote 1",
+          original: `2>${PREFIX} vote 1`,
         },
         {
           type: "target",
@@ -172,7 +173,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 3,
           target: 1,
           private: false,
-          original: "3>!s vote 1",
+          original: `3>${PREFIX} vote 1`,
         },
       ],
       { tists: 1, deprogs: 1 }
@@ -191,14 +192,14 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 1,
           target: 3,
           private: true,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
         {
           type: "simple",
           command: "skip",
           player: 1,
           private: true,
-          original: "1>!s skip",
+          original: `1>${PREFIX} skip`,
         },
         {
           type: "target",
@@ -206,7 +207,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 2,
           target: 3,
           private: true,
-          original: "2>!s save 3",
+          original: `2>${PREFIX} save 3`,
         },
         {
           type: "target",
@@ -214,7 +215,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 1,
           target: 2,
           private: false,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
         {
           type: "target",
@@ -222,7 +223,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 2,
           target: 1,
           private: false,
-          original: "2>!s vote 1",
+          original: `2>${PREFIX} vote 1`,
         },
         {
           type: "target",
@@ -230,7 +231,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 3,
           target: 1,
           private: false,
-          original: "3>!s vote 1",
+          original: `3>${PREFIX} vote 1`,
         },
       ],
       { tists: 1, deprogs: 1 }
@@ -249,7 +250,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 1,
           target: 3,
           private: true,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
         {
           type: "target",
@@ -257,14 +258,14 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 2,
           target: 3,
           private: true,
-          original: "2>!s save 3",
+          original: `2>${PREFIX} save 3`,
         },
         {
           type: "simple",
           command: "skip",
           player: 2,
           private: true,
-          original: "1>!s skip",
+          original: `1>${PREFIX} skip`,
         },
         {
           type: "target",
@@ -272,7 +273,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 1,
           target: 2,
           private: false,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
         {
           type: "target",
@@ -280,7 +281,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 2,
           target: 1,
           private: false,
-          original: "2>!s vote 1",
+          original: `2>${PREFIX} vote 1`,
         },
         {
           type: "target",
@@ -288,7 +289,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 3,
           target: 1,
           private: false,
-          original: "3>!s vote 1",
+          original: `3>${PREFIX} vote 1`,
         },
       ],
       { tists: 1, deprogs: 1 }
@@ -307,7 +308,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 1,
           target: 2,
           private: true,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
         {
           type: "target",
@@ -315,7 +316,7 @@ describe("For games with a deprogrammer, the test environment", () => {
           player: 2,
           target: 1,
           private: true,
-          original: "2>!s break 1",
+          original: `2>${PREFIX} break 1`,
         },
       ],
       { tists: 1, deprogs: 1 }

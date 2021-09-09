@@ -1,4 +1,5 @@
 import * as discord from "discord.js";
+import { PREFIX } from "../client/command-handler";
 import logger from "../logging";
 import { TimerPromise } from "../utils/timer";
 import { LOBBY_TIMEOUT, MIN_PLAYERS } from "./constants";
@@ -63,7 +64,7 @@ export function joinGame(context: ManagerContext) {
       resetGame(data);
       logger.channel(data.channel.name, `Game cancelled : timeout.`);
       return channel.send(
-        "15 minutes timeout, game cancelled ! Type `!s create` to create a new game."
+        `15 minutes timeout, game cancelled ! Type \`${PREFIX} create\` to create a new game.`
       );
     });
     logger.channel(
@@ -73,7 +74,7 @@ export function joinGame(context: ManagerContext) {
     const playerCount = data.creator.players().length;
     let outMessage = `${player.nickname} has joined the game, ${playerCount} player(s) waiting for start.`;
     if (playerCount >= MIN_PLAYERS) {
-      outMessage += " Type `!s start` to start the game !";
+      outMessage += ` Type \`${PREFIX} start\` to start the game !`;
     }
     await channel.send(outMessage);
   };

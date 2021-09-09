@@ -1,5 +1,6 @@
 import * as discord from "discord.js";
 import * as moment from "moment";
+import { PREFIX } from "../client/command-handler";
 import { GameCreator } from "../game-creator/discord";
 import logger from "../logging";
 import { TimerPromise } from "../utils/timer";
@@ -31,7 +32,7 @@ export function createGame(context: ManagerContext) {
     }
     if (data.type === "CREATING") {
       await channel.send(
-        "There is already a game being created in this channel. Type `!s join` to join it !"
+        `There is already a game being created in this channel. Type \`${PREFIX} join\` to join it !`
       );
       return;
     }
@@ -50,7 +51,7 @@ export function createGame(context: ManagerContext) {
       resetGame(newData);
       logger.channel(data.channel.name, `Game cancelled : timeout.`);
       return channel.send(
-        "15 minutes timeout, game cancelled ! Type `!s create` to create a new game."
+        `15 minutes timeout, game cancelled ! Type \`${PREFIX} create\` to create a new game.`
       );
     });
     const player = await newData.creator.addPlayer(message);
@@ -68,6 +69,8 @@ export function createGame(context: ManagerContext) {
     channel.send(
       `A new game has been created by ${player.nickname} ! You need at least ${MIN_PLAYERS} people to start it.`
     );
-    channel.send("Type `!s join` to join the game and `!s start` to start !");
+    channel.send(
+      `Type \`${PREFIX} join\` to join the game and \`${PREFIX} start\` to start !`
+    );
   };
 }

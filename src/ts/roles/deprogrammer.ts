@@ -1,3 +1,4 @@
+import { PREFIX } from "../client/command-handler";
 import { GameContext } from "../game/data/context";
 import { PlayerData } from "../game/data/player";
 import { BROKEN_NIGHT } from "../game/data/player-states";
@@ -95,7 +96,7 @@ export function handleDeprogrammer(
         const getIntroBreakEnabled =
           flavour.intro_break_enabled ||
           ((voteListInt: string[]) =>
-            `You can break somebody with \`!s break\` : ${voteListInt.join(
+            `You can break somebody with \`${PREFIX} break\` : ${voteListInt.join(
               ", "
             )}`);
         deprogrammerInterface.sendMessage(getIntroBreakEnabled(voteList));
@@ -134,7 +135,7 @@ export function handleDeprogrammer(
           const getIntroSaveEnabled =
             flavour.intro_save_enabled ||
             ((voteListInt: string[]) =>
-              `You can save somebody with \`!s save\` : ${voteListInt.join(
+              `You can save somebody with \`${PREFIX} save\` : ${voteListInt.join(
                 ", "
               )}`);
           deprogrammerInterface.sendMessage(getIntroSaveEnabled(voteList));
@@ -162,7 +163,7 @@ export function handleDeprogrammer(
       promises.push(skipPromise);
       const getIntroSkip =
         flavour.intro_skip ||
-        (() => `You can skip tonight's action with \`!s skip\`.`);
+        (() => `You can skip tonight's action with \`${PREFIX} skip\`.`);
       deprogrammerInterface.sendMessage(getIntroSkip());
       //#endregion
 

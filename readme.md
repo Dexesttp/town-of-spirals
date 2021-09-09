@@ -37,6 +37,8 @@ Voilà ! The bot is setup !
 
 ## Commands
 
+Note: By default, the prefix is "`!s`" defined in `constants.ts`, but it can be manually changed if you want.
+
 The main one is help (`!s help`). You'll learn everything from that.
 
 ## Local debug

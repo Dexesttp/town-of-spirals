@@ -24,7 +24,7 @@
 					},
 					"can_delete" : {
 						"type": "boolean",
-						"description": "Allow to delete the bot's message with !s clean-messages",
+						"description": "Allow to delete the bot's message with the clean-messages command",
 						"default": false
 					},
 					"allow_mumble" : {

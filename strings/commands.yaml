@@ -1,37 +1,37 @@
 help: |
   ***COMMANDS***
       **=== General ===**
-  `!s help` - Show this screen
-  `!s rules` - Show a summary of the game's rules
-  `!s rolelist` - Show all the roles and a description of them
+  `[COMMAND_PREFIX] help` - Show this screen
+  `[COMMAND_PREFIX] rules` - Show a summary of the game's rules
+  `[COMMAND_PREFIX] rolelist` - Show all the roles and a description of them
       **=== Create a game ===**
-  `!s create` - Create a new game
-  `!s cancel-game` - Cancel the game currently created (5min timeout)
-  `!s join` - Join the game
-  `!s leave` - Leave the game
-  `!s start` - Starts the game
+  `[COMMAND_PREFIX] create` - Create a new game
+  `[COMMAND_PREFIX] cancel-game` - Cancel the game currently created (5min timeout)
+  `[COMMAND_PREFIX] join` - Join the game
+  `[COMMAND_PREFIX] leave` - Leave the game
+  `[COMMAND_PREFIX] start` - Starts the game
       **=== In-game commands ===**
   Note : all these commands will be reminded automatically when you need them.
-  `!s role` - Send your current status and role as PM
-  `!s vote [player]` - Vote for the given player (no brackets needed). E.g. `!s vote @DexesTTP` or `!s vote Ch0wW`
-      Use `!s vote` to display a list of all possible vote targets
-  `!s vote-nb [number]` - Vote for the player using their number (no brackets needed). E.g. `!s vote-nb 2`
-      The number is shown on the vote list. Use `!s vote` to show the list again 
-  `!s no-vote` - Vote to not target anybody
-  `!s cancel-vote` - Resets your current vote to none. The voting round will not finish until you have voted.
-  detective-only : `!s spy`
-  deprogrammer-only: `!s save`, `!s break`, `!s skip`
+  `[COMMAND_PREFIX] role` - Send your current status and role as PM
+  `[COMMAND_PREFIX] vote [player]` - Vote for the given player (no brackets needed). E.g. `[COMMAND_PREFIX] vote @DexesTTP` or `[COMMAND_PREFIX] vote Ch0wW`
+      Use `[COMMAND_PREFIX] vote` to display a list of all possible vote targets
+  `[COMMAND_PREFIX] vote-nb [number]` - Vote for the player using their number (no brackets needed). E.g. `[COMMAND_PREFIX] vote-nb 2`
+      The number is shown on the vote list. Use `[COMMAND_PREFIX] vote` to show the list again 
+  `[COMMAND_PREFIX] no-vote` - Vote to not target anybody
+  `[COMMAND_PREFIX] cancel-vote` - Resets your current vote to none. The voting round will not finish until you have voted.
+  detective-only : `[COMMAND_PREFIX] spy`
+  deprogrammer-only: `[COMMAND_PREFIX] save`, `[COMMAND_PREFIX] break`, `[COMMAND_PREFIX] skip`
       **=== Stats commands ===**
-  `!s stats` Show your own statistics
-  `!s stats <name/id>` Show statistics for <name/id>
-  `!s leaderboard` (or `!s lb`) Show the win leaderboard
+  `[COMMAND_PREFIX] stats` Show your own statistics
+  `[COMMAND_PREFIX] stats <name/id>` Show statistics for <name/id>
+  `[COMMAND_PREFIX] leaderboard` (or `[COMMAND_PREFIX] lb`) Show the win leaderboard
   Note : in accordance with the GDPR ruling, you have access to special commands to manage how we handle your data.
   Note 2 : the stats are only used for server swag so that's pretty stupid but hey rules are rules and I don't wanna get sued.
-  `!s gdpr disable` Forget all stats about you. Your upcoming stats will not be saved.
-  `!s gdpr enable` Allow tracking your player stats again.
+  `[COMMAND_PREFIX] gdpr disable` Forget all stats about you. Your upcoming stats will not be saved.
+  `[COMMAND_PREFIX] gdpr enable` Allow tracking your player stats again.
 gdpr: |
-  Be aware that this bot stores player stats (for the leaderboards and such things). If you wish to opt-out of that, please use `!s gdpr deny`.
-  You can also use `!s gdpr forget` : This will erase your stats _and_ remove the dnt info, so you will receive the GDPR message + your stats will not be saved if you play again !
+  Be aware that this bot stores player stats (for the leaderboards and such things). If you wish to opt-out of that, please use `[COMMAND_PREFIX] gdpr deny`.
+  You can also use `[COMMAND_PREFIX] gdpr forget` : This will erase your stats _and_ remove the dnt info, so you will receive the GDPR message + your stats will not be saved if you play again !
 rules: |
   ***RULES***
   The town of Spirals was a peaceful community, until a secret team of hypnotists infiltrated them and started brainwashing people.

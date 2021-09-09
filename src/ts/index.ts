@@ -6,7 +6,7 @@ import {
   getLeaderboard,
   getPlayerStatsFromMessage,
 } from "./channel-manager/statistics";
-import { GetCommandHandler } from "./client/command-handler";
+import { GetCommandHandler, PREFIX } from "./client/command-handler";
 import { discordReplier, GetClient } from "./client/discord";
 import { help } from "./commands/help";
 import { rules } from "./commands/rules";
@@ -109,12 +109,12 @@ command.on("register", async (message, text) => {
   );
   if (added) {
     message.original.channel.send(
-      "Channel registered manually for play ! Use `!s create` to create a game."
+      `Channel registered manually for play ! Use \`${PREFIX} create\` to create a game.`
     );
     return true;
   }
   message.original.channel.send(
-    "The channel is already registered. Use `!s create` to create a game."
+    `The channel is already registered. Use \`${PREFIX} create\` to create a game.`
   );
   return true;
 });
@@ -223,7 +223,7 @@ command.on("gdpr", async (message, text) => {
     return true;
   }
   message.original.channel.send(
-    "Use `!s gdpr enable` (allow stats) or `!s gdpr disable` (do not store stats)"
+    `Use \`${PREFIX} gdpr enable\` (allow stats) or \`${PREFIX} gdpr disable\` (do not store stats)`
   );
   return true;
 });

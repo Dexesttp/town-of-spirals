@@ -1,4 +1,5 @@
 import * as discord from "discord.js";
+import { PREFIX } from "../client/command-handler";
 import logger from "../logging";
 import { ManagerContext } from "./types";
 import { getChannelData, resetGame } from "./utils";
@@ -30,7 +31,7 @@ export function cancelGame(context: ManagerContext) {
       `Game cancelled by ${message.author.username}.`
     );
     await channel.send(
-      "Game cancelled ! Type `!s create` to create a new game."
+      `Game cancelled ! Type \`${PREFIX} create\` to create a new game.`
     );
     return;
   };

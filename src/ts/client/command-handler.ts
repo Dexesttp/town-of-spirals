@@ -1,7 +1,17 @@
 import logger from "../logging";
 import { ClientMessage } from "./type";
 
-let COMMAND_MATCHER = /^!s ([^\s]+) ?(.*)$/i;
+export const PREFIX = "!s";
+
+const prefix_for_matcher = PREFIX.replace(/\$/, "\\$")
+  .replace(/\^/, "\\^")
+  .replace(/\?/, "\\?")
+  .replace(/\[/, "\\[")
+  .replace(/\]/, "\\]");
+const COMMAND_MATCHER = new RegExp(
+  `^${prefix_for_matcher} ([^\\s]+) ?(.*)$`,
+  "i"
+);
 
 export function GetCommandHandler<T>(
   send: (message: ClientMessage<T>, text: string) => void,

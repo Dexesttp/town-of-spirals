@@ -1,4 +1,5 @@
 import * as moment from "moment";
+import { PREFIX } from "../../client/command-handler";
 import { TimeoutPromise } from "../../utils/timer";
 import { GameContext } from "../data/context";
 import { PlayerData } from "../data/player";
@@ -50,7 +51,7 @@ export function startVoteFactory(
       ((voter: PlayerData) => `${voter.nickname} chose not to target anybody.`);
     const noVoteNotAllowedTextGetter =
       flavours.onNoVoteNotAllowed ||
-      (() => "The `!s no-vote` command is not allowed here.");
+      (() => `The \`${PREFIX} no-vote\` command is not allowed here.`);
     const currentVotesTextGetter =
       flavours.onCurrentVotes ||
       ((results) =>

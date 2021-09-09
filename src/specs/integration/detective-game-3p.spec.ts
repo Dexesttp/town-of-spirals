@@ -1,5 +1,6 @@
 import { runGame } from "./base";
 import { expect } from "chai";
+import { PREFIX } from "../../ts/client/command-handler";
 
 describe("For 3 player games with a detective, the test environment", () => {
   it("Should play a normal game where town wins + detective skips without errors", async () => {
@@ -12,14 +13,14 @@ describe("For 3 player games with a detective, the test environment", () => {
           player: 1,
           target: 3,
           private: true,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
         {
           type: "simple",
           command: "skip",
           player: 2,
           private: true,
-          original: "2>!s skip",
+          original: `2>${PREFIX} skip`,
         },
         {
           type: "target",
@@ -27,7 +28,7 @@ describe("For 3 player games with a detective, the test environment", () => {
           player: 1,
           target: 1,
           private: false,
-          original: "1>!s vote 1",
+          original: `1>${PREFIX} vote 1`,
         },
         {
           type: "target",
@@ -35,7 +36,7 @@ describe("For 3 player games with a detective, the test environment", () => {
           player: 2,
           target: 1,
           private: false,
-          original: "3>!s vote 1",
+          original: `3>${PREFIX} vote 1`,
         },
       ],
       { tists: 1, detectives: 1 }
@@ -54,7 +55,7 @@ describe("For 3 player games with a detective, the test environment", () => {
           player: 1,
           target: 3,
           private: true,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
         {
           type: "target",
@@ -62,7 +63,7 @@ describe("For 3 player games with a detective, the test environment", () => {
           player: 2,
           target: 1,
           private: true,
-          original: "2>!s spy 1",
+          original: `2>${PREFIX} spy 1`,
         },
         {
           type: "target",
@@ -70,7 +71,7 @@ describe("For 3 player games with a detective, the test environment", () => {
           player: 1,
           target: 1,
           private: false,
-          original: "1>!s vote 1",
+          original: `1>${PREFIX} vote 1`,
         },
         {
           type: "target",
@@ -78,7 +79,7 @@ describe("For 3 player games with a detective, the test environment", () => {
           player: 2,
           target: 1,
           private: false,
-          original: "3>!s vote 1",
+          original: `3>${PREFIX} vote 1`,
         },
       ],
       { tists: 1, detectives: 1 }
@@ -97,7 +98,7 @@ describe("For 3 player games with a detective, the test environment", () => {
           player: 1,
           target: 3,
           private: true,
-          original: "1>!s vote 2",
+          original: `1>${PREFIX} vote 2`,
         },
         {
           type: "target",
@@ -105,7 +106,7 @@ describe("For 3 player games with a detective, the test environment", () => {
           player: 1,
           target: 2,
           private: true,
-          original: "1>!s spy 2",
+          original: `1>${PREFIX} spy 2`,
         },
         {
           type: "target",
@@ -113,7 +114,7 @@ describe("For 3 player games with a detective, the test environment", () => {
           player: 2,
           target: 1,
           private: true,
-          original: "2>!s spy 1",
+          original: `2>${PREFIX} spy 1`,
         },
         {
           type: "target",
@@ -121,7 +122,7 @@ describe("For 3 player games with a detective, the test environment", () => {
           player: 1,
           target: 1,
           private: false,
-          original: "1>!s vote 1",
+          original: `1>${PREFIX} vote 1`,
         },
         {
           type: "target",
@@ -129,7 +130,7 @@ describe("For 3 player games with a detective, the test environment", () => {
           player: 2,
           target: 1,
           private: false,
-          original: "3>!s vote 1",
+          original: `3>${PREFIX} vote 1`,
         },
       ],
       { tists: 1, detectives: 1 }

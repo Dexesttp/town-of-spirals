@@ -1,4 +1,5 @@
 import * as path from "path";
+import { PREFIX } from "../client/command-handler";
 import { EndingFlavour } from "../game/base-check-end";
 import { DayFlavour } from "../game/base-day";
 import { NightFlavour } from "../game/base-night";
@@ -73,9 +74,9 @@ export function getBaseDayFlavour(folderName: string): DayFlavour {
         .replace(/\[voteList\]/gi, `\n${voteList.join("\n")}`)
         .replace(
           /\[command\.vote\]/gi,
-          "`!s vote <name>` or `!s vote-nb <number>`"
+          `\`${PREFIX} vote <name>\` or \`${PREFIX} vote-nb <number>\``
         )
-        .replace(/\[command\.no_vote\]/gi, "`!s no-vote`"),
+        .replace(/\[command\.no_vote\]/gi, `\`${PREFIX} no-vote\``),
     vote: LoadVoteFlavour(data.vote),
     break: (target, owner) =>
       FormatOwner(
@@ -218,9 +219,9 @@ export function getHypnotistFlavour(folderName: string): HypnotistFlavourList {
         getRandom<string>(data.intro, 1)[0]
           .replace(
             /\[command.vote\]/gi,
-            "`!s vote <name>` or `!s vote-nb <number>`"
+            `\`${PREFIX} vote <name>\` or \`${PREFIX} vote-nb <number>\``
           )
-          .replace(/\[command\.no_vote\]/gi, "`!s no-vote`")
+          .replace(/\[command\.no_vote\]/gi, `\`${PREFIX} no-vote\``)
       ).replace(/\[voteList\]/gi, `\n${voteList.join("\n")}`),
     vote: LoadVoteFlavour(data.vote),
     breakTist: LoadToggledData(
@@ -301,7 +302,7 @@ export function getDeprogrammerFlavour(
         .replace(/\[voteList\]/gi, `\n${voteList.join(" ")}`)
         .replace(
           /\[command\.break\]/gi,
-          "`!s break <name>` or `!s break-nb <number>`"
+          `\`${PREFIX} break <name>\` or \`${PREFIX} break-nb <number>\``
         ),
     intro_break_disabled: () =>
       getRandom<string>(data.intro.break.disabled, 1)[0],
@@ -310,7 +311,7 @@ export function getDeprogrammerFlavour(
         .replace(/\[voteList\]/gi, `\n${voteList.join("\n")}`)
         .replace(
           /\[command\.save\]/gi,
-          "`!s save <name>` or `!s save-nb <number>`"
+          `\`${PREFIX} save <name>\` or \`${PREFIX} save-nb <number>\``
         ),
     intro_save_useless: () => getRandom<string>(data.intro.save.unneeded, 1)[0],
     intro_save_disabled: () =>
@@ -318,7 +319,7 @@ export function getDeprogrammerFlavour(
     intro_skip: () =>
       getRandom<string>(data.intro.skip, 1)[0].replace(
         /\[command\.skip\]/gi,
-        "`!s skip`"
+        `\`${PREFIX} skip\``
       ),
     break: (target) =>
       FormatTarget(target, getRandom<string>(data.action.break, 1)[0]),
@@ -348,9 +349,9 @@ export function getDetectiveFlavour(folderName: string): DetectiveFlavourList {
         .replace(/\[voteList\]/gi, `\n${voteList.join(" ")}`)
         .replace(
           /\[command\.spy\]/gi,
-          "`!s spy <name>` or `!s spy-nb <number>`"
+          `\`${PREFIX} spy <name>\` or \`${PREFIX} spy-nb <number>\``
         )
-        .replace(/\[command\.skip\]/gi, "`!s skip`"),
+        .replace(/\[command\.skip\]/gi, `\`${PREFIX} skip\``),
     spy,
     skip: () => getRandom<string>(data.action.skip, 1)[0],
     timeout: () => getRandom<string>(data.action.timeout, 1)[0],
