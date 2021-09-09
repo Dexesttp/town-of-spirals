@@ -16,6 +16,7 @@ export async function runAdmin(client: discord.Client, message: discord.Message)
         logger.basic(`Deleted ${messages.size} messages`);
         return;
     }
+    if (message.channel.type !== "dm") return;
     if (message.content === "!sadmin status get") {
         message.channel.send(formatEmit(`Current presence : ${client.user.presence.status}`));
         return;

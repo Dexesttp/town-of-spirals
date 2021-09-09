@@ -85,7 +85,7 @@ export function getUserStatsInternal(stats: StatsData, text: string, defaultId: 
         const username = stats.names[id];
         if (!username || !userstats) return null;
         const roleList = Object.keys(userstats.roles)
-        .map(r => ({ role: r, count: userstats.roles[r] }))
+        .map(r => ({ role: r || "citizen", count: userstats.roles[r] }))
         .sort((s1, s2) => s2.count - s1.count);
         return {
             name: username.nickname,

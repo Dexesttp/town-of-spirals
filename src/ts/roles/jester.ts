@@ -25,7 +25,8 @@ export function statsWithJester() {
         }
         return context.players.map(p => ({
             id: p.id,
-            alive: p.attributes.some(a => a === BROKEN || a === BROKEN_NIGHT),
+            alive: p.attributes.some(a => a === BROKEN || a === BROKEN_NIGHT)
+                && !p.roles.some(r => r === JESTER_ROLE),
             role: p.roles.join(", "),
         }));
     };

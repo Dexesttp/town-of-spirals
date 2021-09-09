@@ -17,7 +17,6 @@ export function GetClient(
     client.on("message", async (message) => {
         if (!config.ADMIN_ID_LIST.some(i => message.author.id === i))
             return;
-        if (message.channel.type !== "dm") return;
         if (!message.content.startsWith("!sadmin")) return;
         await runAdmin(client, message);
     });

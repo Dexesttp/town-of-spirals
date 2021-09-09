@@ -6,7 +6,11 @@ import { STATS_FILE_PATH } from "../config";
 export function getStatsFromFile(): StatsData {
     if (!STATS_FILE_PATH) return { excluded: [], names: {}, saved: {} };
     if (!fs.existsSync(STATS_FILE_PATH)) return { excluded: [], names: {}, saved: {} };
-    return jsonfile.readFileSync(STATS_FILE_PATH) as StatsData;
+    const stats = jsonfile.readFileSync(STATS_FILE_PATH) as StatsData;
+    if (!stats.excluded) stats.excluded = [];
+    if (!stats.names) stats.names = {};
+    if (!stats.saved) stats.saved = {};
+    return stats;
 }
 
 export function saveStatsToFile(data: StatsData) {

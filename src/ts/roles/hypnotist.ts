@@ -41,7 +41,7 @@ export function handleHypnotist(
         const voteResult = await tools.startVote({
             voters: hypnotists,
             targets,
-            timeout: 300000, // 5mn timeout
+            timeout: 180000, // 3mn timeout
             warnTimeout: 30000, // 30s timeout warning
             sendDirectMessage: true,
             flavour: flavours.vote,

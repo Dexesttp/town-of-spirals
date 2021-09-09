@@ -24,6 +24,11 @@ action:
         The lights in their home are still on.
         [target] is working on a some device, and you find notes in their bin about "breaking conditioning".
         You're pretty sure they're a deprogrammer.
+    jester:
+      - |
+        You snoop up around [target]'s house.
+        [target] had a lot of fantasies about being brought to the chair.
+        You're pretty sure they are a hypnofetishist.
     unknown:
       - |
         You snoop up around [target]'s house.
