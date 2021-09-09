@@ -12,7 +12,7 @@ type CommandRequestCallback = (playerID: string, message: Message) => CommandRes
 
 export function commandEngine(
     playerInterface: PlayerInterface,
-    tryDeleteMessage: (message: Message, timeout?: number) => Promise<boolean>,
+    tryDeleteMessage: (message: Message) => Promise<boolean>,
     sendMessage: (message: string) => void,
 ): {
         getCommandPromise: CommandPromiseGetter,

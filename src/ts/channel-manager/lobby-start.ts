@@ -45,9 +45,9 @@ export function startGame(
             return;
         }
         const channel = userData.channel;
-        delete userData.creator;
+        delete (userData as any).creator;
         if (userData.timeout.cancel) userData.timeout.cancel();
-        delete userData.timeout;
+        delete (userData as any).timeout;
         const newData = <RunningGameChannelData><RegisteredGameChannelData>userData;
         newData.type = "RUNNING";
         GiveRolesTo(players);
@@ -82,8 +82,8 @@ export function startGame(
             .then(result => {
                 logger.channel(channel.name, `Game ended !`);
                 updateStats(channel, result);
-                delete newData.game;
-                delete newData.createdDate;
+                delete (newData as any).game;
+                delete (newData as any).createdDate;
                 const endData = <NotStartedGameChannelData><RegisteredGameChannelData>newData;
                 endData.type = "NOT_STARTED";
             })
@@ -92,8 +92,8 @@ export function startGame(
                 console.error(e);
                 writeFileSync(`log-${moment().format("YYYY-MM-DD-HH-mm-ss")}.json`, JSON.stringify(e));
                 newData.channel.send("The game crashed ! Crash logs have been saved, and you can try to start a new game now hopefully.");
-                delete newData.game;
-                delete newData.createdDate;
+                delete (newData as any).game;
+                delete (newData as any).createdDate;
                 const endData = <NotStartedGameChannelData><RegisteredGameChannelData>newData;
                 endData.type = "NOT_STARTED";
             });

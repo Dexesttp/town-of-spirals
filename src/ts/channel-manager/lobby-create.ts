@@ -10,7 +10,7 @@ import { getChannelData, resetGame } from "./utils";
 export function createGame(context: ManagerContext) {
     return async (message: discord.Message) => {
         const channel = message.channel;
-        if (channel.type !== "text") {
+        if (channel.type !== "GUILD_TEXT") {
             await channel.send("You cannot create a game here. Go to a server channel where the bot is enabled.");
             return;
         }

@@ -20,14 +20,15 @@ moment.relativeTimeThreshold("m", 60);
 
 const client = GetClient(clientInt => {
     for (const channelID of config.CHANNEL_ID_LIST) {
-        const filteredChannels = clientInt.channels.filter(c => {
+        const filteredChannels = clientInt.channels.cache.filter(c => {
             if (c.id !== channelID) return false;
-            if (c.type !== "text") {
+            if (c.type !== "GUILD_TEXT") {
                 logger.basic(`Could not register channel : ${channelID}. Reason : is not a text channel`);
                 return false;
             }
             const tc = <discord.TextChannel>c;
-            if (!tc.members.some(m => m.id === clientInt.user.id)) {
+            const clientUser = clientInt.user;
+            if (clientUser != null && !tc.members.some(m => m.id === clientUser.id)) {
                 logger.basic(`Could not register channel : ${channelID}. Reason : bot is not a channel member`);
                 return false;
             }
@@ -82,7 +83,7 @@ command.on("register", async (message, text) => {
     if (!config.ADMIN_ID_LIST.some(i => message.original.author.id === i)) {
         return true;
     }
-    if (message.original.channel.type !== "text") {
+    if (message.original.channel.type !== "GUILD_TEXT") {
         message.original.channel.send("Use that in a text channel :)");
         return true;
     }

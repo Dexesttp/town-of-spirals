@@ -6,7 +6,7 @@ import { getChannelData, resetGame } from "./utils";
 export function cancelGame(context: ManagerContext) {
     return async (message: discord.Message) => {
         const channel = message.channel;
-        if (channel.type !== "text") {
+        if (channel.type !== "GUILD_TEXT") {
             await channel.send("This command is not valid here.");
             return;
         }

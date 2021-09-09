@@ -72,7 +72,7 @@ export function GetClient() {
         setCommandGetter(getter: () => string[]) {
             getCommands = getter;
         },
-        async tryDeleteMessage(message: Message, timeout?: number) {
+        async tryDeleteMessage(message: Message) {
             return false;
         },
     };

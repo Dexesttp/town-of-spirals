@@ -2,10 +2,10 @@ import * as discord from "discord.js";
 import { CreatingGameChannelData, ManagerContext, NotStartedGameChannelData, RegisteredGameChannelData } from "./types";
 
 export function resetGame(data: CreatingGameChannelData) {
-    delete data.createdDate;
-    delete data.creator;
+    delete (data as any).createdDate;
+    delete (data as any).creator;
     if (data.timeout.cancel) data.timeout.cancel();
-    delete data.timeout;
+    delete (data as any).timeout;
     const newData = <NotStartedGameChannelData><RegisteredGameChannelData>data;
     newData.type = "NOT_STARTED";
 }

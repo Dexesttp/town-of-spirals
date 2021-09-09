@@ -7,9 +7,20 @@ import { ClientMessage, Message } from "./type";
 export function GetClient(
     onReadyCB: (client: discord.Client) => void,
 ) {
-    const client = new discord.Client();
+    const client = new discord.Client({
+        intents: [
+            discord.Intents.FLAGS.GUILDS,
+            discord.Intents.FLAGS.GUILD_MESSAGES,
+            discord.Intents.FLAGS.GUILD_MEMBERS,
+            discord.Intents.FLAGS.DIRECT_MESSAGES,
+        ],
+    });
 
     client.on("ready", () => {
+        if (client.user === null) {
+            logger.basic("The client couldn't start: no user found");
+            return;
+        }
         logger.basic(`Client ready !`);
         client.user.setStatus("online");
         onReadyCB(client);
@@ -36,13 +47,13 @@ export function GetClient(
                 handler({
                     author: message.author.id,
                     content: message.content,
-                    private: message.channel.type === "dm",
+                    private: message.channel.type === "DM",
                     original: message,
                 });
             });
         },
         async mumbleMessage(message: discord.Message, flavour: string) {
-            if (message.channel.type === "text") {
+            if (message.channel.type === "GUILD_TEXT") {
                 if (message.deletable) {
                     await message.delete().catch(e => { /* NO OP */ });
                 }
@@ -58,10 +69,10 @@ export function GetClient(
             mumbles.push({ userID, message: m as discord.Message });
             return Promise.all(previousMumblesFrom.map(p => p.message.delete().catch(e => { /* NO OP */ })));
         },
-        async tryDeleteMessage(message: Message, timeout?: number) {
+        async tryDeleteMessage(message: Message) {
             const clientMessage = message as ClientMessage<discord.Message>;
             if (clientMessage.original && clientMessage.original.deletable) {
-                await clientMessage.original.delete(timeout);
+                await clientMessage.original.delete();
                 return true;
             }
             return false;

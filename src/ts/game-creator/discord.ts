@@ -18,7 +18,11 @@ export function GameCreator(
             if (players.filter(p => p.id === author.id).length) {
                 return null;
             }
-            const guildUser = await discordMessage.guild.fetchMember(author);
+            const guild = discordMessage.guild;
+            if (guild === null) {
+                return null;
+            }
+            const guildUser = await guild.members.fetch(author);
             const data = {
                 id: author.id,
                 username: author.username,
@@ -30,7 +34,7 @@ export function GameCreator(
             playerInterface[author.id] = {
                 async sendMessage(message: string) {
                     if (!message) return;
-                    author.sendMessage(message);
+                    author.send(message);
                 },
             };
             return data;

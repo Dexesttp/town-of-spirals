@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"watch": true,
+		"watch": false,
 		"sourceMap": true,
 		"rootDir": "src/",
 		"outDir": "build/",

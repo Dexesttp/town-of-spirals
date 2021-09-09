@@ -1,4 +1,4 @@
-export interface TimeoutPromise extends Promise<{}> {
+export interface TimeoutPromise extends Promise<void> {
     cancel?: () => void;
 }
 

@@ -4,7 +4,7 @@ A Discord.JS bot to play a Town of Salem / Mafia / Werewolves (but hypno-themed)
 
 ## Install the bot
 
-It's fairly easy. You'll just need git [(see here for how)]() and node.js 7.0 or greater [(available here)]().
+It's fairly easy. You'll just need git and node.js (I'm testing it on v14.0, but older versions might still work).
 
 Open a terminal at the location of your choice.
 
@@ -16,9 +16,9 @@ Run the commands :
 
 `npm i`
 
-`tsc`
+`npm run build`
 
-Create the file `config.json` in the current folder, it should look like that :
+Create the file `config.json` in the current folder (base it on the `config.default.json` file), and fill it up with the required info:
 
 ```json
 {
@@ -45,6 +45,8 @@ or
 `node build/ts/debug.js`
 
 Note : you can emulate people by typing `1>!s <command>` for channel or `1p>!s <command>` for direct messages
+
+Note (2): If you want to skip having to type `npm run build` after each command, you can use `npm run watch-build` to have a watching compiler running on your code.
 
 ## License
 

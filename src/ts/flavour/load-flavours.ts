@@ -1,11 +1,11 @@
 import { readFileSync } from "fs";
-import * as yaml from "js-yaml";
+import { load as loadYaml } from "js-yaml";
 import { PlayerData } from "../game/data/player";
 import { VotingFlavour } from "../game/vote/types";
 import getRandom from "../utils/rand-from-array";
 
 export function LoadYamlFile(fileName: string): any {
-    return yaml.safeLoad(readFileSync(fileName).toString());
+    return loadYaml(readFileSync(fileName).toString());
 }
 
 export function FormatPlayer(player: PlayerData, rawText: string) {

@@ -13,7 +13,7 @@ type TargetRequestCallback = (playerID: string, target: InputTargetType, message
 
 export function targetEngine(
     playerInterface: PlayerInterface,
-    tryDeleteMessage: (message: Message, timeout?: number) => Promise<boolean>,
+    tryDeleteMessage: (message: Message) => Promise<boolean>,
     sendMessage: (message: string) => void,
 ): {
         getTargettingCommandPromise: TargettingPromiseGetter,
