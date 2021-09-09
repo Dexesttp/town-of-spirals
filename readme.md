@@ -4,7 +4,9 @@ A Discord.JS bot to play a Town of Salem / Mafia / Werewolves (but hypno-themed)
 
 ## Install the bot
 
-It's fairly easy. You'll just need git and node.js (I'm testing it on v14.0, but older versions might still work).
+It's fairly easy. You'll just need git and node.js v16.6.0 or higher
+
+Important: Node.js v16.6.0 is REQUIRED for discord.js (otherwise you'll get an error about AbortController)
 
 Open a terminal at the location of your choice.
 
