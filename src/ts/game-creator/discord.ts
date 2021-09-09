@@ -2,57 +2,56 @@ import { Message } from "discord.js";
 import { PlayerData, PlayerInterface } from "../game/data/player";
 
 export type DiscordGameCreator = {
-    addPlayer: (message: Message) => Promise<PlayerData | null>,
-    removePlayer: (message: Message) => Promise<boolean>,
-    players: () => PlayerData[],
-    playerInterface: () => PlayerInterface,
+  addPlayer: (message: Message) => Promise<PlayerData | null>;
+  removePlayer: (message: Message) => Promise<boolean>;
+  players: () => PlayerData[];
+  playerInterface: () => PlayerInterface;
 };
 
-export function GameCreator(
-): DiscordGameCreator {
-    let players: PlayerData[] = [];
-    let playerInterface: PlayerInterface = {};
-    return {
-        async addPlayer(discordMessage: Message) {
-            const author = discordMessage.author;
-            if (players.filter(p => p.id === author.id).length) {
-                return null;
-            }
-            const guild = discordMessage.guild;
-            if (guild === null) {
-                return null;
-            }
-            const guildUser = await guild.members.fetch(author);
-            const data = {
-                id: author.id,
-                username: author.username,
-                nickname: guildUser.displayName || author.username,
-                attributes: [],
-                roles: [],
-            };
-            players.push(data);
-            playerInterface[author.id] = {
-                async sendMessage(message: string) {
-                    if (!message) return;
-                    author.send(message);
-                },
-            };
-            return data;
+export function GameCreator(): DiscordGameCreator {
+  let players: PlayerData[] = [];
+  let playerInterface: PlayerInterface = {};
+  return {
+    async addPlayer(discordMessage: Message) {
+      const author = discordMessage.author;
+      if (players.filter((p) => p.id === author.id).length) {
+        return null;
+      }
+      const guild = discordMessage.guild;
+      if (guild === null) {
+        return null;
+      }
+      const guildUser = await guild.members.fetch(author);
+      const data = {
+        id: author.id,
+        username: author.username,
+        nickname: guildUser.displayName || author.username,
+        attributes: [],
+        roles: [],
+      };
+      players.push(data);
+      playerInterface[author.id] = {
+        async sendMessage(message: string) {
+          if (!message) return;
+          author.send(message);
         },
-        async removePlayer(discordMessage: Message) {
-            const author = discordMessage.author;
-            if (!players.filter(p => p.id === author.id).length) {
-                return false;
-            }
-            players = players.filter(p => p.id !== author.id);
-            delete playerInterface[author.id];
-            return true;
-        },
-        players() {
-            return players;
-        },
-        playerInterface() {
-            return playerInterface;
-        },
-    };
+      };
+      return data;
+    },
+    async removePlayer(discordMessage: Message) {
+      const author = discordMessage.author;
+      if (!players.filter((p) => p.id === author.id).length) {
+        return false;
+      }
+      players = players.filter((p) => p.id !== author.id);
+      delete playerInterface[author.id];
+      return true;
+    },
+    players() {
+      return players;
+    },
+    playerInterface() {
+      return playerInterface;
+    },
+  };
 }

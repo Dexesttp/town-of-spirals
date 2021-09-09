@@ -6,29 +6,29 @@ import { DiscordGameCreator } from "../game-creator/discord";
 import { TimeoutPromise } from "../utils/timer";
 
 export type NotStartedGameChannelData = {
-    type: "NOT_STARTED",
-    channel: discord.TextChannel,
+  type: "NOT_STARTED";
+  channel: discord.TextChannel;
 };
 export type CreatingGameChannelData = {
-    type: "CREATING",
-    channel: discord.TextChannel,
-    createdDate: moment.Moment,
-    creator: DiscordGameCreator,
-    timeout: TimeoutPromise,
+  type: "CREATING";
+  channel: discord.TextChannel;
+  createdDate: moment.Moment;
+  creator: DiscordGameCreator;
+  timeout: TimeoutPromise;
 };
 export type RunningGameChannelData = {
-    type: "RUNNING",
-    channel: discord.TextChannel,
-    createdDate: moment.Moment,
-    game: GameData,
-    flavour: FlavourEntry,
+  type: "RUNNING";
+  channel: discord.TextChannel;
+  createdDate: moment.Moment;
+  game: GameData;
+  flavour: FlavourEntry;
 };
 
 export type RegisteredGameChannelData =
-    NotStartedGameChannelData
-    | CreatingGameChannelData
-    | RunningGameChannelData;
+  | NotStartedGameChannelData
+  | CreatingGameChannelData
+  | RunningGameChannelData;
 
 export type ManagerContext = {
-    channelList: RegisteredGameChannelData[],
+  channelList: RegisteredGameChannelData[];
 };

@@ -5,42 +5,47 @@ import logger from "./logging";
 
 const defaultConfig = jsonfile.readFileSync("config.default.json");
 if (!fs.existsSync("config.json")) {
-    throw new Error("There's no config.json file ! Create it and add your bot token to it.");
+  throw new Error(
+    "There's no config.json file ! Create it and add your bot token to it."
+  );
 }
 const config = jsonfile.readFileSync("config.json");
 
 export const ADMIN_ID_LIST: string[] = config.adminList || [];
 export const CHANNEL_ID_LIST: string[] = config.channelList || [];
 const statsFilePath = config.statsFilePath || defaultConfig.statsFilePath;
-export const STATS_FILE_PATH: string | undefined = statsFilePath ? statsFilePath : undefined;
+export const STATS_FILE_PATH: string | undefined = statsFilePath
+  ? statsFilePath
+  : undefined;
 export const TOKEN = (() => {
-    if (config.token)
-        return config.token;
-    throw new Error("There's no 'token' attribute in config.json ! Please add your bot token.");
+  if (config.token) return config.token;
+  throw new Error(
+    "There's no 'token' attribute in config.json ! Please add your bot token."
+  );
 })();
 
-const override: { lossDelete?: boolean, nightDelete?: boolean } = {};
+const override: { lossDelete?: boolean; nightDelete?: boolean } = {};
 
 export function LOSS_DELETE(): boolean {
-    if (override.lossDelete !== undefined) return override.lossDelete;
-    if (config.lossDelete !== undefined) return config.lossDelete;
-    if (defaultConfig.lossDelete !== undefined) return defaultConfig.lossDelete;
-    return false;
+  if (override.lossDelete !== undefined) return override.lossDelete;
+  if (config.lossDelete !== undefined) return config.lossDelete;
+  if (defaultConfig.lossDelete !== undefined) return defaultConfig.lossDelete;
+  return false;
 }
 
 export function NIGHT_TIME_DELETE(): boolean {
-    if (override.nightDelete !== undefined) return override.nightDelete;
-    if (config.nightDelete !== undefined) return config.nightDelete;
-    if (defaultConfig.nightDelete !== undefined) return defaultConfig.nightDelete;
-    return false;
+  if (override.nightDelete !== undefined) return override.nightDelete;
+  if (config.nightDelete !== undefined) return config.nightDelete;
+  if (defaultConfig.nightDelete !== undefined) return defaultConfig.nightDelete;
+  return false;
 }
 
 export function setLossTimeDelete(status: boolean) {
-    override.lossDelete = status;
+  override.lossDelete = status;
 }
 
 export function setNightTimeDelete(status: boolean) {
-    override.nightDelete = status;
+  override.nightDelete = status;
 }
 
 logger.basic(`Config loaded !`);

@@ -1,4 +1,3 @@
-
 export const HELP_COMMAND = "help";
 export const RULES_COMMAND = "rules";
 

@@ -25,132 +25,160 @@ const gameCreator = GameCreator();
 let game: GameData | null = null;
 
 /** Mumbling */
-command.onBefore(async message => {
-    if (LOSS_DELETE()
-        && game
-        && game.context.players.some(
-            p => p.id === message.author && p.attributes.some(a => a === BROKEN),
-        )
-    ) {
-        console.log(`>Trying to mumble message (${message.original})`);
-        return true;
-    }
-    return false;
+command.onBefore(async (message) => {
+  if (
+    LOSS_DELETE() &&
+    game &&
+    game.context.players.some(
+      (p) => p.id === message.author && p.attributes.some((a) => a === BROKEN)
+    )
+  ) {
+    console.log(`>Trying to mumble message (${message.original})`);
+    return true;
+  }
+  return false;
 });
 
 command.on("help", async (message, text) => {
-    client.sendTo(message.author, help(message));
-    return true;
+  client.sendTo(message.author, help(message));
+  return true;
 });
 
 command.on("rules", async (message, text) => {
-    client.sendTo(message.author, rules(message));
-    return true;
+  client.sendTo(message.author, rules(message));
+  return true;
 });
 
 command.on("join-many", async (message, text) => {
-    const value = +text;
-    if (!value) {
-        console.log(`${text} isn't a valid argument. Please use a number > 0.`);
-        return true;
-    }
-    const players = [...new Array(value)].map((v, i) => i + 1);
-    for (const playerID of players) {
-        console.log(`Adding player ${playerID}.`);
-        gameCreator.addPlayer(`${playerID}`);
-    }
+  const value = +text;
+  if (!value) {
+    console.log(`${text} isn't a valid argument. Please use a number > 0.`);
     return true;
+  }
+  const players = [...new Array(value)].map((v, i) => i + 1);
+  for (const playerID of players) {
+    console.log(`Adding player ${playerID}.`);
+    gameCreator.addPlayer(`${playerID}`);
+  }
+  return true;
 });
 
 command.on("join", async (message, text) => {
-    gameCreator.addPlayer(message.author);
-    return true;
+  gameCreator.addPlayer(message.author);
+  return true;
 });
 
 command.on("leave", async (message, text) => {
-    gameCreator.removePlayer(message.author);
-    return true;
+  gameCreator.removePlayer(message.author);
+  return true;
 });
 
 command.on("start", async (message, text) => {
-    const players = gameCreator.players();
-    if (players.length < 4) {
-        console.log(`Not enough players to start (current : ${players.length}, need: ${4})`);
-        return true;
-    }
-    GiveRolesTo(players);
-    game = Game(
-        players,
-        async (m) => { console.log(`>${m}`); },
-        gameCreator.playerInterface(),
-        async (m) => { console.log(`>Trying to delete message (${m})`); return false; },
-        players.length >= 10,
+  const players = gameCreator.players();
+  if (players.length < 4) {
+    console.log(
+      `Not enough players to start (current : ${players.length}, need: ${4})`
     );
-    game.subscribeNightRole(handleHypnotist({}));
-    game.subscribeNightRole(handleDeprogrammer({}));
-    game.subscribeNightRole(handleDetective({}));
-    game.start();
     return true;
+  }
+  GiveRolesTo(players);
+  game = Game(
+    players,
+    async (m) => {
+      console.log(`>${m}`);
+    },
+    gameCreator.playerInterface(),
+    async (m) => {
+      console.log(`>Trying to delete message (${m})`);
+      return false;
+    },
+    players.length >= 10
+  );
+  game.subscribeNightRole(handleHypnotist({}));
+  game.subscribeNightRole(handleDeprogrammer({}));
+  game.subscribeNightRole(handleDetective({}));
+  game.start();
+  return true;
 });
 
 command.on("vote", async (message, text) => {
-    if (!game) {
-        console.log("There's no game started.");
-        return true;
-    }
-    const target = game.context.players.filter(p => p.id === text)[0];
-    if (!target) {
-        console.log("Unknown player.");
-        return true;
-    }
-    game.handleTargettingCommand("vote", message.author, { type: "id", content: target.id }, message);
+  if (!game) {
+    console.log("There's no game started.");
     return true;
+  }
+  const target = game.context.players.filter((p) => p.id === text)[0];
+  if (!target) {
+    console.log("Unknown player.");
+    return true;
+  }
+  game.handleTargettingCommand(
+    "vote",
+    message.author,
+    { type: "id", content: target.id },
+    message
+  );
+  return true;
 });
 
 command.on("no-vote", async (message, text) => {
-    if (!game) {
-        console.log("There's no game started.");
-        return true;
-    }
-    game.handleCommand("no-vote", message.author, message);
+  if (!game) {
+    console.log("There's no game started.");
     return true;
+  }
+  game.handleCommand("no-vote", message.author, message);
+  return true;
 });
 
 command.on("break", async (message, text) => {
-    if (!game) {
-        console.log("There's no game started.");
-        return true;
-    }
-    const target = game.context.players.filter(p => p.id === text)[0];
-    game.handleTargettingCommand("break", message.author, { type: "id", content: target.id }, message);
+  if (!game) {
+    console.log("There's no game started.");
     return true;
+  }
+  const target = game.context.players.filter((p) => p.id === text)[0];
+  game.handleTargettingCommand(
+    "break",
+    message.author,
+    { type: "id", content: target.id },
+    message
+  );
+  return true;
 });
 
 command.on("save", async (message, text) => {
-    if (!game) {
-        console.log("There's no game started.");
-        return true;
-    }
-    const target = game.context.players.filter(p => p.id === text)[0];
-    game.handleTargettingCommand("save", message.author, { type: "id", content: target.id }, message);
+  if (!game) {
+    console.log("There's no game started.");
     return true;
+  }
+  const target = game.context.players.filter((p) => p.id === text)[0];
+  game.handleTargettingCommand(
+    "save",
+    message.author,
+    { type: "id", content: target.id },
+    message
+  );
+  return true;
 });
 
 command.on("spy", async (message, text) => {
-    if (!game) {
-        console.log("There's no game started.");
-        return true;
-    }
-    const target = game.context.players.filter(p => p.id === text)[0];
-    game.handleTargettingCommand("spy", message.author, { type: "id", content: target.id }, message);
+  if (!game) {
+    console.log("There's no game started.");
     return true;
+  }
+  const target = game.context.players.filter((p) => p.id === text)[0];
+  game.handleTargettingCommand(
+    "spy",
+    message.author,
+    { type: "id", content: target.id },
+    message
+  );
+  return true;
 });
 
 command.on("skip", async (message, text) => {
-    if (!game) {
-        console.log("There's no game started.");
-        return true;
-    }
-    game.handleCommand("skip", message.author, message);
+  if (!game) {
+    console.log("There's no game started.");
     return true;
+  }
+  game.handleCommand("skip", message.author, message);
+  return true;
 });
