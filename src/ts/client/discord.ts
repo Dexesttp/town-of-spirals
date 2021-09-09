@@ -1,8 +1,8 @@
-import * as discord from "discord.js";
-import * as config from "../config";
-import logger from "../logging";
-import { runAdmin } from "./discord-admin";
-import { ClientMessage, Message } from "./type";
+import * as discord from 'discord.js';
+import * as config from '../config';
+import logger from '../logging';
+import { runAdmin } from './discord-admin';
+import { ClientMessage, Message } from './type';
 
 export function GetClient(onReadyCB: (client: discord.Client) => void) {
   const client = new discord.Client({
@@ -12,20 +12,17 @@ export function GetClient(onReadyCB: (client: discord.Client) => void) {
       discord.Intents.FLAGS.GUILD_MEMBERS,
       discord.Intents.FLAGS.DIRECT_MESSAGES,
     ],
+    partials: ['MESSAGE', 'CHANNEL'],
   });
 
-  client.on("ready", () => {
-    if (client.user === null) {
-      logger.basic("The client couldn't start: no user found");
-      return;
-    }
+  client.on('ready', (client) => {
     logger.basic(`Client ready !`);
-    client.user.setStatus("online");
+    client.user.setStatus('online');
     onReadyCB(client);
   });
-  client.on("message", async (message) => {
+  client.on('messageCreate', async (message) => {
     if (!config.ADMIN_ID_LIST.some((i) => message.author.id === i)) return;
-    if (!message.content.startsWith("!sadmin")) return;
+    if (!message.content.startsWith('!sadmin')) return;
     await runAdmin(client, message);
   });
 
@@ -39,17 +36,17 @@ export function GetClient(onReadyCB: (client: discord.Client) => void) {
   return {
     client,
     onMessage(handler: (message: ClientMessage<discord.Message>) => void) {
-      client.on("message", (message) => {
+      client.on('messageCreate', (message) => {
         handler({
           author: message.author.id,
           content: message.content,
-          private: message.channel.type === "DM",
+          private: message.channel.type === 'DM',
           original: message,
         });
       });
     },
     async mumbleMessage(message: discord.Message, flavour: string) {
-      if (message.channel.type === "GUILD_TEXT") {
+      if (message.channel.type === 'GUILD_TEXT') {
         if (message.deletable) {
           await message.delete().catch((e) => {
             /* NO OP */
