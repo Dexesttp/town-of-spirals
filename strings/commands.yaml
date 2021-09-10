@@ -3,10 +3,9 @@ help: |
       **=== General ===**
   `[COMMAND_PREFIX] help` - Show this screen
   `[COMMAND_PREFIX] rules` - Show a summary of the game's rules
-  `[COMMAND_PREFIX] rolelist` - Show all the roles and a description of them
       **=== Create a game ===**
   `[COMMAND_PREFIX] create` - Create a new game
-  `[COMMAND_PREFIX] cancel-game` - Cancel the game currently created (5min timeout)
+  `[COMMAND_PREFIX] cancel` - Cancel the game currently created (5min timeout)
   `[COMMAND_PREFIX] join` - Join the game
   `[COMMAND_PREFIX] leave` - Leave the game
   `[COMMAND_PREFIX] start` - Starts the game
