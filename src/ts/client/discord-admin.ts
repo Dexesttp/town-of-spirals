@@ -78,5 +78,33 @@ export async function runAdmin(
     logger.basic(`Mumble on loss : ${config.LOSS_DELETE()}`);
     return;
   }
+  if (message.content === `${ADMIN_COMMAND_PREFIX} listservers`) {
+    clientUser.client.guilds.fetch().then((guilds) => {
+      let result = "Listing servers:\n";
+      for (const [name, g] of guilds) {
+        result += `${g.name} => ${g.id}\n`;
+      }
+      message.channel.send(formatEmit(result));
+      logger.basic(`Listing servers...`);
+    });
+    return;
+  }
+  if (message.content.startsWith(`${ADMIN_COMMAND_PREFIX} exitserver `)) {
+    const serverId = message.content
+      .substring(`${ADMIN_COMMAND_PREFIX} exitserver `.length)
+      .trim();
+    const server = client.guilds.cache.get(serverId);
+    if (!server) {
+      message.channel.send(
+        formatEmit(`Could not find server to leave: ${serverId}`)
+      );
+      logger.basic(`Could not find server to leave: ${serverId}`);
+      return;
+    }
+    server.leave();
+    message.channel.send(formatEmit(`Left server: ${serverId}`));
+    logger.basic(`Left server: ${serverId}`);
+    return;
+  }
   logger.basic(`Unknown command : ${message.content}`);
 }
