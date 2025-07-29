@@ -9,14 +9,16 @@ import { getChannelData, getUserChannel, resetGame } from "./utils";
 export function joinGame(context: ManagerContext) {
   return async (message: discord.Message) => {
     const channel = message.channel;
-    if (channel.type !== "GUILD_TEXT") {
-      await channel.send(
-        "You cannot join a game here. Go to a server channel where the bot is enabled."
-      );
+    if (channel.type !== discord.ChannelType.GuildText) {
+      if (channel.isSendable()) {
+        await channel.send(
+          "You cannot join a game here. Go to a server channel where the bot is enabled.",
+        );
+      }
       return;
     }
     const data = getChannelData(context)(
-      message.channel as discord.TextChannel
+      message.channel as discord.TextChannel,
     );
     if (data === null) return;
     const userData = getUserChannel(context)(message.author.id);
@@ -25,19 +27,19 @@ export function joinGame(context: ManagerContext) {
         userData.type === "CREATING"
           ? userData.creator.players()
           : userData.type === "RUNNING"
-          ? userData.game.context.players
-          : [];
+            ? userData.game.context.players
+            : [];
       const playerData = playerList.filter(
-        (p) => p.id === message.author.id
+        (p) => p.id === message.author.id,
       )[0];
       if (data !== userData) {
         await channel.send(
-          `You already joined another game, ${playerData.nickname}.`
+          `You already joined another game, ${playerData.nickname}.`,
         );
         return;
       }
       await channel.send(
-        `You already joined the game, ${playerData.nickname}.`
+        `You already joined the game, ${playerData.nickname}.`,
       );
       return;
     }
@@ -47,14 +49,14 @@ export function joinGame(context: ManagerContext) {
     }
     if (data.type === "RUNNING") {
       await channel.send(
-        "A game is currently in progress. Wait for the next one to join !"
+        "A game is currently in progress. Wait for the next one to join !",
       );
       return;
     }
     const player = await data.creator.addPlayer(message);
     if (!player) {
       await channel.send(
-        `There was an error and we couldn't add you to the game.`
+        `There was an error and we couldn't add you to the game.`,
       );
       return;
     }
@@ -64,12 +66,12 @@ export function joinGame(context: ManagerContext) {
       resetGame(data);
       logger.channel(data.channel.name, `Game cancelled : timeout.`);
       return channel.send(
-        `15 minutes timeout, game cancelled ! Type \`${PREFIX} create\` to create a new game.`
+        `15 minutes timeout, game cancelled ! Type \`${PREFIX} create\` to create a new game.`,
       );
     });
     logger.channel(
       data.channel.name,
-      `${message.author.username} joined the lobby.`
+      `${message.author.username} joined the lobby.`,
     );
     const playerCount = data.creator.players().length;
     let outMessage = `${player.nickname} has joined the game, ${playerCount} player(s) waiting for start.`;

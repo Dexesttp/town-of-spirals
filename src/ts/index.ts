@@ -25,9 +25,9 @@ const client = GetClient((clientInt) => {
   for (const channelID of config.CHANNEL_ID_LIST) {
     const filteredChannels = clientInt.channels.cache.filter((c) => {
       if (c.id !== channelID) return false;
-      if (c.type !== "GUILD_TEXT") {
+      if (c.type !== discord.ChannelType.GuildText) {
         logger.basic(
-          `Could not register channel : ${channelID}. Reason : is not a text channel`
+          `Could not register channel : ${channelID}. Reason : is not a text channel`,
         );
         return false;
       }
@@ -38,7 +38,7 @@ const client = GetClient((clientInt) => {
         !tc.members.some((m) => m.id === clientUser.id)
       ) {
         logger.basic(
-          `Could not register channel : ${channelID}. Reason : bot is not a channel member`
+          `Could not register channel : ${channelID}. Reason : bot is not a channel member`,
         );
         return false;
       }
@@ -47,20 +47,22 @@ const client = GetClient((clientInt) => {
     const channel: discord.TextChannel = <any>filteredChannels.first();
     if (!channel) {
       logger.basic(
-        `Could not register channel : ${channelID}. Reason : not found or not available`
+        `Could not register channel : ${channelID}. Reason : not found or not available`,
       );
       continue;
     }
     channelManager.registerChannel(channel);
     logger.channel(
       channel.name,
-      `Registered channel successfully ! (${channelID})`
+      `Registered channel successfully ! (${channelID})`,
     );
   }
 });
-const command = GetCommandHandler<Message>((message, text) =>
-  message.original.channel.send(text)
-);
+const command = GetCommandHandler<Message>((message, text) => {
+  if (message.original.channel.isSendable()) {
+    return message.original.channel.send(text);
+  }
+});
 
 const channelManager = ChannelManager();
 
@@ -100,22 +102,28 @@ command.on("register", async (message, text) => {
   if (!config.ADMIN_ID_LIST.some((i) => message.original.author.id === i)) {
     return true;
   }
-  if (message.original.channel.type !== "GUILD_TEXT") {
-    message.original.channel.send("Use that in a text channel :)");
+  if (message.original.channel.type !== discord.ChannelType.GuildText) {
+    if (message.original.channel.isSendable()) {
+      message.original.channel.send("Use that in a text channel :)");
+    }
     return true;
   }
   const added = channelManager.registerChannel(
-    message.original.channel as TextChannel
+    message.original.channel as TextChannel,
   );
   if (added) {
-    message.original.channel.send(
-      `Channel registered manually for play ! Use \`${PREFIX} create\` to create a game.`
-    );
+    if (message.original.channel.isSendable()) {
+      message.original.channel.send(
+        `Channel registered manually for play ! Use \`${PREFIX} create\` to create a game.`,
+      );
+    }
     return true;
   }
-  message.original.channel.send(
-    `The channel is already registered. Use \`${PREFIX} create\` to create a game.`
-  );
+  if (message.original.channel.isSendable()) {
+    message.original.channel.send(
+      `The channel is already registered. Use \`${PREFIX} create\` to create a game.`,
+    );
+  }
   return true;
 });
 
@@ -145,52 +153,52 @@ command.on("start", async (message, text) => {
 command.on(
   "vote",
   async (message, text) =>
-    await channelManager.handleTargetCommandByName("vote", message, text)
+    await channelManager.handleTargetCommandByName("vote", message, text),
 );
 command.on(
   "vote-nb",
   async (message, text) =>
-    await channelManager.handleTargetCommandByIndex("vote", message, text)
+    await channelManager.handleTargetCommandByIndex("vote", message, text),
 );
 command.on(
   "no-vote",
   async (message, text) =>
-    await channelManager.handleCommand("no-vote", message, text)
+    await channelManager.handleCommand("no-vote", message, text),
 );
 command.on(
   "break",
   async (message, text) =>
-    await channelManager.handleTargetCommandByName("break", message, text)
+    await channelManager.handleTargetCommandByName("break", message, text),
 );
 command.on(
   "break-nb",
   async (message, text) =>
-    await channelManager.handleTargetCommandByIndex("break", message, text)
+    await channelManager.handleTargetCommandByIndex("break", message, text),
 );
 command.on(
   "save",
   async (message, text) =>
-    await channelManager.handleTargetCommandByName("save", message, text)
+    await channelManager.handleTargetCommandByName("save", message, text),
 );
 command.on(
   "save-nb",
   async (message, text) =>
-    await channelManager.handleTargetCommandByIndex("save", message, text)
+    await channelManager.handleTargetCommandByIndex("save", message, text),
 );
 command.on(
   "spy",
   async (message, text) =>
-    await channelManager.handleTargetCommandByName("spy", message, text)
+    await channelManager.handleTargetCommandByName("spy", message, text),
 );
 command.on(
   "spy-nb",
   async (message, text) =>
-    await channelManager.handleTargetCommandByIndex("spy", message, text)
+    await channelManager.handleTargetCommandByIndex("spy", message, text),
 );
 command.on(
   "skip",
   async (message, text) =>
-    await channelManager.handleCommand("skip", message, text)
+    await channelManager.handleCommand("skip", message, text),
 );
 
 /**
@@ -201,30 +209,38 @@ command.on("leaderboard", getLeaderboard);
 command.on("stats", getPlayerStatsFromMessage);
 command.on("gdpr", async (message, text) => {
   if (!message.private) {
-    message.original.channel.send(
-      "The GDPR commands must be used as PMs to the bot."
-    );
+    if (message.original.channel.isSendable()) {
+      message.original.channel.send(
+        "The GDPR commands must be used as PMs to the bot.",
+      );
+    }
     return true;
   }
   if (text === "enable") {
     const data = getStatsFromFile();
     updateExcludedInternal(data, message.author, false);
     saveStatsToFile(data);
-    message.original.channel.send(
-      "Enabled saving stats successfully. Welcome back !"
-    );
+    if (message.original.channel.isSendable()) {
+      message.original.channel.send(
+        "Enabled saving stats successfully. Welcome back !",
+      );
+    }
     return true;
   }
   if (text === "disable") {
     const data = getStatsFromFile();
     updateExcludedInternal(data, message.author, true);
     saveStatsToFile(data);
-    message.original.channel.send("Disabled saving stats successfully.");
+    if (message.original.channel.isSendable()) {
+      message.original.channel.send("Disabled saving stats successfully.");
+    }
     return true;
   }
-  message.original.channel.send(
-    `Use \`${PREFIX} gdpr enable\` (allow stats) or \`${PREFIX} gdpr disable\` (do not store stats)`
-  );
+  if (message.original.channel.isSendable()) {
+    message.original.channel.send(
+      `Use \`${PREFIX} gdpr enable\` (allow stats) or \`${PREFIX} gdpr disable\` (do not store stats)`,
+    );
+  }
   return true;
 });
 

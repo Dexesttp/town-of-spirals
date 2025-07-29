@@ -7,8 +7,10 @@ import { getChannelData, resetGame } from "./utils";
 export function cancelGame(context: ManagerContext) {
   return async (message: discord.Message) => {
     const channel = message.channel;
-    if (channel.type !== "GUILD_TEXT") {
-      await channel.send("This command is not valid here.");
+    if (channel.type !== discord.ChannelType.GuildText) {
+      if (channel.isSendable()) {
+        await channel.send("This command is not valid here.");
+      }
       return;
     }
     const data = getChannelData(context)(

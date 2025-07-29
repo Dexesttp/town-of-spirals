@@ -7,12 +7,12 @@ import { ClientMessage, Message } from "./type";
 export function GetClient(onReadyCB: (client: discord.Client) => void) {
   const client = new discord.Client({
     intents: [
-      discord.Intents.FLAGS.GUILDS,
-      discord.Intents.FLAGS.GUILD_MESSAGES,
-      discord.Intents.FLAGS.GUILD_MEMBERS,
-      discord.Intents.FLAGS.DIRECT_MESSAGES,
+      discord.IntentsBitField.Flags.Guilds,
+      discord.IntentsBitField.Flags.GuildMessages,
+      discord.IntentsBitField.Flags.GuildMembers,
+      discord.IntentsBitField.Flags.DirectMessages,
     ],
-    partials: ["MESSAGE", "CHANNEL"],
+    partials: [discord.Partials.Message, discord.Partials.Channel],
   });
 
   client.on("ready", (client) => {
@@ -40,13 +40,13 @@ export function GetClient(onReadyCB: (client: discord.Client) => void) {
         handler({
           author: message.author.id,
           content: message.content,
-          private: message.channel.type === "DM",
+          private: message.channel.type === discord.ChannelType.DM,
           original: message,
         });
       });
     },
     async mumbleMessage(message: discord.Message, flavour: string) {
-      if (message.channel.type === "GUILD_TEXT") {
+      if (message.channel.type === discord.ChannelType.GuildText) {
         if (message.deletable) {
           await message.delete().catch((e) => {
             /* NO OP */
@@ -54,14 +54,15 @@ export function GetClient(onReadyCB: (client: discord.Client) => void) {
         } else {
           logger.basic(`Deleting message not possible.`);
           logger.basic(
-            `Check perms in '#${(message.channel as discord.TextChannel).name}'`
+            `Check perms in '#${(message.channel as discord.TextChannel).name}'`,
           );
         }
       }
+      if (!message.channel.isSendable()) return;
       const m = await message.channel.send(flavour);
       const userID = message.author.id;
       const previousMumblesFrom = mumbles.filter(
-        (mess) => mess.userID === userID && mess.message.deletable
+        (mess) => mess.userID === userID && mess.message.deletable,
       );
       mumbles = mumbles.filter((mess) => mess.userID !== userID);
       mumbles.push({ userID, message: m as discord.Message });
@@ -69,8 +70,8 @@ export function GetClient(onReadyCB: (client: discord.Client) => void) {
         previousMumblesFrom.map((p) =>
           p.message.delete().catch((e) => {
             /* NO OP */
-          })
-        )
+          }),
+        ),
       );
     },
     async tryDeleteMessage(message: Message) {
@@ -86,7 +87,9 @@ export function GetClient(onReadyCB: (client: discord.Client) => void) {
 
 export function discordReplier(textGetter: (message: Message) => string) {
   return async (message: ClientMessage<discord.Message>, text: string) => {
-    message.original.channel.send(textGetter(message));
+    if (message.original.channel.isSendable()) {
+      message.original.channel.send(textGetter(message));
+    }
     return true;
   };
 }

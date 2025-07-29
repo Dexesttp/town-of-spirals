@@ -8,13 +8,17 @@ export function leaveGame(context: ManagerContext) {
     const data = getUserChannel(context)(message.author.id);
     if (data === null) return;
     if (data.type === "NOT_STARTED") {
-      await message.channel.send(
-        "You are not currently in any game. No need to leave."
-      );
+      if (message.channel.isSendable()) {
+        await message.channel.send(
+          "You are not currently in any game. No need to leave.",
+        );
+      }
       return;
     }
     if (data.type === "RUNNING") {
-      await message.channel.send("You cannot leave a running game. Sorry !");
+      if (message.channel.isSendable()) {
+        await message.channel.send("You cannot leave a running game. Sorry !");
+      }
       return;
     }
     const player = data.creator
@@ -23,12 +27,12 @@ export function leaveGame(context: ManagerContext) {
     await data.creator.removePlayer(message);
     logger.channel(
       data.channel.name,
-      `${message.author.username} left the lobby.`
+      `${message.author.username} left the lobby.`,
     );
     await data.channel.send(
       `${player.nickname} has left the game. ${
         data.creator.players().length
-      } player(s) waiting for start !`
+      } player(s) waiting for start !`,
     );
   };
 }

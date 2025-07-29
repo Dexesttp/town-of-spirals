@@ -25,36 +25,38 @@ export function ChannelManager() {
     command: string,
     channel: RunningGameChannelData,
     message: ClientMessage<discord.Message>,
-    text: string
+    text: string,
   ) {
     let target =
       channel.game.context.players.filter(
-        (p) => `@${p.nickname}` === text
+        (p) => `@${p.nickname}` === text,
       )[0] ||
       channel.game.context.players.filter(
-        (p) => `@${p.username}` === text
+        (p) => `@${p.username}` === text,
       )[0] ||
       channel.game.context.players.filter((p) => `<@!${p.id}>` === text)[0] ||
       channel.game.context.players.filter((p) => `<@${p.id}>` === text)[0] ||
       channel.game.context.players.filter((p) => p.nickname === text)[0] ||
       channel.game.context.players.filter((p) => p.username === text)[0] ||
       channel.game.context.players.filter(
-        (p) => p.nickname.toUpperCase() === text.toUpperCase()
+        (p) => p.nickname.toUpperCase() === text.toUpperCase(),
       )[0] ||
       channel.game.context.players.filter(
-        (p) => p.username.toUpperCase() === text.toUpperCase()
+        (p) => p.username.toUpperCase() === text.toUpperCase(),
       )[0];
     if (!target) {
-      message.original.channel.send(
-        `Cannot find target player: ${text} in the current game.`
-      );
+      if (message.original.channel.isSendable()) {
+        message.original.channel.send(
+          `Cannot find target player: ${text} in the current game.`,
+        );
+      }
       return true;
     }
     channel.game.handleTargettingCommand(
       command,
       message.author,
       { type: "id", content: target.id },
-      message
+      message,
     );
     return true;
   }
@@ -63,14 +65,14 @@ export function ChannelManager() {
     command: string,
     channel: RunningGameChannelData,
     message: ClientMessage<discord.Message>,
-    text: string
+    text: string,
   ) {
     if (isNaN(+text)) return false;
     channel.game.handleTargettingCommand(
       command,
       message.author,
       { type: "index", content: +text - 1 },
-      message
+      message,
     );
     return true;
   }
@@ -79,7 +81,7 @@ export function ChannelManager() {
     command: string,
     channel: RunningGameChannelData,
     message: ClientMessage<discord.Message>,
-    text: string
+    text: string,
   ) {
     channel.game.handleCommand(command, message.author, message);
     return true;
@@ -104,7 +106,7 @@ export function ChannelManager() {
     async handleTargetCommandByName(
       command: string,
       message: ClientMessage<discord.Message>,
-      text: string
+      text: string,
     ) {
       const channel = getUserChannel(contextExt)(message.author);
       if (!channel || channel.type !== "RUNNING") return false;
@@ -113,7 +115,7 @@ export function ChannelManager() {
     async handleTargetCommandByIndex(
       command: string,
       message: ClientMessage<discord.Message>,
-      text: string
+      text: string,
     ) {
       const channel = getUserChannel(contextExt)(message.author);
       if (!channel || channel.type !== "RUNNING") return false;
@@ -122,7 +124,7 @@ export function ChannelManager() {
     async handleCommand(
       command: string,
       message: ClientMessage<discord.Message>,
-      text: string
+      text: string,
     ) {
       const channel = getUserChannel(contextExt)(message.author);
       if (!channel || channel.type !== "RUNNING") return false;

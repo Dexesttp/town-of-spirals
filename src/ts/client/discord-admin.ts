@@ -11,26 +11,28 @@ function formatEmit(message: string) {
 
 export async function runAdmin(
   client: discord.Client,
-  message: discord.Message
+  message: discord.Message,
 ) {
   const clientUser = client.user;
   if (!clientUser) return;
   logger.basic(`Running admin command : ${message.content}`);
   if (message.content.startsWith(`${ADMIN_COMMAND_PREFIX} clean `)) {
     const qty = +message.content.substring(
-      `${ADMIN_COMMAND_PREFIX} clean `.length
+      `${ADMIN_COMMAND_PREFIX} clean `.length,
     );
-    const messages = await message.channel.awaitMessages({ max: qty });
-    messages.forEach((m) => {
-      if (m.deletable) m.delete();
-    });
-    logger.basic(`Deleted ${messages.size} messages`);
+    if (message.channel.isSendable()) {
+      const messages = await message.channel.awaitMessages({ max: qty });
+      messages.forEach((m) => {
+        if (m.deletable) m.delete();
+      });
+      logger.basic(`Deleted ${messages.size} messages`);
+    }
     return;
   }
-  if (message.channel.type !== "DM") return;
+  if (message.channel.type !== discord.ChannelType.DM) return;
   if (message.content === `${ADMIN_COMMAND_PREFIX} status get`) {
     message.channel.send(
-      formatEmit(`Current presence : ${(clientUser as any).presence.status}`)
+      formatEmit(`Current presence : ${(clientUser as any).presence.status}`),
     );
     return;
   }
@@ -84,7 +86,9 @@ export async function runAdmin(
       for (const [name, g] of guilds) {
         result += `${g.name} => ${g.id}\n`;
       }
-      message.channel.send(formatEmit(result));
+      if (message.channel.isSendable()) {
+        message.channel.send(formatEmit(result));
+      }
       logger.basic(`Listing servers...`);
     });
     return;
@@ -96,7 +100,7 @@ export async function runAdmin(
     const server = client.guilds.cache.get(serverId);
     if (!server) {
       message.channel.send(
-        formatEmit(`Could not find server to leave: ${serverId}`)
+        formatEmit(`Could not find server to leave: ${serverId}`),
       );
       logger.basic(`Could not find server to leave: ${serverId}`);
       return;
